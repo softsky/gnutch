@@ -5,6 +5,7 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
 
 ## Installation
 
+Before installing, make sure you installed grails-routing-1.1.4.zip plugin (you may find it in the root of source tree).
         cd gnutch
         grails war
 
