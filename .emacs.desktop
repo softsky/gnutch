@@ -1,0 +1,238 @@
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created Thu Dec 22 09:43:24 2011
+;; Desktop file format version 206
+;; Emacs version 23.3.3
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+(setq tags-file-name nil)
+(setq tags-table-list nil)
+(setq search-ring nil)
+(setq regexp-search-ring '("CH." "log(" "strUr" "logex" "log" "html" "url" "transform" "log" "headers" "gnut" "sncra" "bro" "over" "grails" "grailsg"))
+(setq register-alist '((114 file . "/home/archer/.emacs.d/starter-kit-registers.el") (98 file . "/home/archer/.emacs.d/starter-kit-bindings.el") (105 file . "/home/archer/.emacs.d/init.el")))
+(setq file-name-history '("/home/archer/dev/gnutch/grails-app/conf/spring/resources.groovy" "~/dev/gnutch/grails-app/conf/gnutch.urls" "/home/archer/dev/gnutch/grails-app/conf/ziprealty.xsl" "/home/archer/dev/gnutch/grails-app/conf/activemq.xml" "/home/archer/dev/gnutch/grails-app/routes/UrlCrawlRoute.groovy" "/home/archer/dev/gnutch/grails-app/routes/UrlInputRoute.groovy" "/home/archer/dev/gnutch/README" "/home/archer/dev/gnutch/test/unit/gnutch/urls/ContextUrlResolverTests.groovy" "/home/archer/dev/gnutch/src/groovy/gnutch/urls/ContextUrlResolver.groovy" "~/dev/gnutch/grails-app/conf/spring/" "/home/archer/dev/gnutch/grails-app/conf/ziprealty.xsl" "/home/archer/dev/gnutch/test/unit/gnutch/indexer/DocumentIndexerTests.groovy" "/home/archer/dev/gnutch/test/unit/gnutch/SourceUrlsProducerServiceTests.groovy" "/home/archer/dev/gnutch/grails-app/routes/DocumentIndexingRoute.groovy" "~/dev/gnutch/grails-app/routes/DocumentIndexingRoute.groovy" "~/dev/gnutch/grails-app/routes/PageIndexingRoute.groovy" "/home/archer/dev/gnutch/grails-app/conf/regex-urlfilter.txt" "/home/archer/dev/gnutch/src/groovy/gnutch/indexer/DocumentIndexer.groovy" "/home/archer/dev/gnutch/src/groovy/indexer/DocumentIndexer.groovy" "/home/archer/dev/gnutch/src/groovy/gnutch/processors/DocsAggregator.groovy" "~/dev/gnutch/test/unit/gnutch/IndexerProcessorTests.groovy" "/home/archer/dev/gnutch/test/unit/gnutch/IndexerProcessorTests.groovy" "~/dev/linkbrowser/grails-app/conf/xslt/" "/home/archer/dev/linkbrowser/grails-app/conf/xslt/IndexerProcessor.groovy" "/home/archer/dev/gnutch/grails-app/conf/ehcache.xml" "/home/archer/dev/gnutch/grails-app/conf/stackoverflow.xsl" "/home/archer/dev/gnutch/grails-app/routes/PageIndexingRoute.groovy" "/home/archer/dev/linkbrowser/grails-app/conf/spring/resources.groovy" "/home/archer/dev/gnutch/grails-app/conf/gnutch.urls" "/home/archer/dev/gnutch/grails-app/routes/UrlCrawlRoute.groovy"))
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/README"
+  "README"
+  'fundamental-mode
+  nil
+  1357
+  '(778 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/spring/resources.groovy"
+  "resources.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  1315
+  '(1315 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/routes/UrlCrawlRoute.groovy"
+  "UrlCrawlRoute.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  861
+  '(973 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-dos)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/ziprealty.xsl"
+  "ziprealty.xsl"
+  'nxml-mode
+  nil
+  1552
+  '(560 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/Config.groovy"
+  "Config.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  4764
+  '(3801 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix) (overwrite-mode)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/activemq.xml"
+  "activemq.xml"
+  'nxml-mode
+  nil
+  1970
+  '(2204 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/routes/DocumentIndexingRoute.groovy"
+  "DocumentIndexingRoute.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  274
+  '(190 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-dos)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/routes/UrlInputRoute.groovy"
+  "UrlInputRoute.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  44
+  '(127 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-dos)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/BuildConfig.groovy"
+  "BuildConfig.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  1288
+  '(1803 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/regex-urlfilter.txt"
+  "regex-urlfilter.txt"
+  'text-mode
+  nil
+  1069
+  '(1004 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/stackoverflow.xsl"
+  "stackoverflow.xsl"
+  'nxml-mode
+  nil
+  491
+  '(421 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/gnutch.urls"
+  "gnutch.urls"
+  'fundamental-mode
+  nil
+  26
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/src/groovy/gnutch/urls/RegexUrlChecker.groovy"
+  "RegexUrlChecker.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  695
+  '(517 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/src/groovy/gnutch/indexer/DocumentIndexer.groovy"
+  "DocumentIndexer.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  1384
+  '(502 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/test/unit/gnutch/indexer/DocumentIndexerTests.groovy"
+  "DocumentIndexerTests.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  313
+  '(548 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/src/groovy/gnutch/processors/DocsAggregator.groovy"
+  "DocsAggregator.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  904
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/services/gnutch/SourceUrlsProducerService.groovy"
+  "SourceUrlsProducerService.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  207
+  '(17 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/ehcache.xml"
+  "ehcache.xml"
+  'nxml-mode
+  nil
+  464
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . utf-8-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/test/unit/gnutch/urls/RegexUrlCheckerTests.groovy"
+  "RegexUrlCheckerTests.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  1003
+  '(238 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+(desktop-create-buffer 206
+  "/home/archer/dev/gnutch/grails-app/conf/BootStrap.groovy"
+  "BootStrap.groovy"
+  'groovy-mode
+  '(abbrev-mode)
+  57
+  '(57 nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
