@@ -3,8 +3,11 @@ package gnutch.urls
 import java.util.regex.Pattern
 
 import org.springframework.core.io.ClassPathResource
+import org.apache.commons.logging.LogFactory
 
 class RegexUrlChecker {
+  private static def log = LogFactory.getLog(this)
+
   def allowedPatternList
   def ignorePatternList
 
@@ -26,8 +29,10 @@ class RegexUrlChecker {
   public boolean check(String url){
     assert allowedPatternList
     assert ignorePatternList
-    return  (allowedPatternList.any { pattern -> url.matches(pattern) })  ||
+    def boolean result = (allowedPatternList.any { pattern -> url.matches(pattern) })  &&
              (ignorePatternList.any { pattern -> url.matches(pattern) }  == false)
+    log.trace("Checking ${url}: ${result}")
+    return result
 
   }
 

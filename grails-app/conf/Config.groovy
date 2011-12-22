@@ -85,33 +85,36 @@ log4j = {
            'org.springframework',
            'org.hibernate',
            'net.sf.ehcache.hibernate'
-    debug 'gnutch'
+           debug 'gnutch'
+           //           trace 'gnutch'
+    //    trace 'org.apache.camel.http'
     //    debug 'org.apache.camel'
     warn   'org.mortbay.log'
 }
 
 
 gnutch {
-  // text file containing the list of initial crawling URLs
-  sourceUrls = 'gnutch.urls'
+  // Input route definition 
+  inputRoute = 'file:///tmp/gnutch-input'
+
   // text file containing regular expressions to include and exclude URL crawling patterns
   regexUrlFilter = 'regex-urlfilter.txt'
   
 
   crawl {
    // Crawling thread pool
-   threads = 40
+   threads = 10
   }
   
   // Crawling pattern/XSLT association
   transformations = [
-    '^http://www.ziprealty.com/property/[\\d\\w\\-\\_]*/\\d*/detail$':'ziprealty.xsl'
+    '^http://stackoverflow.com/users/\\d*/.*$':'stackoverflow.xsl'
   ]
 
   http {
     // UserAgent string. Better if contain email address of person who is responsible 
     // for crawling. That will allow source owners to contact person directly
-    userAgent = 'Crawling bot (someone@yahoo.com)'
+    userAgent = "GNutch crawler. Contact maintainer: admin@softsky.com.ua"
     // Maximmum number of connections per host
     defaultMaxConnectionsPerHost = 40
     // Maximmum number of total connections
@@ -120,7 +123,7 @@ gnutch {
 
   solr {
     // URL to Solr server
-    serverUrl = 'http://localhost:8983/solr'
+    serverUrl = 'http://217.196.165.155:8983/solr/core0'
   }
  
   

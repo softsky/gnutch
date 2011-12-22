@@ -13,13 +13,17 @@ import javax.xml.transform.stream.StreamSource
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.Transformer
 
+import org.apache.commons.logging.LogFactory
+
 
 class DocumentIndexer {
+  private static def log = LogFactory.getLog(this)
   /** Map of regexp/stylesheet values */
   public static Map<String, String> transformations = [:]
 
   
   public Document index(@Header("contextURI") String contextURI, @Body Document body){
+    log.trace "Testing ${contextURI}, ${body}"
     def matched = null
     def result 
     transformations.each { entry ->
@@ -38,6 +42,7 @@ as trasnformation is executed couple of times. Please, check your transformation
         result = domResult.node
       }
     }
+    log.trace "${contextURI} ${result?' is indexable':' is not indexable'}"
     return result
   }
 

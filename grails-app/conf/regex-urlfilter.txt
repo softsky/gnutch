@@ -21,16 +21,8 @@
 # skip URLs with slash-delimited segment that repeats 3+ times, to break loops
 -.*(/[^/]+)/[^/]+\1/[^/]+\1/
 
-#- http://stackoverflow.com/users/.*\?.*
-#+ ^http://stackoverflow.com/users/.*$
-#- http://stackoverflow.com/users/.*\?.*
-#+ ^http://stackoverflow.com/users/22656/.*$
++http://stackoverflow.com/users\?(page=\d*&)?tab=reputation&filter=all
++http://stackoverflow.com/users/\d*/[^/$\?]*
+-^http://stackoverflow.com/users/\d*/?$
+-http://stackoverflow.com/.*#.* 
 
-#-http://www.ziprealty.com/.*\?.*
-#-http://www.ziprealty.com/.*/share\-.*
-+http://www.ziprealty.com(/homes-for-sale/\w*/[\w\_\-]*$|/homes-for-sale/list/.*/by-city/.*/detailed(\?pageNum=.*)?|/property/.*/detail)
--http://www.ziprealty.com/.*#.* 
--.*
-#+http://www.ziprealty.com/property/43-BULLOCH-CIR-ACWORTH-GA-30101/24764488/detail
-
-#+ http://localhost:8080/gnutch/.*

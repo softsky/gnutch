@@ -1,5 +1,4 @@
 <ehcache>
-  <terracottaConfig url="ec2-50-16-132-173.compute-1.amazonaws.com:4000"/>
     <defaultCache
             maxElementsInMemory="50"
             eternal="false"
@@ -14,6 +13,5 @@
     <cache name="processedUrlCache"
            maxElementsInMemory="50000"
            eternal="true">
-      <terracotta/>
     </cache>
 </ehcache>
