@@ -42,16 +42,14 @@ gnutch {
 
   solr {
     // URL to Solr server (may reside on master server)
-    serverUrl = 'http://ec2-50-16-132-173.compute-1.amazonaws.com:8983/solr'
+    serverUrl = 'http://localhost:8983/solr'
   }
  
   
   activemq {
     // URL to message broker (may reside on master server)
-    brokerURL = 'tcp://ec2-50-16-132-173.compute-1.amazonaws.com:61616'
-    //brokerURL = 'vm://localhost'
+    brokerURL = 'vm://localhost'
     //conf = 'classpath:activemq.xml'
   } 
 
 }
-@
