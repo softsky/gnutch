@@ -3,18 +3,17 @@ Very simple alternative to "Apache Nutch":http://nutch.apache.org/ created in Gr
 Could be used independently from Apache Solr, so crawled data could be stored to files, saved to database etc.
 Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache ActiveMQ":http://activemq.apache.org/ as source messaging and integraation patterns server.
 
-== Installation ==
+## Installation
 
-@       
         cd gnutch
         grails war
-@
+
 Then copy created WAR to $YOUR_WEBSERVER_WEBAPPS directory
 
-== Configuration ==
-
+## Configuration
+file:
 $GNUTCH_HOME/grails-app/conf/Config.groovy
-@
+
 gnutch {
   // Input route definition 
   inputRoute = 'file:///tmp/gnutch-input'
