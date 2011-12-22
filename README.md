@@ -11,8 +11,7 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
 Then copy created WAR to $YOUR_WEBSERVER_WEBAPPS directory
 
 ## Configuration
-file:
-$GNUTCH_HOME/grails-app/conf/Config.groovy
+file: $GNUTCH_HOME/grails-app/conf/Config.groovy
 
 gnutch {
   // Input route definition 
