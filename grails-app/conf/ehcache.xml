@@ -1,17 +1,23 @@
 <ehcache>
-    <defaultCache
-            maxElementsInMemory="50"
-            eternal="false"
-            timeToIdleSeconds="20"
-            timeToLiveSeconds="20"
-            overflowToDisk="false"
-            diskPersistent="false"
-            memoryStoreEvictionPolicy="LRU"
-            />
+  <!--
+  <terracottaConfig url="192.168.1.1:4000"/>
+  -->
+  <defaultCache
+      maxElementsInMemory="50"
+      eternal="false"
+      timeToIdleSeconds="20"
+      timeToLiveSeconds="20"
+      overflowToDisk="false"
+      diskPersistent="false"
+      memoryStoreEvictionPolicy="LRU"
+      />
 
 
-    <cache name="processedUrlCache"
-           maxElementsInMemory="50000"
-           eternal="true">
+  <cache name="processedUrlCache"
+         maxElementsInMemory="50000"
+         eternal="true">
+    <!--
+    <terracotta/>
+    -->
     </cache>
 </ehcache>
