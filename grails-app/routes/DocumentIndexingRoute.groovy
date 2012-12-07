@@ -17,6 +17,7 @@ class DocumentIndexingRoute {
         log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
         setHeader(Exchange.HTTP_URI, constant("${CH.config.gnutch.solr.serverUrl}/update?commit=true")). 
         setHeader(Exchange.HTTP_METHOD, constant('POST')).
+        setHeader(Exchange.CONTENT_TYPE, constant('application/xml')).
         to("http://null")
     }
 }
