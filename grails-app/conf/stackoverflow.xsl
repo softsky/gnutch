@@ -33,7 +33,7 @@
 
 
       <xsl:for-each select="div[4]/div[@id='user-panel-tags']/div[@class='user-panel-content']/table[@class='user-tags']/tbody/tr/td">
-        <field name="tags"><xsl:value-of select="a[@class='post-tag']/text()"/>,<xsl:value-of select="java:replaceAll(concat('0',string(span[@class='item-multiplier']/text())), '× ', '')"/></field>
+        <field name="tags"><xsl:value-of select="a[@class='post-tag']/text()"/>,<xsl:value-of select="concat('0',string(span/span[@class='item-multiplier-count']/text()))"/></field>
       </xsl:for-each>
   </xsl:template>
 

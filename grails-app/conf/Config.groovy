@@ -62,8 +62,8 @@ environments {
     test {
         grails.serverURL = "http://localhost:8080/${appName}"
     }
-
 }
+
 
 // log4j configuration
 log4j = {
@@ -73,7 +73,10 @@ log4j = {
     //appenders {
     //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
     //}
-
+  appenders {
+    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
+    file name: 'stacktrace', file: "/var/log/tomcat7/stacktrace.log"
+  }
     error  'org.codehaus.groovy.grails.web.servlet',  //  controllers
            'org.codehaus.groovy.grails.web.pages', //  GSP
            'org.codehaus.groovy.grails.web.sitemesh', //  layouts
@@ -86,10 +89,10 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
            debug 'gnutch'
-           //           trace 'gnutch'
-    //    trace 'org.apache.camel.http'
-    //    debug 'org.apache.camel'
-    warn   'org.mortbay.log'
+           // trace 'gnutch'
+           // trace 'org.apache.camel.http'
+           // debug 'org.apache.camel'
+   warn 'org.mortbay.log'
 }
 
 
@@ -103,12 +106,16 @@ gnutch {
 
   crawl {
    // Crawling thread pool
-   threads = 10
+   threads = 20
   }
   
   // Crawling pattern/XSLT association
   transformations = [
-    '^http://stackoverflow.com/users/\\d*/.*$':'stackoverflow.xsl'
+    '^http://stackoverflow.com/users/\\d*/.*$':'stackoverflow.xsl',
+    '^http://www.jflpartners.com/news/news_.*_i\\.html$':'2.xsl',
+    '^http://www.newswire.ca/en/story/\\d*/.*':'4.xsl',
+    'https://europeanequities.nyx.com/en/content/.*':'5.xsl',
+    'http://www.dgap.de/dgap/News/.*':'7.xsl'
   ]
 
   http {
@@ -123,7 +130,7 @@ gnutch {
 
   solr {
     // URL to Solr server
-    serverUrl = 'http://217.196.165.155:8983/solr/core0'
+    serverUrl = 'http://mergeaa4.miniserver.com:8983/solr'
   }
  
   

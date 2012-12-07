@@ -52,7 +52,7 @@ class UrlCrawlRoute {
      from('direct:extract-links').
        // extracting links
        split(xpath('//a/@href')). // extracting all a/@href 
-         setBody(simple('${body.value}')). // extracting AttrNodeImpl.getValue()
+       process { ex -> ex.in.body = ex.in.body.value }. // extracting AttrNodeImpl.getValue()
          processRef('contextUrlResolver').
           filter().
             method('regexUrlChecker', 'check'). // submitting only those that match

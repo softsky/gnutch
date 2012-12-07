@@ -26,3 +26,23 @@
 -^http://stackoverflow.com/users/\d*/?$
 -http://stackoverflow.com/.*#.* 
 
++http://www.jflpartners.com/news/.*\.html
+
++http://www.newswire.ca/en/today
++http://www.newswire.ca/en/story/.*
++http://www.newswire.ca/en/organization/.*
++http://www.newswire.ca/en/filter/.*
+-http://www.newswire.ca/en/search.*
+
++https://europeanequities.nyx.com/en/content/.*
++https://europeanequities.nyx.com/en/listings/company-news\??.*
+-https://europeanequities.nyx.com/en/markets/.*
+-https://europeanequities.nyx.com/en/market-status/.*
+-https://europeanequities.nyx.com/en/connecting/.*
+-https://europeanequities.nyx.com/en/node/.*
+-https://europeanequities.nyx.com/en/trading/.*
+-https://europeanequities.nyx.com/.*#.*
+
++^http://www.dgap.de/?$
++http://www.dgap.de/dgap/News/.*
+
