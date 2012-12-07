@@ -3,8 +3,8 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
-def camelVersion = '2.8.0'
-def activeMQVersion = '5.5.1'
+def camelVersion = '2.9.4' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
+def activeMQVersion = '5.7.0'
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
@@ -20,7 +20,7 @@ grails.project.dependency.resolution = {
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
-        /;;/mavenLocal()
+        //mavenLocal()
         //mavenCentral()
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
@@ -43,5 +43,6 @@ grails.project.dependency.resolution = {
         excludes 'commons-logging', 'camel-jms', 'slf4j-api'
       }
       runtime("org.apache.xbean:xbean-spring:3.8") { excludes 'commons-logging' }
+      runtime("hsqldb:hsqldb:1.8.0.7")
     }
 }
