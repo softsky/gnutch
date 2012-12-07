@@ -1,0 +1,6 @@
+/.emacs.desktop
+/.emacs.desktop.lock
+/activemq-data
+/logs-192.168.0.1
+/stacktrace.log
+/target
