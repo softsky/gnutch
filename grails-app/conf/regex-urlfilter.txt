@@ -28,7 +28,11 @@
 
 +http://www.jflpartners.com/news/.*\.html
 
-+http://www.newswire.ca/en/.*
++http://www.newswire.ca/en/today
++http://www.newswire.ca/en/story/.*
++http://www.newswire.ca/en/organization/.*
++http://www.newswire.ca/en/filter/.*
+-http://www.newswire.ca/en/search.*
 
 +https://europeanequities.nyx.com/en/content/.*
 +https://europeanequities.nyx.com/en/listings/company-news\??.*
