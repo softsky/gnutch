@@ -111,11 +111,20 @@ gnutch {
   
   // Crawling pattern/XSLT association
   transformations = [
-    '^http://stackoverflow.com/users/\\d*/.*$':'stackoverflow.xsl',
-    '^http://www.jflpartners.com/news/news_.*_i\\.html$':'2.xsl',
-    '^http://www.newswire.ca/en/story/\\d*/.*':'4.xsl',
-    'https://europeanequities.nyx.com/en/content/.*':'5.xsl',
-    'http://www.dgap.de/dgap/News/.*':'7.xsl'
+  '^http://www.jflpartners.com/news/news_.*_i\\.html$':'2.xsl',
+  '^http://www.newswire.ca/en/story/\\d*/.*':'4.xsl',
+  'https://europeanequities.nyx.com/en/content/.*':'5.xsl',
+  'http://www.dgap.de/dgap/News/.*':'7.xsl',
+  'http://www.presseportal.de/pm/\\d*/\\d*/.*':'8.xsl',
+  'http://www.kase.kz/en/news/show/\\d*':'13.xsl',
+  'http://www.szse.cn/main/en/disclosure/listedcompaniesannouncement':'18.xsl',
+  'http://www.sgx.com/wps/wcm/connect/sgx_en/home/higlights/news_releases/.*':'19.xsl',
+  'https://newsclient.omxgroup.com/cdsPublic/viewDisclosure.action.*':'21.xsl',
+  'http://news.sky.com/story/\\d*/.*':'23.xsl',
+  'http://newsroom.businesswire.com/press-release/.*':'25.xsl',
+  'http://www.marketwire.com/press-release/.*':'26.xsl',
+  'http://www.globenewswire.com/news-release/.*':'27.xsl',
+  'http://techcrunch.com/\\d*/\\d*/\\d*/.*':'28.xsl'
   ]
 
   http {
