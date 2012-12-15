@@ -9,8 +9,8 @@ class SourceUrlsProducerService {
     def produce(def file) {
       // decorating with Groovy File in order to access inputStream
       new File(file.absolutePath).newInputStream().eachLine { line ->  
-        println line
-        sendMessage('activemq:input-url', line)
+        if(line.trim().equals("") == false)
+          sendMessage('activemq:input-url', line)
       }
     }
 }
