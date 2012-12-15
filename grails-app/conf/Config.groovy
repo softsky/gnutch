@@ -111,20 +111,32 @@ gnutch {
   
   // Crawling pattern/XSLT association
   transformations = [
-  '^http://www.jflpartners.com/news/news_.*_i\\.html$':'2.xsl',
-  '^http://www.newswire.ca/en/story/\\d*/.*':'4.xsl',
-  'https://europeanequities.nyx.com/en/content/.*':'5.xsl',
-  'http://www.dgap.de/dgap/News/.*':'7.xsl',
-  'http://www.presseportal.de/pm/\\d*/\\d*/.*':'8.xsl',
-  'http://www.kase.kz/en/news/show/\\d*':'13.xsl',
-  'http://www.szse.cn/main/en/disclosure/listedcompaniesannouncement':'18.xsl',
-  'http://www.sgx.com/wps/wcm/connect/sgx_en/home/higlights/news_releases/.*':'19.xsl',
-  'https://newsclient.omxgroup.com/cdsPublic/viewDisclosure.action.*':'21.xsl',
-  'http://news.sky.com/story/\\d*/.*':'23.xsl',
-  'http://newsroom.businesswire.com/press-release/.*':'25.xsl',
-  'http://www.marketwire.com/press-release/.*':'26.xsl',
-  'http://www.globenewswire.com/news-release/.*':'27.xsl',
-  'http://techcrunch.com/\\d*/\\d*/\\d*/.*':'28.xsl'
+  '^http://www.jflpartners.com/news/news_.*_i\\.html$':'xslt/2.xsl',
+  '^http://www.newswire.ca/en/story/\\d*/.*':'xslt/4.xsl',
+  'https://europeanequities.nyx.com/en/content/.*':'xslt/5.xsl',
+  'http://www.dgap.de/dgap/News/.*':'xslt/7.xsl',
+  'http://www.presseportal.de/pm/\\d*/\\d*/.*':'xslt/8.xsl',
+  'http://www.kase.kz/en/news/show/\\d*':'xslt/13.xsl',
+  'http://www.szse.cn/main/en/disclosure/listedcompaniesannouncement':'xslt/18.xsl',
+  'http://www.sgx.com/wps/wcm/connect/sgx_en/home/higlights/news_releases/.*':'xslt/19.xsl',
+  'https://newsclient.omxgroup.com/cdsPublic/viewDisclosure.action.*':'xslt/21.xsl',
+  'http://news.sky.com/story/\\d*/.*':'xslt/23.xsl',
+  'http://newsroom.businesswire.com/press-release/.*':'xslt/25.xsl',
+  'http://www.marketwire.com/press-release/.*':'xslt/26.xsl',
+  'http://www.globenewswire.com/news-release/.*':'xslt/27.xsl',
+  'http://techcrunch.com/\\d*/\\d*/\\d*/.*':'xslt/28.xsl',
+  'http://3igroup.com/news/.*':'xslt/35.xsl',
+  'http://www.abraaj.com/content/.*':'xslt/36.xsl',
+
+  // Rumen's work
+  'http://www.bencis.com/web/site/default.aspx\\?m=news&ca=d&id=\\d*':'xslt/303.xsl',
+  'http://www.beringea.com/newsroom.php\\?id=\\d*':'xslt/304.xsl',
+  'http://www.berkshirepartners.com/news_press_.*':'xslt/305.xsl',
+  'http://www.blackstone.com/news-views/details/.*':'xslt/308.xsl',
+  'http://blackstreetcapital.com/.*':'xslt/309.xsl',
+  'http://bluepointcapital.com/newsroom/article.aspx\\?id=\\d*':'xslt/310.xsl',
+  'http://boldercapital.com/news/.*':'xslt/312.xsl'
+  
   ]
 
   http {
