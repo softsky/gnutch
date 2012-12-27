@@ -24,7 +24,5 @@
       <field name="title"><xsl:value-of select="div[@class='news-title']"/></field>
       <field name="content"><xsl:value-of select="div[@class='news-body changeable-text']"/></field>
   </xsl:template>
-  
-  <xsl:template match="text()" />
 
 </xsl:stylesheet>
