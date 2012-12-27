@@ -80,6 +80,14 @@
 +http://www.abraaj.com/news/16.*
 +http://www.abraaj.com/content/.*
 
++http://www.abry.com/Home/News/.*
++http://www.abry.com/home/news/.*/.*
+
++http://www.aconinvestments.com/news.*
+
++http://www.adventinternational.com/news/pages/news.aspx.*
++http://www.adventinternational.com/news/PressReleases/pages/.*
+
 # Rumen's
 
 +http://www.bencis.com/web/site/default.aspx\?m=news.*
@@ -108,3 +116,35 @@
 
 +http://boldercapital.com/news/.*
 
++http://www.bvlp.com/press-announcements-events/\?page=\d*
++http://www.bvlp.com/press-announcements-events/.*
+-http://www.bvlp.com/press-announcements-events/about
+-http://www.bvlp.com/press-announcements-events/contact
+-http://www.bvlp.com/press-announcements-events/strategy
+
++http://www.equistonepe.com/press/.*-press-releases
++http://www.equistonepe.com/detail/news-detail\?id=\d*&news=1&popup=1
+
++http://www.bridgepoint.eu/en/news/press-releases/.*
+
++http://www.brs.com/pr\d*.html
+
++http://www.bwku.de/index.php\?article_id=\d*&clang=1
+-http://www.bwku.de/index.php\?article_id=1&clang=1
+-http://www.bwku.de/index.php\?article_id=2&clang=1
+-http://www.bwku.de/index.php\?article_id=3&clang=1
+-http://www.bwku.de/index.php\?article_id=4&clang=1
+-http://www.bwku.de/index.php\?article_id=5&clang=1
+-http://www.bwku.de/index.php\?article_id=5&clang=0
+-http://www.bwku.de/index.php\?article_id=17&clang=1
+-http://www.bwku.de/index.php\?article_id=19&clang=1
+-http://www.bwku.de/index.php\?article_id=29&clang=1
+
++http://www.crp.com/news.*
+-http://www.crp.com/news.*#.*
+
++http://www.capman.com/capman-group/news-and-materials/releases\?year=\d*
++http://www.capman.com/capman-group/news-and-materials/releases/release/.*
+
++http://www.capvis.com/index.php\?id=16.*
++http://www.capvis.com/index.php\?id=12.*

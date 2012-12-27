@@ -126,7 +126,10 @@ gnutch {
   'http://www.globenewswire.com/news-release/.*':'xslt/27.xsl',
   'http://techcrunch.com/\\d*/\\d*/\\d*/.*':'xslt/28.xsl',
   'http://3igroup.com/news/.*':'xslt/35.xsl',
-  'http://www.abraaj.com/content/.*':'xslt/36.xsl',
+  'http://www.abraaj.com/content/.*':'xslt/37.xsl',
+  'http://www.abry.com/home/news/.*/.*':'xslt/38.xsl',
+  'http://www.aconinvestments.com/news/.*':'xslt/39.xsl',
+  'http://www.adventinternational.com/news/PressReleases/pages/.*':'xslt/40.xsl',
 
   // Rumen's work
   'http://www.bencis.com/web/site/default.aspx\\?m=news&ca=d&id=\\d*':'xslt/303.xsl',
@@ -135,8 +138,15 @@ gnutch {
   'http://www.blackstone.com/news-views/details/.*':'xslt/308.xsl',
   'http://blackstreetcapital.com/.*':'xslt/309.xsl',
   'http://bluepointcapital.com/newsroom/article.aspx\\?id=\\d*':'xslt/310.xsl',
-  'http://boldercapital.com/news/.*':'xslt/312.xsl'
-  
+  'http://boldercapital.com/news/.*':'xslt/312.xsl',
+  'http://www.bvlp.com/press-announcements-events/[^\\?].*':'xslt/313.xsl',
+  'http://www.equistonepe.com/detail/news-detail\\?id=\\d*&news=1&popup=1':'xslt/315.xsl',
+  'http://www.bridgepoint.eu/en/news/press-releases/\\d*/.*':'xslt/318.xsl',
+  'http://www.brs.com/pr\\d*.html':'xslt/319.xsl',
+  'http://www.bwku.de/index.php\\?article_id=\\d*&clang=1':'xslt/322.xsl',
+  'http://www.crp.com/news.*':'xslt/329.xsl',
+  'http://www.capman.com/capman-group/news-and-materials/releases/release/.*':'xslt/332.xsl',
+  'http://www.capvis.com/index.php?id=12.*':'xslt/333.xsl'
   ]
 
   http {
