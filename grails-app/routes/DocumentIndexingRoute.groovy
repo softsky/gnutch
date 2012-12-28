@@ -7,6 +7,7 @@ import org.apache.camel.LoggingLevel
 class DocumentIndexingRoute {
     def configure = {
       from('direct:index-page').
+         log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
          beanRef('documentIndexer', 'index').
          log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
          to('seda:aggregate-documents')

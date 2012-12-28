@@ -43,7 +43,6 @@ class UrlCrawlRoute {
           to('direct:extract-links').
           // indexing, if page should be indexed
           filter().method('documentIndexer', 'isIndexable').
-            log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
             to('direct:index-page'). // submitting page XHTML for future processing
           end().
         end()
@@ -64,7 +63,10 @@ class UrlCrawlRoute {
             choice().
              when(header(CacheConstants.CACHE_ELEMENT_WAS_FOUND).isNull()).
              // If not found, get the payload and put it to cache
-             //to('log:gnutch?level=DEBUG&showAll=false&showBody=true').
+             process {ex -> 
+               ex.in.body = URLDecoder.decode(ex.in.body)
+             }.
+             log(LoggingLevel.TRACE, 'gnutch', 'Sending to activemq:input-url ${body}').
              to('activemq:input-url').
              // Adding contextURI entry to cache
              log(LoggingLevel.TRACE, 'gnutch', 'Adding to cache: ${body}').
