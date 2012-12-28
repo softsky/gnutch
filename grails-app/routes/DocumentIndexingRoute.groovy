@@ -15,7 +15,7 @@ class DocumentIndexingRoute {
       from('seda:aggregate-documents').
       aggregate(constant('null')).completionInterval(60000L).groupExchanges().
         processRef('docsAggregator').
-        log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
+        log(LoggingLevel.DEBUG, 'gnutch','Committing index').
         setHeader(Exchange.HTTP_URI, constant("${CH.config.gnutch.solr.serverUrl}/update?commit=true")). 
         setHeader(Exchange.HTTP_METHOD, constant('POST')).
         setHeader(Exchange.CONTENT_TYPE, constant('application/xml')).

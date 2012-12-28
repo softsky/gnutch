@@ -63,9 +63,6 @@ class UrlCrawlRoute {
             choice().
              when(header(CacheConstants.CACHE_ELEMENT_WAS_FOUND).isNull()).
              // If not found, get the payload and put it to cache
-             process {ex -> 
-               ex.in.body = URLDecoder.decode(ex.in.body)
-             }.
              log(LoggingLevel.TRACE, 'gnutch', 'Sending to activemq:input-url ${body}').
              to('activemq:input-url').
              // Adding contextURI entry to cache
