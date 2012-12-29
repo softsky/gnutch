@@ -36,8 +36,7 @@ class UrlCrawlRoute {
         log(LoggingLevel.DEBUG, 'gnutch', 'Retrieving ${headers.contextURI}').
         to('http://null'). // invoking HttpClient
         unmarshal().tidyMarkup().
-        //log(LoggingLevel.TRACE, 'gnutch', body().toString()).
-        
+        log(LoggingLevel.OFF, 'gnutch', body().toString()).
         multicast().
           // extracting links
           to('direct:extract-links').
@@ -52,6 +51,7 @@ class UrlCrawlRoute {
        // extracting links
        split(xpath('//a/@href')). // extracting all a/@href 
        process { ex -> ex.in.body = ex.in.body.value }. // extracting AttrNodeImpl.getValue()
+         log(LoggingLevel.TRACE, 'gnutch', 'Resolving URL: ${body}').
          processRef('contextUrlResolver').
           filter().
             method('regexUrlChecker', 'check'). // submitting only those that match
@@ -63,6 +63,7 @@ class UrlCrawlRoute {
             choice().
              when(header(CacheConstants.CACHE_ELEMENT_WAS_FOUND).isNull()).
              // If not found, get the payload and put it to cache
+             process {ex -> ex.in.body = ex.in.body.replaceAll(/\s/, '%20')}.
              log(LoggingLevel.TRACE, 'gnutch', 'Sending to activemq:input-url ${body}').
              to('activemq:input-url').
              // Adding contextURI entry to cache
