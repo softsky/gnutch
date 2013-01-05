@@ -106,7 +106,7 @@ gnutch {
 
   crawl {
    // Crawling thread pool
-   threads = 2
+   threads = 3
   }
   
   // Crawling pattern/XSLT association
