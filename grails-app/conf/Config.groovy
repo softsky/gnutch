@@ -106,47 +106,12 @@ gnutch {
 
   crawl {
    // Crawling thread pool
-   threads = 20
+   threads = 2
   }
   
   // Crawling pattern/XSLT association
   transformations = [
-  '^http://www.jflpartners.com/news/news_.*_i\\.html$':'xslt/2.xsl',
-  '^http://www.newswire.ca/en/story/\\d*/.*':'xslt/4.xsl',
-  'https://europeanequities.nyx.com/en/content/.*':'xslt/5.xsl',
-  'http://www.dgap.de/dgap/News/.*':'xslt/7.xsl',
-  'http://www.presseportal.de/pm/\\d*/\\d*/.*':'xslt/8.xsl',
-  'http://www.kase.kz/en/news/show/\\d*':'xslt/13.xsl',
-  'http://www.szse.cn/main/en/disclosure/listedcompaniesannouncement':'xslt/18.xsl',
-  'http://www.sgx.com/wps/wcm/connect/sgx_en/home/higlights/news_releases/.*':'xslt/19.xsl',
-  'https://newsclient.omxgroup.com/cdsPublic/viewDisclosure.action.*':'xslt/21.xsl',
-  'http://news.sky.com/story/\\d*/.*':'xslt/23.xsl',
-  'http://newsroom.businesswire.com/press-release/.*':'xslt/25.xsl',
-  'http://www.marketwire.com/press-release/.*':'xslt/26.xsl',
-  'http://www.globenewswire.com/news-release/.*':'xslt/27.xsl',
-  'http://techcrunch.com/\\d*/\\d*/\\d*/.*':'xslt/28.xsl',
-  'http://3igroup.com/news/.*':'xslt/35.xsl',
-  'http://www.abraaj.com/content/.*':'xslt/37.xsl',
-  'http://www.abry.com/home/news/.*/.*':'xslt/38.xsl',
-  'http://www.aconinvestments.com/news/.*':'xslt/39.xsl',
-  'http://www.adventinternational.com/news/PressReleases/pages/.*':'xslt/40.xsl',
-
-  // Rumen's work
-  'http://www.bencis.com/web/site/default.aspx\\?m=news&ca=d&id=\\d*':'xslt/303.xsl',
-  'http://www.beringea.com/newsroom.php\\?id=\\d*':'xslt/304.xsl',
-  'http://www.berkshirepartners.com/news_press_.*':'xslt/305.xsl',
-  'http://www.blackstone.com/news-views/details/.*':'xslt/308.xsl',
-  'http://blackstreetcapital.com/.*':'xslt/309.xsl',
-  'http://bluepointcapital.com/newsroom/article.aspx\\?id=\\d*':'xslt/310.xsl',
-  'http://boldercapital.com/news/.*':'xslt/312.xsl',
-  'http://www.bvlp.com/press-announcements-events/[^\\?].*':'xslt/313.xsl',
-  'http://www.equistonepe.com/detail/news-detail\\?id=\\d*&news=1&popup=1':'xslt/315.xsl',
-  'http://www.bridgepoint.eu/en/news/press-releases/\\d*/.*':'xslt/318.xsl',
-  'http://www.brs.com/pr\\d*.html':'xslt/319.xsl',
-  'http://www.bwku.de/index.php\\?article_id=\\d*&clang=1':'xslt/322.xsl',
-  'http://www.crp.com/news.*':'xslt/329.xsl',
-  'http://www.capman.com/capman-group/news-and-materials/releases/release/.*':'xslt/332.xsl',
-  'http://www.capvis.com/index.php?id=12.*':'xslt/333.xsl'
+  '^http://stackoverflow.com/users/\\d*/.*$':'stackoverflow.xsl'
   ]
 
   http {
@@ -161,7 +126,7 @@ gnutch {
 
   solr {
     // URL to Solr server
-    serverUrl = 'http://mergeaa4.miniserver.com:8983/solr'
+    serverUrl = 'http://vm4:8983/solr/stackoverflow'
   }
  
   

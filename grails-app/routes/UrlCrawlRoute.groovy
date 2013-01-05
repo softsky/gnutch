@@ -30,6 +30,7 @@ class UrlCrawlRoute {
 
       // link crawler route
       from("activemq:input-url?concurrentConsumers=${CH.config.gnutch.crawl.threads}").
+        delay(500).
         setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
         setHeader(Exchange.HTTP_URI, body(String)). 
         setBody(constant()).

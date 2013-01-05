@@ -24,7 +24,7 @@
       <field name="name"><xsl:value-of select="div[@class='subheader']/h1[@id='user-displayname']/text()"/></field>
       <xsl:for-each select="div[@id='user-info-container']/div[@id='large-user-info']/div[@class='user-header-left']/div[@class='data']">
         <field name="member-for"><xsl:value-of select="table/tbody[2]/tr[1]/td[@class='cool']/text()"/></field>
-        <field name="seen"><xsl:value-of select="table/tbody[2]/tr[2]/td[@class='supernova']/span[@class='relativetime']"/></field>
+        <field name="seen"><xsl:value-of select="table/tbody[2]/tr[2]/td[@class='cool']/span[@class='relativetime']"/></field>
         <field name="website"><xsl:value-of select="table/tbody[1]/tr[1]/td[2]/a[@class='url']/text()"/></field>
         <field name="location"><xsl:value-of select="java:trim(string(table/tbody[1]/tr[2]/td[@class='label adr']/text()))"/></field>
         <field name="age"><xsl:value-of select="concat('0',java:trim(string(table/tbody[1]/tr[3]/td[2]/text())))"/></field>
