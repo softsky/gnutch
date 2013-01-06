@@ -9,7 +9,7 @@ grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
         // uncomment to disable ehcache
-      excludes 'ehcache'
+      excludes 'ehcache', 'antlr'
       // excludes  'jline'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
@@ -33,16 +33,18 @@ grails.project.dependency.resolution = {
       compile ("org.apache.camel:camel-http:${camelVersion}") { excludes 'commons-codec' }
       compile ("org.apache.camel:camel-mail:${camelVersion}") { excludes 'mail' }
       compile ("org.apache.camel:camel-groovy:${camelVersion}") { excludes 'groovy-all' }
-      compile ("org.apache.camel:camel-spring:${camelVersion}") { excludes 'log4j' }
-      compile ("org.apache.camel:camel-jms:${camelVersion}") 
+      compile ("org.apache.camel:camel-spring:${camelVersion}") { excludes 'log4j', 'spring-tx', 'spring-jms','spring-context', 'spring-beans', 'spring-aop' }
+      compile ("org.apache.camel:camel-jms:${camelVersion}")  { excludes 'spring-tx', 'spring-jms','spring-context', 'spring-beans', 'spring-aop', 'spring-core' }
       compile ("org.apache.camel:camel-cache:${camelVersion}") { excludes 'xercesImpl', 'xml-apis', 'slf4j-api', 'ehcache'  }
       compile ("org.apache.camel:camel-tagsoup:${camelVersion}")
 
-      runtime("org.apache.activemq:activemq-core:${activeMQVersion}")  {excludes 'commons-logging',  'spring-context', 'slf4j-api' }
+      runtime("org.apache.activemq:activemq-core:${activeMQVersion}")  {
+        excludes 'commons-logging',  'spring-context', 'slf4j-api' 
+      }
       runtime("org.apache.activemq:activemq-camel:${activeMQVersion}")  {
-        excludes 'commons-logging', 'camel-jms', 'slf4j-api'
+        excludes 'commons-logging', 'slf4j-api', 'camel-core', 'camel-jms', 'camel-spring', 'camel-groovy'
       }
       runtime("org.apache.xbean:xbean-spring:3.8") { excludes 'commons-logging' }
-      runtime("hsqldb:hsqldb:1.8.0.7")
+      runtime("hsqldb:hsqldb:1.8.0.10") { }
     }
 }
