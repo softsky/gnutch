@@ -97,8 +97,9 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 
-   debug   'gnutch',
-           'net.sf.ehcache'
+   debug   'gnutch'
+
+   trace   'net.sf.ehcache'
 
            // trace 'gnutch'
            // trace 'org.apache.camel.http'
