@@ -1,6 +1,7 @@
 <ehcache>
+
   <terracottaConfig url="vm4:9510"/>
-  <!--
+
   <defaultCache
       maxElementsInMemory="50"
       eternal="false"
@@ -10,13 +11,11 @@
       diskPersistent="false"
       memoryStoreEvictionPolicy="LRU"
       /> 
-  -->
 
   <cache name="processedUrlCache"
          maxElementsInMemory="50000"
          eternal="true">
-    <persistence strategy="distributed"/>
-    <terracotta clustered="true" valueMode="serialization" consistency="eventual" />
+    <terracotta />
   </cache>
 
 </ehcache>
