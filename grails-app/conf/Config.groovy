@@ -98,9 +98,6 @@ log4j = {
            'net.sf.ehcache.hibernate'
 
    debug   'gnutch'
-
-   trace   'net.sf.ehcache'
-
            // trace 'gnutch'
            // trace 'org.apache.camel.http'
            // debug 'org.apache.camel'
