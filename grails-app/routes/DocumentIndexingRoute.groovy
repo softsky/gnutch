@@ -10,6 +10,7 @@ class DocumentIndexingRoute {
          log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
          beanRef('documentIndexer', 'index').
          log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
+         process(CH.config.gnutch.postProcessorXML as org.apache.camel.Processor).
          to('seda:aggregate-documents')
         
       from('seda:aggregate-documents').

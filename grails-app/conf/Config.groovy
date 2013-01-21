@@ -117,6 +117,11 @@ gnutch {
    // Crawling thread pool
    threads = 2
   }
+
+  // post processors
+  postProcessorHTML = {ex ->} 
+
+  postProcessorXML = {ex ->} 
   
   // Crawling pattern/XSLT association
   transformations = [

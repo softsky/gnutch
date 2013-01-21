@@ -38,6 +38,7 @@ class UrlCrawlRoute {
         to('http://null'). // invoking HttpClient
         unmarshal().tidyMarkup().
         log(LoggingLevel.OFF, 'gnutch', body().toString()).
+        process (CH.config.gnutch.postProcessorHTML as org.apache.camel.Processor).
         multicast().
           // extracting links
           to('direct:extract-links').
