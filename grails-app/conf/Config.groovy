@@ -111,7 +111,7 @@ gnutch {
 
   crawl {
    // Crawling thread pool
-   threads = 2
+   threads = 20
   }
 
   // post processors
