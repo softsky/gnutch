@@ -1,6 +1,8 @@
 <ehcache>
 
+  <!--
   <terracottaConfig url="vm4:9510"/>
+  -->
 
   <defaultCache
       maxElementsInMemory="50"
@@ -15,7 +17,9 @@
   <cache name="processedUrlCache"
          maxElementsInMemory="50000"
          eternal="true">
+    <!--
     <terracotta />
+    -->
   </cache>
 
 </ehcache>
