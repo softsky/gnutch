@@ -31,7 +31,7 @@ class SourceUrlsProducerService {
     def urlfilter = xpath.evaluate('gn:urlfilter/text()', doc.documentElement)
 
     // making sure all set
-    assert init && patter && urlfiler
+    assert init && pattern && urlfilter
       
     // adding document into map of pattern:document
     DocumentIndexer.transformations.put(pattern, doc) 
