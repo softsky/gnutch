@@ -1,4 +1,3 @@
-
 import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
 
 import org.apache.commons.httpclient.HttpVersion
