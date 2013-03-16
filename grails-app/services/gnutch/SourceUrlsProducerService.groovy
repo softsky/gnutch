@@ -17,8 +17,7 @@ class SourceUrlsProducerService {
 
   def produce(def doc) {
     def xpath = XPathFactory.newInstance().newXPath()
-    // decorating with Groovy File in order to access inputStream
-      
+    // defining namespace context
     def nsContext = [
       getNamespaceURI: { prefix -> "https://github.com/softsky/gnutch" },
       getPrefix: { uri -> "gn" },
@@ -26,12 +25,18 @@ class SourceUrlsProducerService {
     ] as NamespaceContext
 
     xpath.setNamespaceContext(nsContext)
+    // extracting values for init, patter and urlfilter 
     def init = xpath.evaluate('gn:init/text()', doc.documentElement)
     def pattern = xpath.evaluate('gn:pattern/text()', doc.documentElement)
     def urlfilter = xpath.evaluate('gn:urlfilter/text()', doc.documentElement)
+
+    // making sure all set
+    assert init && patter && urlfiler
       
-    DocumentIndexer.transformations.put(pattern, doc) // adding document into map of pattern:document
+    // adding document into map of pattern:document
+    DocumentIndexer.transformations.put(pattern, doc) 
   
+    // applying urlfilter
     urlfilter.split('\n').each { line ->
       line = line.trim()
       if(line != "")
@@ -42,13 +47,7 @@ class SourceUrlsProducerService {
         }
     }
   
+    // sending init url into the queue for crawling
     sendMessage('activemq:input-url', init)
-      
-    /*
-      new File(file.absolutePath).newInputStream().eachLine { line ->  
-        if(line.trim().equals("") == false)
-          sendMessage('activemq:input-url', line)
-      }
-      */
-    }
+  }
 }
