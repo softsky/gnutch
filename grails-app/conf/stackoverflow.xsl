@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xsl:stylesheet
     xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:fn="http://www.w3.org/2005/xpath-functions"
-    xmlns:java="http://xml.apache.org/xalan/java"
-    xmlns:html="http://www.w3.org/1999/xhtml"
-    exclude-result-prefixes="fn java html"
+    xmlns:gn="https://github.com/softsky/gnutch"
+    exclude-result-prefixes="gn"
     version="1.0">
+
+  <gn:init>http://stackoverflow.com/users/</gn:init>
+  <gn:pattern>^http://stackoverflow.com/users/\d*/.*$</gn:pattern>
+  <gn:urlfilter>
+    <![CDATA[
+    +http://stackoverflow.com/users\?(page=\d*&)?tab=reputation&filter=all
+    +http://stackoverflow.com/users/\d*/[^/$\?]*
+    -http://stackoverflow.com/users/\d*/?$
+    -http://stackoverflow.com/.*#.* 
+    ]]>
+  </gn:urlfilter>
 
   <xsl:output
       method="xml"

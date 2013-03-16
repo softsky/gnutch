@@ -45,12 +45,10 @@ beans = {
   }
 
   docsAggregator(gnutch.processors.DocsAggregator)
-  regexUrlChecker(gnutch.urls.RegexUrlChecker, CH.config.gnutch.regexUrlFilter)
+
+  regexUrlChecker(gnutch.urls.RegexUrlChecker)
 
   contextUrlResolver(gnutch.urls.ContextUrlResolver)
 
-  documentIndexer(gnutch.indexer.DocumentIndexer) {
-    // FIXME setting static field here is a workaround
-    gnutch.indexer.DocumentIndexer.transformations = CH.config.gnutch.transformations
-  }
+  documentIndexer(gnutch.indexer.DocumentIndexer)
 }

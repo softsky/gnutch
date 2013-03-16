@@ -109,10 +109,6 @@ gnutch {
   // Input route definition 
   inputRoute = 'file:///tmp/gnutch-input'
 
-  // text file containing regular expressions to include and exclude URL crawling patterns
-  regexUrlFilter = 'regex-urlfilter.txt'
-  
-
   crawl {
    // Crawling thread pool
    threads = 2
@@ -123,11 +119,6 @@ gnutch {
 
   postProcessorXML = {ex ->} 
   
-  // Crawling pattern/XSLT association
-  transformations = [
-  '^http://stackoverflow.com/users/\\d*/.*$':'stackoverflow.xsl'
-  ]
-
   http {
     // UserAgent string. Better if contain email address of person who is responsible 
     // for crawling. That will allow source owners to contact person directly

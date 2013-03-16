@@ -3,6 +3,8 @@ package gnutch.indexer
 import org.apache.camel.Header
 import org.apache.camel.Body
 
+import java.util.Collections
+
 import org.w3c.dom.Document
 
 import org.springframework.core.io.ClassPathResource
@@ -19,7 +21,7 @@ import org.apache.commons.logging.LogFactory
 class DocumentIndexer {
   private static def log = LogFactory.getLog(this)
   /** Map of regexp/stylesheet values */
-  public static Map<String, String> transformations = [:]
+  public static Map<String, Document> transformations = Collections.synchronizedMap([:])
 
   
   public Document index(@Header("contextURI") String contextURI, @Body Document body){
@@ -36,7 +38,7 @@ as trasnformation is executed couple of times. Please, check your transformation
         matched = entry.key
         def domResult = new DOMResult()
         def tf = TransformerFactory.newInstance()
-        def transformer = tf.newTransformer(new StreamSource(new ClassPathResource(entry.value).inputStream))
+        def transformer = tf.newTransformer(new DOMSource(entry.value))
         transformer.setParameter('contextURI', contextURI)
         transformer.transform(new DOMSource(body), domResult)
         result = domResult.node
