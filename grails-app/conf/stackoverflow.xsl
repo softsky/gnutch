@@ -6,15 +6,15 @@
     version="1.0">
 
   <gn:init>http://stackoverflow.com/users/</gn:init>
-  <gn:pattern>^http://stackoverflow.com/users/\d*/.*$</gn:pattern>
-  <gn:urlfilter>
+  <gn:filter>
     <![CDATA[
     +http://stackoverflow.com/users\?(page=\d*&)?tab=reputation&filter=all
     +http://stackoverflow.com/users/\d*/[^/$\?]*
     -http://stackoverflow.com/users/\d*/?$
     -http://stackoverflow.com/.*#.* 
     ]]>
-  </gn:urlfilter>
+  </gn:filter>
+  <gn:index>http://stackoverflow.com/users/\d*/.*</gn:index>
 
   <xsl:output
       method="xml"

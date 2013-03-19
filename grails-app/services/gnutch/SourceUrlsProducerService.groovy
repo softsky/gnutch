@@ -25,25 +25,28 @@ class SourceUrlsProducerService {
     ] as NamespaceContext
 
     xpath.setNamespaceContext(nsContext)
-    // extracting values for init, patter and urlfilter 
+    // extracting values for gn:init, gn:filter and gn:index
     def init = xpath.evaluate('gn:init/text()', doc.documentElement)
-    def pattern = xpath.evaluate('gn:pattern/text()', doc.documentElement)
-    def urlfilter = xpath.evaluate('gn:urlfilter/text()', doc.documentElement)
+    def filter = xpath.evaluate('gn:filter/text()', doc.documentElement)
+    def index = xpath.evaluate('gn:index/text()', doc.documentElement)
 
     // making sure all set
-    assert init && pattern && urlfilter
-      
-    // adding document into map of pattern:document
-    DocumentIndexer.transformations.put(pattern, doc) 
+    assert init, "gn:init should be set" 
+    assert filter, "gn:filter should be set"
+    assert index, "gn:index should be set"
+
+
+    // adding document into map of index:document
+    DocumentIndexer.transformations.put(index, doc) 
   
-    // applying urlfilter
-    urlfilter.split('\n').each { line ->
+    // applying gn:filter
+    filter.split('\n').each { line ->
       line = line.trim()
       if(line != "")
         switch(line.charAt(0)){
           case '+':regexUrlChecker.allowedPatternList << line.substring(1);break;
           case '-':regexUrlChecker.ignorePatternList << line.substring(1);break;
-          default: throw new RuntimeException("urlfilter entry should start with +/-");break;
+          default: throw new RuntimeException("gn:filter entry should start with +/-");break;
         }
     }
   
