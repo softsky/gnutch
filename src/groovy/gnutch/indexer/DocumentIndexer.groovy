@@ -17,12 +17,10 @@ import javax.xml.transform.Transformer
 
 import org.apache.commons.logging.LogFactory
 
-
 class DocumentIndexer {
   private static def log = LogFactory.getLog(this)
   /** Map of regexp/stylesheet values */
-  public static Map<String, Document> transformations = Collections.synchronizedMap([:])
-
+  final def Map<String, Document> transformations = Collections.synchronizedMap([:])
   
   public Document index(@Header("contextURI") String contextURI, @Body Document body){
     log.trace "Testing ${contextURI}, ${body}"

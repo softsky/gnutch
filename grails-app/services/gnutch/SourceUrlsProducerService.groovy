@@ -13,11 +13,15 @@ class SourceUrlsProducerService {
   static transactional = true
 
   @Autowired
+  def DocumentIndexer documentIndexer
+
+  @Autowired
   def RegexUrlChecker regexUrlChecker
 
   def produce(def doc) {
     def xpath = XPathFactory.newInstance().newXPath()
-    // defining namespace context
+    // decorating with Groovy File in order to access inputStream
+      
     def nsContext = [
       getNamespaceURI: { prefix -> "https://github.com/softsky/gnutch" },
       getPrefix: { uri -> "gn" },
@@ -37,7 +41,7 @@ class SourceUrlsProducerService {
 
 
     // adding document into map of index:document
-    DocumentIndexer.transformations.put(index, doc) 
+    documentIndexer.transformations.put(index, doc) 
   
     // applying gn:filter
     filter.split('\n').each { line ->
