@@ -20,8 +20,8 @@ class SourceUrlsProducerService {
 
   def produce(def doc) {
     def xpath = XPathFactory.newInstance().newXPath()
-    // decorating with Groovy File in order to access inputStream
-      
+
+    // defining namespace context      
     def nsContext = [
       getNamespaceURI: { prefix -> "https://github.com/softsky/gnutch" },
       getPrefix: { uri -> "gn" },
@@ -38,7 +38,6 @@ class SourceUrlsProducerService {
     assert init, "gn:init should be set" 
     assert filter, "gn:filter should be set"
     assert index, "gn:index should be set"
-
 
     // adding document into map of index:document
     documentIndexer.transformations.put(index, doc) 
