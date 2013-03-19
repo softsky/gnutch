@@ -6,6 +6,7 @@ import java.util.Map.Entry;
 import java.util.Iterator;
 import java.util.Collections;
 import java.util.Properties;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +94,7 @@ public class SchedulerService
         	}
             });
         timeoutListeners = Collections.synchronizedList(new ArrayList<TimeoutListener>());
+        quartzScheduler.start();
     }	
 
     /**
@@ -163,29 +165,39 @@ public class SchedulerService
             for(Entry entry : this.properties.entrySet()) {
                 String key = 
                     entry.getKey().toString().trim();
-                // Remove the indicated Trigger from the scheduler 
-                // If the related job does not have any other triggers, and the job is not durable, then the job will also be deleted
-            	quartzScheduler
-                    .deleteJob(new JobKey(key,key)); // see how we define a new TriggerKey below
-                // Define the new job
-            	// Note the Scheduler needs a custom JobFactory to instantiate the inner class below 
-                JobDetail job = JobBuilder.newJob(TimeoutListenerInvokingJob.class)
-                    .withIdentity(key, key) // name "key", group "key"
-                    .build();
-                // Trigger the job to run now and forever through regular intervals 
-                Trigger trigger = TriggerBuilder.newTrigger()
-                    .withIdentity(key, key) // name "key", group "key"
-                    .startNow()
-                    .withSchedule(SimpleScheduleBuilder.simpleSchedule()
-                                  .withIntervalInMilliseconds(StringDateUtils.fromStringToIntervalMs((String)entry.getValue()))
-                                  .repeatForever())            
-                    .build();
-                // Schedule the job
-                quartzScheduler.scheduleJob(job, trigger);
+                scheduleJob(key, (String)entry.getValue());
             }
         }
     }
 
+    /**
+     * Schedules the job named `key` with timeout `timeout`
+     * 
+     * @return Date object on which scheduled job will invoke
+     */
+    public Date scheduleJob(String key, String timeout) throws SchedulerException {
+        // Remove the indicated Trigger from the scheduler 
+        // If the related job does not have any other triggers, and the job is not durable, then the job will also be deleted
+        quartzScheduler
+            .deleteJob(new JobKey(key,key)); // see how we define a new TriggerKey below
+        // Define the new job
+        // Note the Scheduler needs a custom JobFactory to instantiate the inner class below 
+        JobDetail job = JobBuilder.newJob(TimeoutListenerInvokingJob.class)
+            .withIdentity(key, key) // name "key", group "key"
+            .build();
+        Long interval = StringDateUtils.fromStringToIntervalMs(timeout);
+        LOG.trace("Job is scheduling to be fired in " + timeout + " interval, which is:" + interval + " msec");
+        // Trigger the job to run now and forever through regular intervals 
+        Trigger trigger = TriggerBuilder.newTrigger()
+            .withIdentity(key, key) // name "key", group "key"
+            .startNow()
+            .withSchedule(SimpleScheduleBuilder.simpleSchedule()
+                          .withIntervalInMilliseconds(interval)
+                          .repeatForever())
+            .build();
+        // Schedule the job
+        return quartzScheduler.scheduleJob(job, trigger);
+    }
 
     /**
      * @return the quartzScheduler
