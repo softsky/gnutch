@@ -15,6 +15,7 @@
     ]]>
   </gn:filter>
   <gn:index>http://stackoverflow.com/users/\d*/.*</gn:index>
+  <gn:schedule>2 weeks</gn:schedule>
 
   <xsl:output
       method="xml"

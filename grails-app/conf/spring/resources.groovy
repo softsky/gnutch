@@ -50,4 +50,7 @@ beans = {
   contextUrlResolver(gnutch.urls.ContextUrlResolver)
 
   documentIndexer(gnutch.indexer.DocumentIndexer)
+
+  schedulerService(gnutch.quartz.SchedulerService)
+
 }
