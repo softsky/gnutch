@@ -51,7 +51,7 @@ class UrlCrawlRoute {
       // links extractor route
      from('direct:extract-links').
        // extracting links
-       split(xpath('//a/@href')). // extracting all a/@href 
+       split(xpath('//a/@href|//iframe/@src')). // extracting all a/@href and iframe/@src
        process { ex -> ex.in.body = ex.in.body.value }. // extracting AttrNodeImpl.getValue()
          log(LoggingLevel.TRACE, 'gnutch', 'Resolving URL: ${body}').
          processRef('contextUrlResolver').
