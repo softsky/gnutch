@@ -3,6 +3,7 @@ package gnutch.urls
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 
+import org.apache.commons.httpclient.util.URIUtil 
 
 class ContextUrlResolver implements Processor {
   public static String replaceLast(String text, String regex, String replacement) {
@@ -28,7 +29,7 @@ class ContextUrlResolver implements Processor {
       contextURI = new URI(uri.scheme, uri.userInfo, uri.host, uri.port, uri.path, uri.query, fragment).toURL()
       // do nothing, contextURI does not change
     } else {
-      contextURI  = contextURI.resolve(URI.create(body)).toURL()
+      contextURI  = contextURI.resolve(URI.create(URIUtil.encodePath(body))).toURL()
     }
     exchange.in.body = contextURI.toString()
   }
