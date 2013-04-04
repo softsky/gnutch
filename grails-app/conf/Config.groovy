@@ -108,7 +108,7 @@ log4j = {
 
 gnutch {
   // Input route definition 
-  inputRoute = 'file:///tmp/gnutch-input'
+  inputRoute = 'file:///home/archer/tmp/gnutch-input'
 
   crawl {
    // Crawling thread pool
@@ -132,7 +132,7 @@ gnutch {
 
   solr {
     // URL to Solr server
-    serverUrl = 'http://vm4:8983/solr/stackoverflow'
+    serverUrl = 'http://vm4:8983/solr'
   }
  
   
