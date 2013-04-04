@@ -30,9 +30,11 @@ class DocsAggregator implements Processor {
         groupedExchanges.value.each { Exchange x ->
                 def Document doc = x.'in'.body
 
-                def node = XPathAPI.selectSingleNode(doc.documentElement, '//doc')
-                def cloned = parentDoc.adoptNode(node.cloneNode(true))
-                parentDoc.documentElement.appendChild(cloned)
+                def nodes = XPathAPI.selectNodeList(doc.documentElement, '//doc')
+                nodes.each { node ->
+                  def cloned = parentDoc.adoptNode(node.cloneNode(true))
+                  parentDoc.documentElement.appendChild(cloned)
+                }
             }
             exchange.in.body = parentDoc
         }
