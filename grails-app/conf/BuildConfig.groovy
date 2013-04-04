@@ -3,7 +3,7 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
-def camelVersion = '2.9.4' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
+def camelVersion = '2.10.4' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
 def activeMQVersion = '5.7.0'
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
@@ -20,8 +20,8 @@ grails.project.dependency.resolution = {
 
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
-        //mavenLocal()
-        //mavenCentral()
+        mavenLocal()
+        mavenCentral()
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
@@ -29,9 +29,12 @@ grails.project.dependency.resolution = {
     }
     dependencies {
       // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
+
+      compile ("org.grails.plugins:routing:1.2.3")
+
       compile ("org.apache.camel:camel-core:${camelVersion}") { excludes 'slf4j-api' }
       compile ("org.apache.camel:camel-http:${camelVersion}") { excludes 'commons-codec' }
-      compile ("org.apache.camel:camel-mail:${camelVersion}") { excludes 'mail' }
+      compile ("org.apache.camel:camel-mail:${camelVersion}")
       compile ("org.apache.camel:camel-groovy:${camelVersion}") { excludes 'groovy-all' }
       compile ("org.apache.camel:camel-spring:${camelVersion}") { excludes 'log4j', 'spring-tx', 'spring-jms','spring-context', 'spring-beans', 'spring-aop' }
       compile ("org.apache.camel:camel-jms:${camelVersion}")  { excludes 'spring-tx', 'spring-jms','spring-context', 'spring-beans', 'spring-aop', 'spring-core' }
