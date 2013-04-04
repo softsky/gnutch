@@ -1,14 +1,17 @@
-import org.codehaus.groovy.grails.commons.ConfigurationHolder as CH
-
 import org.apache.camel.Exchange
 import org.apache.camel.LoggingLevel
+import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.cache.CacheConstants
 import org.apache.camel.component.http.HttpOperationFailedException
 
 import gnutch.indexer.DocumentIndexer
 
-class UrlCrawlRoute {
-    def configure = {
+class UrlCrawlRoute extends RouteBuilder {
+  def grailsApplication
+
+  @Override
+  void configure() {
+      def config = grailsApplication?.config
 
       onException(java.net.UnknownHostException).
       handled(true).
@@ -29,7 +32,7 @@ class UrlCrawlRoute {
       to('activemq:input-url')
 
       // link crawler route
-      from("activemq:input-url?concurrentConsumers=${CH.config.gnutch.crawl.threads}").
+      from("activemq:input-url?concurrentConsumers=${config.gnutch.crawl.threads}").
         delay(500).
         setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
         setHeader(Exchange.HTTP_URI, body(String)). 
@@ -38,7 +41,7 @@ class UrlCrawlRoute {
         to('http://null'). // invoking HttpClient
         unmarshal().tidyMarkup().
         log(LoggingLevel.OFF, 'gnutch', body().toString()).
-        process (CH.config.gnutch.postProcessorHTML as org.apache.camel.Processor).
+        process { ex -> (config.gnutch.postProcessorHTML as org.apache.camel.Processor).process(ex) }.
         multicast().
           // extracting links
           to('direct:extract-links').
