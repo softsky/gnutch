@@ -21,6 +21,7 @@ class DocumentIndexer {
   private static def log = LogFactory.getLog(this)
   /** Map of regexp/stylesheet values */
   final def Map<String, Document> transformations = Collections.synchronizedMap([:])
+  private static final String TRANSFORMER_FACTORY_CLASS = "org.apache.xalan.processor.TransformerFactoryImpl";
   
   public Document index(@Header("contextURI") String contextURI, @Body Document body){
     log.trace "Testing ${contextURI}, ${body}"
@@ -35,7 +36,7 @@ as trasnformation is executed couple of times. Please, check your transformation
 """)
         matched = entry.key
         def domResult = new DOMResult()
-        def tf = TransformerFactory.newInstance()
+        def tf = TransformerFactory.newInstance(TRANSFORMER_FACTORY_CLASS, null)
         def transformer = tf.newTransformer(new DOMSource(entry.value))
         transformer.setParameter('contextURI', contextURI)
         transformer.transform(new DOMSource(body), domResult)
