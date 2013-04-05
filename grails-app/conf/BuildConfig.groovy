@@ -3,7 +3,7 @@ grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
 //grails.project.war.file = "target/${appName}-${appVersion}.war"
 
-def camelVersion = '2.10.4' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
+def camelVersion = '2.9.4' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
 def activeMQVersion = '5.7.0'
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
