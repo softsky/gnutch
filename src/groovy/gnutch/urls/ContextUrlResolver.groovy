@@ -13,6 +13,12 @@ class ContextUrlResolver implements Processor {
   public void process (Exchange exchange) {
     // contextURI always starts with http://
     def contextURI = new URI(exchange.in.headers['contextURI'])
+    def contextBase = exchange.in.headers['contextBase']
+    if(contextBase && contextBase.length)
+      contextBase = new URI(contextBase.item(0).nodeValue)
+      else
+      contextBase = null
+
     def body = exchange.in.body.trim()
     if(body.toLowerCase().startsWith('javascript:') || body.toLowerCase().startsWith('mailto:') ){
       contextURI = body // just do nothing, such URLs will be removed via regex-urlfilter
@@ -29,7 +35,10 @@ class ContextUrlResolver implements Processor {
       contextURI = new URI(uri.scheme, uri.userInfo, uri.host, uri.port, uri.path, uri.query, fragment).toURL()
       // do nothing, contextURI does not change
     } else {
-      contextURI  = contextURI.resolve(URI.create(URIUtil.encodePath(body))).toURL()
+      if(contextBase)
+        contextURI  = contextBase.resolve(URI.create(body)).toURL()
+        else
+        contextURI  = contextURI.resolve(URI.create(body)).toURL()
     }
     exchange.in.body = contextURI.toString()
   }
