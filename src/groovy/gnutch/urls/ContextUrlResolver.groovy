@@ -14,12 +14,12 @@ class ContextUrlResolver implements Processor {
     def contextBase = exchange.in.headers['contextBase']
     if(contextBase && contextBase.length)
       contextBase = new URI(contextBase.item(0).nodeValue)
-      else 
+      else
       contextBase = null
 
     def body = UnsafeUriCharactersEncoder.encode(exchange.in.body)
 
-    if(body.toLowerCase().startsWith('javascript:') 
+    if(body.toLowerCase().startsWith('javascript:')
        || body.toLowerCase().startsWith('mailto:')
        || body.toLowerCase().startsWith('tel:')) {
       contextURI = body // just do nothing, such URLs will be removed
