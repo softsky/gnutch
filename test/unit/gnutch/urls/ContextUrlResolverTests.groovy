@@ -20,11 +20,6 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
         super.tearDown()
     }
 
-    void testReplaceLast() {
-      assert ContextUrlResolver.replaceLast('http://ziprealty.com/detailed', '/detailed', '/map') == 'http://ziprealty.com/map'
-      assert ContextUrlResolver.replaceLast('http://ziprealty.com/detailed', '/\\w*', '/map') == 'http://ziprealty.com/map'
-      assert ContextUrlResolver.replaceLast('http://ziprealty.com/./detailed', '/\\./\\w*', '/map') == 'http://ziprealty.com/map'
-    }
     void testProcess() {
       def ctx = new DefaultCamelContext()
       def ex = new DefaultExchange(ctx)
@@ -38,6 +33,11 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
       ex.in.body = 'javascript:void(0)'
       processor.process(ex)
       assert ex.in.body == 'javascript:void(0)'
+
+      ex.in.headers['contextURI'] = 'http://www.google.com/a/b/c'
+      ex.in.body = 'mailto:john@example.com'
+      processor.process(ex)
+      assert ex.in.body == 'mailto:john@example.com'
 
       ex.in.headers['contextURI'] = 'http://www.google.com/a/b/c'
       ex.in.body = '/z'
@@ -75,6 +75,16 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
       processor.process(ex)
       assert ex.in.body == 'http://localhost:8080/a/b/z?a=1&b=2'
 
+      // already encoded URLs
+      ex.in.headers['contextURI'] = 'http://www.example.com/a/b'
+      ex.in.body = 'new+global+regulatory%2C'
+      processor.process(ex)
+      assert ex.in.body == 'http://www.example.com/a/new+global+regulatory,'
+
+      ex.in.headers['contextURI'] = 'http://www.example.com/a/b/new+global+regulatory%2C'
+      ex.in.body = '?a=1'
+      processor.process(ex)
+      assert ex.in.body == 'http://www.example.com/a/b/new+global+regulatory,?a=1'
 
       // URL Optimization
       ex.in.headers['contextURI'] = 'http://localhost:8080/a/b/c'
@@ -93,6 +103,37 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
       ex.in.body = '#map'
       processor.process(ex)
       assert ex.in.body == 'http://localhost:8080/a/b/c#map'
+
+      // URL Optimization
+      ex.in.headers['contextURI'] = 'http://localhost:8080/a/b/c#inode'
+      ex.in.body = '/x/z/y#map'
+      processor.process(ex)
+      assert ex.in.body == 'http://localhost:8080/x/z/y#map'
+
+      // URL Optimization
+      ex.in.headers['contextURI'] = 'http://localhost:8080/a/b/c#inode'
+      ex.in.body = '/x/z/y?a=1&b=2#map'
+      processor.process(ex)
+      assert ex.in.body == 'http://localhost:8080/x/z/y?a=1&b=2#map'
+
+      // URL escaping
+      ex.in.headers['contextURI'] = 'http://example.com'
+      ex.in.body = '/file[/].html'
+      processor.process(ex)
+      assert ex.in.body == 'http://example.com/file%5B/%5D.html'
+
+      // URL escaping
+      ex.in.headers['contextURI'] = 'http://example.com'
+      ex.in.body = '/file[/].html#memo'
+      processor.process(ex)
+      assert ex.in.body == 'http://example.com/file%5B/%5D.html#memo'
+
+      // URL escaping
+      ex.in.headers['contextURI'] = 'http://example.com/a/b/c'
+      ex.in.body = 'x'
+      processor.process(ex)
+      assert ex.in.body == 'http://example.com/a/b/x'
       
+
     }
 }

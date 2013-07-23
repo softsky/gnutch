@@ -4,56 +4,76 @@ import org.apache.camel.Processor
 import org.apache.camel.util.UnsafeUriCharactersEncoder
 
 class ContextUrlResolver implements Processor {
-  public static String replaceLast(String text, String regex, String replacement) {
-    return text.replaceFirst("(?s)"+regex+"(?!.*?"+regex+")", replacement);
-  }
-
   public void process (Exchange exchange) {
     // contextURI always starts with http://
-    def contextURI = new URI(exchange.in.headers['contextURI'])
+    def contextURI = new URL(unescape(exchange.in.headers['contextURI']))
     def contextBase = exchange.in.headers['contextBase']
     if(contextBase && contextBase.length)
-      contextBase = new URI(contextBase.item(0).nodeValue)
+      contextBase = new URL(contextBase.item(0).nodeValue)
       else
       contextBase = null
 
-    def body = UnsafeUriCharactersEncoder.encode(exchange.in.body)
+      def body = unescape(exchange.in.body.trim())
+      def URL url
 
-    if(body.toLowerCase().startsWith('javascript:')
-       || body.toLowerCase().startsWith('mailto:')
-       || body.toLowerCase().startsWith('tel:')) {
-      contextURI = body // just do nothing, such URLs will be removed
-    } else if(body.startsWith('?')){
-      def uri = contextURI
-      contextURI = new URI(uri.scheme, uri.userInfo, uri.host, uri.port, uri.path, body.substring(1), uri.fragment).toURL()
-      // do nothing, contextURI does not change
-    } else if(body.startsWith('#')){
-      def uri = contextURI
-      def fragment = null
-      if(body != '#')
-        fragment = body.substring(1)
+      // FIXME: this is a dirty hack
+      if(body.startsWith('javascript:') || body.startsWith('mailto:') || body.startsWith('tel:')){
+        exchange.in.body = body
+        return
+      } 
 
-      contextURI = new URI(uri.scheme, uri.userInfo, uri.host, uri.port, uri.path, uri.query, fragment).toURL()
-      // do nothing, contextURI does not change
-    }  else {
-      try{
-        if(contextBase)
-          contextURI  = contextBase.resolve(URI.create(body)).toURL()
-          else
-          contextURI  = contextURI.resolve(URI.create(body)).toURL()
-      }
-      catch(MalformedURLException muex){
-        if(muex.message.contains("unknown protocol")){
-          contextURI = body
-        } else {
-          throw muex;
-        }
-      }
-      catch(IllegalArgumentException iaex){
-        contextURI = body
-      }
-    }
+      if(body.startsWith('http://') || body.startsWith('https://') || body.startsWith('ftp://')){
+        url = new URL(body)
+      } else if(body.startsWith('/')) {
+        url = new URL(
+          contextURI.protocol, 
+          contextURI.host, 
+          contextURI.port, 
+          body)
+      } else if(body.startsWith("?")){
+        url = new URL(
+          contextURI.protocol, 
+          contextURI.host, 
+          contextURI.port, 
+          contextURI.path + body)
+      } else if(body.startsWith("#")){
+        url = new URL(
+          contextURI.protocol, 
+          contextURI.host, 
+          contextURI.port, 
+          contextURI.path + (contextURI.query?:"") + body)
+      }else {
+        url = new URL(
+          contextURI.protocol, 
+          contextURI.host, 
+          contextURI.port, 
+          contextURI.path)
 
-    exchange.in.body = contextURI.toString()
+        url = new URI(
+          url.protocol, 
+          url.userInfo,
+          url.host, 
+          url.port, 
+          url.path, 
+          url.query,
+          url.ref
+        ).resolve(body).toURL()
+      }
+
+      contextURI = new URI(
+        url.protocol, 
+        url.userInfo,
+        url.host, 
+        url.port, 
+        url.path,
+        url.query,
+        url.ref
+      )
+         
+      exchange.in.body = contextURI.toASCIIString()
+  }
+
+  private String unescape(String str){
+    str.replaceAll(/%[A-Z,0-9]{2}/,{ return (char)Integer.parseInt(it.substring(1), 16) })
   }
 }
