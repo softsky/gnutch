@@ -22,19 +22,5 @@ class RegexUrlChecker {
              (ignorePatternList.any { pattern -> url.matches(pattern) }  == false)
     log.trace("Checking ${url}: ${result}")
     return result
-
-  }
-
-  public void loadFromResource(String resourceUrl){
-    new ClassPathResource(resourceUrl).inputStream.eachLine { line ->
-      line = line.trim() // trimming leading and trialing spaces
-      if(line.startsWith('+')){
-        allowedPatternList << line.substring(1).trim() // skipping first mark
-      } else if(line.startsWith('-')){
-        ignorePatternList << line.substring(1).trim() // skipping first mark
-      } else if(line.startsWith('#') || line.equals('')){
-        // just ignoring
-      } else throw new RuntimeException('Invalid regexUrlFilter file format')
-    }
   }
 }
