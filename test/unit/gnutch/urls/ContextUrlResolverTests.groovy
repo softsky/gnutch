@@ -32,12 +32,17 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
       ex.in.headers['contextURI'] = 'http://www.google.com/a/b/c'
       ex.in.body = 'javascript:void(0)'
       processor.process(ex)
-      assert ex.in.body == 'javascript:void(0)'
+      assert ex.in.body == null
+
+      ex.in.headers['contextURI'] = 'http://www.google.com/a/b/c'
+      ex.in.body = 'JavaScript:void(0)'
+      processor.process(ex)
+      assert ex.in.body == null
 
       ex.in.headers['contextURI'] = 'http://www.google.com/a/b/c'
       ex.in.body = 'mailto:john@example.com'
       processor.process(ex)
-      assert ex.in.body == 'mailto:john@example.com'
+      assert ex.in.body == null
 
       ex.in.headers['contextURI'] = 'http://www.google.com/a/b/c'
       ex.in.body = '/z'

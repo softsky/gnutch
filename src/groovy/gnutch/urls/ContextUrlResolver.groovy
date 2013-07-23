@@ -17,8 +17,10 @@ class ContextUrlResolver implements Processor {
       def URL url
 
       // FIXME: this is a dirty hack
-      if(body.startsWith('javascript:') || body.startsWith('mailto:') || body.startsWith('tel:')){
-        exchange.in.body = body
+      if(body.toLowerCase().startsWith('javascript:') 
+         || body.toLowerCase().startsWith('mailto:') 
+         || body.toLowerCase().startsWith('tel:')){
+        exchange.in.body = null
         return
       } 
 
