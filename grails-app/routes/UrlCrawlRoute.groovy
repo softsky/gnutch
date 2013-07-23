@@ -57,6 +57,7 @@ class UrlCrawlRoute extends RouteBuilder {
        // extracting links
        split(xpath('//a/@href|//iframe/@src')). // extracting all a/@href and iframe/@src
        process { ex -> ex.in.body = ex.in.body.value }. // extracting AttrNodeImpl.getValue()
+         filter().groovy ('exchange.in.body.startsWith("#") == false'). // we don't process #anchor only links
          log(LoggingLevel.TRACE, 'gnutch', 'Resolving URL: ${body}').
          processRef('contextUrlResolver').
           filter().
