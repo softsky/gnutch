@@ -6,15 +6,15 @@ import org.apache.camel.builder.RouteBuilder
 class DocumentIndexingRoute extends RouteBuilder {
   def grailsApplication
 
-  @Override
-  void configure() {
+  @Override  
+  void configure(){
       def config = grailsApplication?.config
 
       from('direct:index-page').
          log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
          beanRef('documentIndexer', 'index').
          log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
-         process{ ex -> (config.gnutch.postProcessorXML as org.apache.camel.Processor).process(ex) }.
+         process { ex -> (config.gnutch.postProcessorXML as org.apache.camel.Processor).process(ex) }.
          to('seda:aggregate-documents')
         
       from('seda:aggregate-documents').

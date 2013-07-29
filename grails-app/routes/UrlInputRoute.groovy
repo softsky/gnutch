@@ -4,7 +4,7 @@ class UrlInputRoute extends RouteBuilder {
   def grailsApplication
 
   @Override
-  void configure(){
+  void configure() {
       def config = grailsApplication?.config
 
       from("${config.gnutch.inputRoute}").
@@ -12,3 +12,4 @@ class UrlInputRoute extends RouteBuilder {
       beanRef('sourceUrlsProducerService', 'produce')
     }
 }
+

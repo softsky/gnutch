@@ -58,11 +58,11 @@ class UrlCrawlRoute extends RouteBuilder {
        split(xpath('//a/@href|//iframe/@src')). // extracting all a/@href and iframe/@src
        process { ex -> ex.in.body = ex.in.body.value }. // extracting AttrNodeImpl.getValue()
          // we don't process #anchor only links and empty exchange.in.body
-         filter().groovy ('exchange.in.body.startsWith("#") == false'). 
+       filter().simple('${in.body} not regex "#.*"'). // we don't process URLs which starts with #
          log(LoggingLevel.TRACE, 'gnutch', 'Resolving URL: ${body}').
          processRef('contextUrlResolver').
           filter().
-            groovy ('exchange.in.body'). // we don't process exchange.in.body == null
+            simple ('${in.body} != null'). // we don't process ${in.body} == null
           filter().
             method('regexUrlChecker', 'check'). // submitting only those that match
             // Prepare headers
@@ -83,6 +83,8 @@ class UrlCrawlRoute extends RouteBuilder {
              to("cache://processedUrlCache").
              otherwise().
              log(LoggingLevel.TRACE, 'gnutch', 'Ignoring ${body} as it\'s cached').
-          end()
+          end().
+         end().
+       end()
     }
 }
