@@ -138,7 +138,20 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
       ex.in.body = 'x'
       processor.process(ex)
       assert ex.in.body == 'http://example.com/a/b/x'
-      
+
+      // URL escaping
+      ex.in.headers['contextURI'] = 'http://example.com/'
+      ex.in.body = '/news/century-park-portfolio-company-r%E2%80%A2o%E2%80%A2m-completes-its-fourth-acquisition'
+      processor.process(ex)
+      assert ex.in.body == 'http://example.com/news/century-park-portfolio-company-r%E2%80%A2o%E2%80%A2m-completes-its-fourth-acquisition'
+          
+    }
+
+    void testUnescape(){
+        assert ContextUrlResolver.unescape('%2C') == ','
+        assert ContextUrlResolver.unescape('%E2%80%A2') == '•'
+        assert ContextUrlResolver.unescape('%E2%80%A2%2C') == '•,'
+        assert ContextUrlResolver.unescape('r%E2%80%A2o%E2%80%A2m') == 'r•o•m'
 
     }
 }

@@ -13,7 +13,7 @@ class ContextUrlResolver implements Processor {
       else
       contextBase = null
 
-      def body = unescape(exchange.in.body.trim())
+      def body = ContextUrlResolver.unescape(exchange.in.body.trim())
       def URL url
 
       // FIXME: this is a dirty hack
@@ -75,7 +75,28 @@ class ContextUrlResolver implements Processor {
       exchange.in.body = contextURI.toASCIIString()
   }
 
-  private String unescape(String str){
-    str.replaceAll(/%[A-Z,0-9]{2}/,{ return (char)Integer.parseInt(it.substring(1), 16) })
+  protected static String unescape(String str){
+    def sw = new StringWriter()
+    def byte[] bytes = new byte[1024]
+    def int bytePtr = 0
+    def chars = str.toCharArray()
+    for(int i=0;i<chars.length;i++){
+      assert bytePtr < 1023
+      def ch = chars[i];
+      if(ch == '%'){
+        bytes[bytePtr++] = (byte)Integer.parseInt(str.substring(i+1, i+3), 16)
+        i+=2;
+      } else {
+        if(bytePtr > 0){
+          sw.append(new String(Arrays.copyOf(bytes, bytePtr), 'UTF-8'))
+          bytePtr = 0
+        }
+        sw.append(ch);
+      }
+    }
+    if(bytePtr > 0){
+      sw.append(new String(Arrays.copyOf(bytes, bytePtr), 'UTF-8'))
+    }
+    return sw.toString()
   }
 }
