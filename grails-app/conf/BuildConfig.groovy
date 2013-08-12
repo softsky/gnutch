@@ -43,6 +43,9 @@ grails.project.dependency.resolution = {
 
       compile ("org.quartz-scheduler:quartz:2.1.6") { excludes 'slf4j-api' }
 
+      compile ("org.apache.tika:tika-core:1.3")
+      compile ("org.apache.tika:tika-parsers:1.3") { excludes "tika-core" }
+
       runtime("org.apache.activemq:activemq-core:${activeMQVersion}")  {
         excludes 'commons-logging',  'spring-context', 'slf4j-api' 
       }

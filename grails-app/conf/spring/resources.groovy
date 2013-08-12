@@ -53,4 +53,6 @@ beans = {
 
   schedulerService(gnutch.quartz.SchedulerService)
 
+  tikaContentExtractor(gnutch.TikaContentExtractor)
+
 }

@@ -39,17 +39,29 @@ class UrlCrawlRoute extends RouteBuilder {
         setBody(constant()).
         log(LoggingLevel.DEBUG, 'gnutch', 'Retrieving ${headers.contextURI}').
         to('http://null'). // invoking HttpClient
-        unmarshal().tidyMarkup().
-        log(LoggingLevel.OFF, 'gnutch', body().toString()).
-        process { ex -> (config.gnutch.postProcessorHTML as org.apache.camel.Processor).process(ex) }.
-        multicast().
-          // extracting links
-          to('direct:extract-links').
-          // indexing, if page should be indexed
-          filter().method('documentIndexer', 'isIndexable').
-            to('direct:index-page'). // submitting page XHTML for future processing
+
+        choice().
+        // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
+        when(header('Content-Type').contains("text/html")).
+          log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tidy').
+          unmarshal().tidyMarkup().
+          log(LoggingLevel.OFF, 'gnutch', body().toString()).
+          process { ex -> (config.gnutch.postProcessorHTML as org.apache.camel.Processor).process(ex) }.
+          multicast().
+            // extracting links
+            to('direct:extract-links').
+            // indexing, if page should be indexed
+            filter().method('documentIndexer', 'isIndexable').
+              to('direct:index-xhtml'). // submitting page XHTML for future processing
+            end().
           end().
-        end()
+       otherwise().
+         log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tika').
+         filter().method('documentIndexer', 'isIndexable').
+           beanRef('tikaContentExtractor', 'extract').
+           to('direct:index-binary'). // submitting tika for future processing
+         end().
+       end() 
 
       // links extractor route
      from('direct:extract-links').
