@@ -87,16 +87,14 @@ class ContextUrlResolver implements Processor {
         bytes[bytePtr++] = (byte)Integer.parseInt(str.substring(i+1, i+3), 16)
         i+=2;
       } else {
-        if(bytePtr > 0){
-          sw.append(new String(Arrays.copyOf(bytes, bytePtr), 'UTF-8'))
-          bytePtr = 0
-        }
+        sw.append(new String(Arrays.copyOf(bytes, bytePtr), 'UTF-8'))
+        bytePtr = 0
+
         sw.append(ch);
       }
     }
-    if(bytePtr > 0){
-      sw.append(new String(Arrays.copyOf(bytes, bytePtr), 'UTF-8'))
-    }
+    sw.append(new String(Arrays.copyOf(bytes, bytePtr), 'UTF-8'))
+
     return sw.toString()
   }
 }
