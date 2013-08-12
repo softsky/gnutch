@@ -81,7 +81,7 @@ class ContextUrlResolver implements Processor {
     def int bytePtr = 0
     def chars = str.toCharArray()
     for(int i=0;i<chars.length;i++){
-      assert bytePtr < 1023
+      assert bytePtr < bytes.length
       def ch = chars[i];
       if(ch == '%'){
         bytes[bytePtr++] = (byte)Integer.parseInt(str.substring(i+1, i+3), 16)
