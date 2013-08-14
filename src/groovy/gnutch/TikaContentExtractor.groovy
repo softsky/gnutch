@@ -9,7 +9,7 @@ import org.apache.tika.parser.Parser
 import org.apache.tika.sax.BodyContentHandler
 /**
    Java Bean which simply extract content form binary input stream
-   and returns extracted textual stream
+   and returns extracted textual string
    Is called from Camel route when we find that returned content is not text/html
  */
 class TikaContentExtractor {
