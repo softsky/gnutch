@@ -27,6 +27,7 @@ class DocumentIndexer {
     log.trace "Testing ${contextURI}, ${body}"
     def matched = null
     def result 
+    synchronized(transformations) {
     transformations.each { entry ->
       // looking for one that match
       if(contextURI.matches(entry.key)){
@@ -42,6 +43,7 @@ as trasnformation is executed couple of times. Please, check your transformation
         transformer.transform(new DOMSource(body), domResult)
         result = domResult.node
       }
+    }
     }
     log.trace "${contextURI} ${result?' is indexable':' is not indexable'}"
     return result

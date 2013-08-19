@@ -10,7 +10,7 @@ class RegexUrlChecker {
   private static def log = LogFactory.getLog(this)
 
   def allowedPatternList = Collections.synchronizedList([])
-  def ignorePatternList = Collections.synchronizedList([])
+  def ignoredPatternList = Collections.synchronizedList([])
 
   /**
    * Using pre-define list of ignore patterns
@@ -18,8 +18,13 @@ class RegexUrlChecker {
    * <false> is returned. If does not match any - return <true>
    */
   public boolean check(String url){
-    def boolean result = (allowedPatternList.any { pattern -> url.matches(pattern) })  &&
-             (ignorePatternList.any { pattern -> url.matches(pattern) }  == false)
+    def boolean result
+    synchronized(allowedPatternList){
+      synchronized(ignoredPatternList){
+        result= (allowedPatternList.any { pattern -> url.matches(pattern) })  &&
+        (ignoredPatternList.any { pattern -> url.matches(pattern) }  == false)
+      }
+    }
     log.trace("Checking ${url}: ${result}")
     return result
   }

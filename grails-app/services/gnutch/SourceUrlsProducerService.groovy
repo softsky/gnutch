@@ -60,7 +60,7 @@ class SourceUrlsProducerService {
       if(line != "")
         switch(line.charAt(0)){
           case '+':regexUrlChecker.allowedPatternList << line.substring(1);break;
-          case '-':regexUrlChecker.ignorePatternList << line.substring(1);break;
+          case '-':regexUrlChecker.ignoredPatternList << line.substring(1);break;
           default: throw new RuntimeException("gn:filter entry should start with +/-");break;
         }
     }

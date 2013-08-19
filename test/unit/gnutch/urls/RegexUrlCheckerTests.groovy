@@ -24,7 +24,7 @@ class RegexUrlCheckerTests extends GrailsUnitTestCase {
       /^.*x$/,
       /^.*y$/,
       /^.*z$/
-    ].each { regexUrlChecker.ignorePatternList << it}
+    ].each { regexUrlChecker.ignoredPatternList << it}
 
     assert regexUrlChecker.check('http://www.google.com/abc') == true
     assert regexUrlChecker.check('http://www.google.com/bc') == true
@@ -38,7 +38,7 @@ class RegexUrlCheckerTests extends GrailsUnitTestCase {
   void testCheckExclusive() {
 
     regexUrlChecker.allowedPatternList << /^http.*google\.com\/a.*/
-    regexUrlChecker.ignorePatternList <<  /.*\/b.*/
+    regexUrlChecker.ignoredPatternList <<  /.*\/b.*/
 
     assert regexUrlChecker.check('http://www.google.com/abc') == true
     assert regexUrlChecker.check('http://www.google.com/bc') == false
