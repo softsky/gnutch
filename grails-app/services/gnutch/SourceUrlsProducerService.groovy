@@ -2,6 +2,7 @@ package gnutch
 
 import org.springframework.beans.factory.annotation.Autowired
 
+import javax.annotation.PostConstruct
 import javax.xml.xpath.*
 import javax.xml.namespace.NamespaceContext
 
@@ -27,6 +28,14 @@ class SourceUrlsProducerService {
 
   @Autowired
   def SchedulerService schedulerService
+
+  @PostConstruct
+  private def init(){
+    schedulerService.addTimeoutListener({ key ->
+      LOG.trace("job invoked: " + key)
+      sendMessage('activemq:input-url', key)
+    } as TimeoutListener)
+  }
 
   def produce(def doc) {
     def xpath = XPathFactory.newInstance().newXPath()
@@ -65,12 +74,8 @@ class SourceUrlsProducerService {
         }
     }
   
-    // if schedule is defined, scheduling job, it will be immediatelly called regardless to schedule value
+    // if schedule is defined, scheduling job, it will be immediately called regardless to schedule value
     if(schedule){
-      schedulerService.addTimeoutListener({ key ->
-        LOG.trace("job invoked: " + key)
-        sendMessage('activemq:input-url', key) } as TimeoutListener)
-
       def date = schedulerService.scheduleJob(init, schedule)
       LOG.trace("Job scheduled at:" + date)
     } else {
