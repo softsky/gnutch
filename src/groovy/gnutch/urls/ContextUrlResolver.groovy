@@ -51,28 +51,10 @@ class ContextUrlResolver implements Processor {
           contextURI.port, 
           contextURI.path)
 
-        url = new URI(
-          url.protocol, 
-          url.userInfo,
-          url.host, 
-          url.port, 
-          url.path, 
-          url.query,
-          url.ref
-        ).resolve(body).toURL()
+        url = new URL(url, body)
       }
 
-      contextURI = new URI(
-        url.protocol, 
-        url.userInfo,
-        url.host, 
-        url.port, 
-        url.path,
-        url.query,
-        url.ref
-      )
-         
-      exchange.in.body = contextURI.toASCIIString()
+      exchange.in.body = url.toString()
   }
 
   protected static String unescape(String str){
