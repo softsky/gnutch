@@ -39,6 +39,10 @@ as trasnformation is executed couple of times. Please, check your transformation
         def domResult = new DOMResult()
         def tf = TransformerFactory.newInstance(TRANSFORMER_FACTORY_CLASS, null)
         def transformer = tf.newTransformer(new DOMSource(entry.value))
+
+        if(transformer == null)
+          throw new RuntimeException("XLT is seems invalid for this URI: ${contextURI}")
+
         transformer.setParameter('contextURI', contextURI)
         transformer.transform(new DOMSource(body), domResult)
         result = domResult.node
