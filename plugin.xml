@@ -1,4 +1,4 @@
-<plugin name='gnutch' version='0.1.7' grailsVersion='2.0.0 &gt; *'>
+<plugin name='gnutch' version='0.2' grailsVersion='2.0.0 &gt; *'>
   <author>Arsen A. Gutsal</author>
   <authorEmail>gutsal.arsen@gmail.com</authorEmail>
   <title>Grails Apache Nutch alternative</title>
@@ -22,22 +22,22 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
   <dependencies>
     <compile>
       <dependency group='org.apache.camel' name='camel-cache' version='2.11.0' />
-      <dependency group='org.apache.camel' name='camel-tagsoup' version='2.11.0' />
-      <dependency group='org.apache.camel' name='camel-mail' version='2.11.0' />
-      <dependency group='org.apache.tika' name='tika-core' version='1.3' />
+      <dependency group='org.apache.camel' name='camel-spring' version='2.11.0' />
+      <dependency group='org.quartz-scheduler' name='quartz' version='2.1.6' />
       <dependency group='org.apache.tika' name='tika-parsers' version='1.3' />
+      <dependency group='org.apache.camel' name='camel-mail' version='2.11.0' />
       <dependency group='org.apache.camel' name='camel-core' version='2.11.0' />
       <dependency group='org.apache.camel' name='camel-groovy' version='2.11.0' />
-      <dependency group='org.apache.camel' name='camel-spring' version='2.11.0' />
       <dependency group='org.apache.camel' name='camel-jms' version='2.11.0' />
+      <dependency group='org.apache.camel' name='camel-tagsoup' version='2.11.0' />
       <dependency group='org.apache.camel' name='camel-http' version='2.11.0' />
-      <dependency group='org.quartz-scheduler' name='quartz' version='2.1.6' />
+      <dependency group='org.apache.tika' name='tika-core' version='1.3' />
     </compile>
     <runtime>
-      <dependency group='org.apache.xbean' name='xbean-spring' version='3.8' />
       <dependency group='hsqldb' name='hsqldb' version='1.8.0.10' />
-      <dependency group='org.apache.activemq' name='activemq-camel' version='5.7.0' />
       <dependency group='org.apache.activemq' name='activemq-core' version='5.7.0' />
+      <dependency group='org.apache.xbean' name='xbean-spring' version='3.8' />
+      <dependency group='org.apache.activemq' name='activemq-camel' version='5.7.0' />
     </runtime>
   </dependencies>
   <plugins />

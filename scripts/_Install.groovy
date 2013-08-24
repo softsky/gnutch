@@ -9,6 +9,15 @@
 //    ant.mkdir(dir:"${basedir}/grails-app/jobs")
 //
 
+println '''
+*******************************************************
+* You\'ve installed the GNutch grails plugin          *
+*                                                     *
+* Make sure you have the following plugins installed: *
+*    routing (1.2.4+)                                 *
+*******************************************************
+'''
+
 println "${basedir}/grails-app/routes"
 ant.mkdir(dir:"${basedir}/grails-app/routes")
 
@@ -18,3 +27,18 @@ ant.copy(toDir:"${basedir}/grails-app/routes"){
     include(name:"**/*.groovy")
   }
 }
+
+println "Updating configuration"
+
+def srcFile = "${basedir}/grails-app/conf/Config.groovy"
+def dstFile = "${basedir}/grails-app/conf/Config.groovy~"
+
+ant.copy(file:srcFile, tofile:dstFile){
+  filterchain{
+    concatfilter(append: "${pluginBasedir}/grails-app/conf/Config.groovy.txt")
+    tokenfilter(delimoutput:"\n")
+  }
+}
+ant.move(file: dstFile, tofile: srcFile)
+
+ant.copy(file:"${pluginBasedir}/grails-app/conf/ehcache.xml", tofile:"${basedir}/grails-app/conf/ehcache.xml")
