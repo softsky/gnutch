@@ -1,1 +1,5 @@
 .emacs.*
+*.zip
+*.zip.sha1
+target
+
