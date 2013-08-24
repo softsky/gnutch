@@ -15,7 +15,7 @@ class DocumentIndexingRoute extends RouteBuilder {
          beanRef('documentIndexer', 'index').
          log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
          process { ex -> (config.gnutch.postProcessorXML as org.apache.camel.Processor).process(ex) }.
-         to('seda:aggregate-documents')
+         to('direct:aggregate-documents')
 
       from('direct:index-binary').
          process { ex -> 
@@ -31,10 +31,10 @@ class DocumentIndexingRoute extends RouteBuilder {
          convertBodyTo(org.w3c.dom.Document).
          log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
          process { ex -> (config.gnutch.postProcessorXML as org.apache.camel.Processor).process(ex) }.
-         to('seda:aggregate-documents')
+         to('direct:aggregate-documents')
 
         
-      from('seda:aggregate-documents').
+      from('direct:aggregate-documents').
       aggregate(constant('null')).completionInterval(60000L).groupExchanges().
         processRef('docsAggregator').
         log(LoggingLevel.DEBUG, 'gnutch','Committing index').

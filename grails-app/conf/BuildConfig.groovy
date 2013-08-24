@@ -1,37 +1,30 @@
 grails.project.class.dir = "target/classes"
 grails.project.test.class.dir = "target/test-classes"
 grails.project.test.reports.dir = "target/test-reports"
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
 
-def camelVersion = '2.9.4' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
+def camelVersion = '2.11.0' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
 def activeMQVersion = '5.7.0'
+
 grails.project.dependency.resolution = {
     // inherit Grails' default dependencies
     inherits("global") {
         // uncomment to disable ehcache
-      excludes 'ehcache', 'antlr'
-      // excludes  'jline'
+        // excludes 'ehcache'
     }
     log "warn" // log level of Ivy resolver, either 'error', 'warn', 'info', 'debug' or 'verbose'
+    legacyResolve false // whether to do a secondary resolve on plugin installation, not advised and here for backwards compatibility
     repositories {
-        grailsPlugins()
-        grailsHome()
         grailsCentral()
-
+        mavenCentral()
         // uncomment the below to enable remote dependency resolution
         // from public Maven repositories
-        mavenLocal()
-        mavenCentral()
+        //mavenLocal()
         //mavenRepo "http://snapshots.repository.codehaus.org"
         //mavenRepo "http://repository.codehaus.org"
         //mavenRepo "http://download.java.net/maven/2/"
         //mavenRepo "http://repository.jboss.com/maven2/"
     }
     dependencies {
-      // specify dependencies here under either 'build', 'compile', 'runtime', 'test' or 'provided' scopes eg.
-
-      compile ("org.grails.plugins:routing:1.2.3")
-
       compile ("org.apache.camel:camel-core:${camelVersion}") { excludes 'slf4j-api' }
       compile ("org.apache.camel:camel-http:${camelVersion}") { excludes 'commons-codec' }
       compile ("org.apache.camel:camel-mail:${camelVersion}")
@@ -54,5 +47,14 @@ grails.project.dependency.resolution = {
       }
       runtime("org.apache.xbean:xbean-spring:3.8") { excludes 'commons-logging' }
       runtime("hsqldb:hsqldb:1.8.0.10") { }
+    }
+
+    plugins {
+        build(":tomcat:$grailsVersion",
+              ":routing:1.2.4",
+              ":release:2.2.1",
+              ":rest-client-builder:1.0.3") {
+            export = false
+        }
     }
 }
