@@ -24,23 +24,32 @@ log4j = {
 }
 
 gnutch {
-  // Input route definition 
-  inputRoute = 'file:///home/archer/tmp/gnutch-input'
+  // Define local directory which is used for receiving source-definition files.
+  inputRoute = 'file:///tmp/gnutch-input'
 
   crawl {
-   // Crawling thread pool
-   threads = 20
+    // Define fixed number of threads we use for crawling
+    threads = 40
   }
 
   // post processors
-  postProcessorHTML = {ex ->} 
+  // define custom post processing closure which is called for HTML pages
+  // ex.in.body contains org.w3c.dom.Document object represending XHTML page just crawled
+  postProcessorHTML = {ex ->}
 
-  postProcessorXML = {ex ->} 
-  
+  // define custom post processing closure which is called for XML document which was received after XSLT
+  // ex.in.body contains org.w3c.dom.Document object represending XML result of XSL transformation
+  postProcessorXML = {ex ->}
+
+
   http {
     // UserAgent string. Better if contain email address of person who is responsible 
     // for crawling. That will allow source owners to contact person directly
-    userAgent = "GNutch crawler. Contact maintainer: admin@softsky.com.ua"
+    userAgent = 'GNutch crawler (https://github.com/softsky/gnutch/). Contact: yourname@domain.com'
+
+    // Since we use shared threadPool for HTTP connections,
+    // we define these two values
+
     // Maximmum number of connections per host
     defaultMaxConnectionsPerHost = 40
     // Maximmum number of total connections
@@ -48,15 +57,19 @@ gnutch {
   }
 
   solr {
-    // URL to Solr server
-    serverUrl = 'http://vm4:8983/solr'
+    // URL to Solr server where we send crawled data for indexing
+    serverUrl = 'http://localhost:8983/solr'
   }
  
   
   activemq {
-    // URL to message broker
+    // URL to AMQ message broker. 
+    // For simple configuration it runs embedded AMQ
+    // More on possible connection strings here: http://activemq.apache.org/configuring-transports.html
+    // brokerURL = 'tcp://0.0.0.0:61616'
     brokerURL = 'vm://localhost'
-    // conf = 'classpath:activemq.xml'
-  } 
 
+    // For more complex cases it could contain external AMQ configuration
+    //conf = 'classpath:activemq.xml'
+  } 
 }
