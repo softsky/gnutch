@@ -2,7 +2,6 @@ class GnutchGrailsPlugin {
 
     def version = "0.2"
     def grailsVersion = "2.0.0 > *"
-    def dependsOn = [routing:'1.2.4 > *']
     def loadAfter = ['controllers', 'services', 'routing']
     def pluginExcludes = [
         "grails-app/views/error.gsp"
