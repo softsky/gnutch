@@ -4,8 +4,6 @@ import org.apache.camel.builder.RouteBuilder
 import org.apache.camel.component.cache.CacheConstants
 import org.apache.camel.component.http.HttpOperationFailedException
 
-import gnutch.indexer.DocumentIndexer
-
 class UrlCrawlRoute extends RouteBuilder {
   def grailsApplication
 
@@ -13,7 +11,7 @@ class UrlCrawlRoute extends RouteBuilder {
   void configure() {
       def config = grailsApplication?.config
 
-      onException(java.net.UnknownHostException).
+      onException(UnknownHostException).
       handled(true).
       logStackTrace(false).
       log(LoggingLevel.TRACE, 'gnutch', '${headers.exception}: ${body}')
@@ -26,7 +24,7 @@ class UrlCrawlRoute extends RouteBuilder {
       groovy ('exchange.getProperty(org.apache.camel.Exchange.EXCEPTION_CAUGHT).hasRedirectLocation()').
       log(LoggingLevel.TRACE, 'gnutch', 'Redirect to ${exception.redirectLocation} found. Original url: ${body}').
       process { exchange ->
-        def exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class)
+        def exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable)
         exchange.in.body = exception.redirectLocation
       }.
       to('activemq:input-url')
@@ -35,7 +33,7 @@ class UrlCrawlRoute extends RouteBuilder {
       from("activemq:input-url?concurrentConsumers=${config.gnutch.crawl.threads}").
         delay(500).
         setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
-        setHeader(Exchange.HTTP_URI, body(String)). 
+        setHeader(Exchange.HTTP_URI, body(String)).
         setBody(constant()).
         log(LoggingLevel.DEBUG, 'gnutch', 'Retrieving ${headers.contextURI}').
         to('http://null'). // invoking HttpClient
@@ -61,7 +59,7 @@ class UrlCrawlRoute extends RouteBuilder {
            beanRef('tikaContentExtractor', 'extract').
            to('direct:index-binary'). // submitting tika for future processing
          end().
-       end() 
+       end()
 
       // links extractor route
      from('direct:extract-links').

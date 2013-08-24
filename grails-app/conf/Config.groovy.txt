@@ -16,9 +16,8 @@ gnutch {
   // ex.in.body contains org.w3c.dom.Document object represending XML result of XSL transformation
   postProcessorXML = {ex ->}
 
-
   http {
-    // UserAgent string. Better if contain email address of person who is responsible 
+    // UserAgent string. Better if contain email address of person who is responsible
     // for crawling. That will allow source owners to contact person directly
     userAgent = 'GNutch crawler (https://github.com/softsky/gnutch/). Contact: yourname@domain.com'
 
@@ -35,10 +34,9 @@ gnutch {
     // URL to Solr server where we send crawled data for indexing
     serverUrl = 'http://localhost:8983/solr'
   }
- 
-  
+
   activemq {
-    // URL to AMQ message broker. 
+    // URL to AMQ message broker.
     // For simple configuration it runs embedded AMQ
     // More on possible connection strings here: http://activemq.apache.org/configuring-transports.html
     // brokerURL = 'tcp://0.0.0.0:61616'
@@ -46,5 +44,5 @@ gnutch {
 
     // For more complex cases it could contain external AMQ configuration
     //conf = 'classpath:activemq.xml'
-  } 
+  }
 }

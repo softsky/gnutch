@@ -1,20 +1,13 @@
 package gnutch.urls
 
-import grails.test.*
+import grails.test.GrailsUnitTestCase
 
 class RegexUrlCheckerTests extends GrailsUnitTestCase {
-  def regexUrlChecker
-  protected void setUp() {
-    super.setUp()
-    regexUrlChecker = new RegexUrlChecker()
-  }
 
-  protected void tearDown() {
-    super.tearDown()
-  }
+  private regexUrlChecker = new RegexUrlChecker()
 
   void testCheckInclusive() {
-        
+
     [
       /^http.*google\.com\/a.*/,
       /^http.*google\.com\/b.*/
@@ -26,26 +19,25 @@ class RegexUrlCheckerTests extends GrailsUnitTestCase {
       /^.*z$/
     ].each { regexUrlChecker.ignoredPatternList << it}
 
-    assert regexUrlChecker.check('http://www.google.com/abc') == true
-    assert regexUrlChecker.check('http://www.google.com/bc') == true
-    assert regexUrlChecker.check('http://www.google.com/a/b/c') == true
+    assertTrue regexUrlChecker.check('http://www.google.com/abc')
+    assertTrue regexUrlChecker.check('http://www.google.com/bc')
+    assertTrue regexUrlChecker.check('http://www.google.com/a/b/c')
 
-    assert regexUrlChecker.check('http://www.google.com/abx') == false // ends with x
-    assert regexUrlChecker.check('http://www.google.com/bcy') == false // ends with y
-    assert regexUrlChecker.check('http://www.google.com/a/b/z') == false // ends with z
-
+    assertFalse regexUrlChecker.check('http://www.google.com/abx') // ends with x
+    assertFalse regexUrlChecker.check('http://www.google.com/bcy') // ends with y
+    assertFalse regexUrlChecker.check('http://www.google.com/a/b/z') // ends with z
   }
+
   void testCheckExclusive() {
 
     regexUrlChecker.allowedPatternList << /^http.*google\.com\/a.*/
     regexUrlChecker.ignoredPatternList <<  /.*\/b.*/
 
-    assert regexUrlChecker.check('http://www.google.com/abc') == true
-    assert regexUrlChecker.check('http://www.google.com/bc') == false
-    assert regexUrlChecker.check('http://www.google.com/a/b/c') == false // contains /b pattern
+    assertTrue regexUrlChecker.check('http://www.google.com/abc')
+    assertFalse regexUrlChecker.check('http://www.google.com/bc')
+    assertFalse regexUrlChecker.check('http://www.google.com/a/b/c') // contains /b pattern
 
-    assert regexUrlChecker.check('http://www.yahoo.com/abx') == false // ends with x
-    assert regexUrlChecker.check('http://www.yandex.com/bcy') == false // ends with y
-
+    assertFalse regexUrlChecker.check('http://www.yahoo.com/abx') // ends with x
+    assertFalse regexUrlChecker.check('http://www.yandex.com/bcy') // ends with y
   }
 }

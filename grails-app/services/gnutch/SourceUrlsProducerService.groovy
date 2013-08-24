@@ -1,43 +1,40 @@
 package gnutch
 
-import org.springframework.beans.factory.annotation.Autowired
-
-import javax.annotation.PostConstruct
-import javax.xml.xpath.*
-import javax.xml.namespace.NamespaceContext
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import gnutch.indexer.DocumentIndexer
-import gnutch.urls.RegexUrlChecker
 import gnutch.quartz.SchedulerService
 import gnutch.quartz.TimeoutListener
+import gnutch.urls.RegexUrlChecker
+
+import javax.annotation.PostConstruct
+import javax.xml.namespace.NamespaceContext
+import javax.xml.xpath.XPathFactory
+
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Autowired
 
 class SourceUrlsProducerService {
 
-  static transactional = true
-
-  Logger LOG = LoggerFactory.getLogger(SourceUrlsProducerService.class);
+  Logger LOG = LoggerFactory.getLogger(SourceUrlsProducerService)
 
   @Autowired
-  def DocumentIndexer documentIndexer
+  DocumentIndexer documentIndexer
 
   @Autowired
-  def RegexUrlChecker regexUrlChecker
+  RegexUrlChecker regexUrlChecker
 
   @Autowired
-  def SchedulerService schedulerService
+  SchedulerService schedulerService
 
   @PostConstruct
-  private def init(){
+  private void init(){
     schedulerService.addTimeoutListener({ key ->
-      LOG.trace("job invoked: " + key)
+      LOG.trace("job invoked: $key")
       sendMessage('activemq:input-url', key)
     } as TimeoutListener)
   }
 
-  def produce(def doc) {
+  def produce(doc) {
     def xpath = XPathFactory.newInstance().newXPath()
 
     // defining namespace context
@@ -55,29 +52,29 @@ class SourceUrlsProducerService {
     def schedule = xpath.evaluate('gn:schedule/text()', doc.documentElement)
 
     // making sure all set
-    assert init, "gn:init should be set" 
+    assert init, "gn:init should be set"
     assert filter, "gn:filter should be set"
     assert index, "gn:index should be set"
     // gn:scheudle may not be set
 
     // adding document into map of index:document
-    documentIndexer.transformations.put(index, doc) 
-  
+    documentIndexer.transformations.put(index, doc)
+
     // applying gn:filter
     filter.split('\n').each { line ->
       line = line.trim()
-      if(line != "")
+      if(line)
         switch(line.charAt(0)){
-          case '+':regexUrlChecker.allowedPatternList << line.substring(1);break;
-          case '-':regexUrlChecker.ignoredPatternList << line.substring(1);break;
-          default: throw new RuntimeException("gn:filter entry should start with +/-");break;
+          case '+':regexUrlChecker.allowedPatternList << line.substring(1);break
+          case '-':regexUrlChecker.ignoredPatternList << line.substring(1);break
+          default: throw new RuntimeException("gn:filter entry should start with +/-");break
         }
     }
-  
+
     // if schedule is defined, scheduling job, it will be immediately called regardless to schedule value
     if(schedule){
       def date = schedulerService.scheduleJob(init, schedule)
-      LOG.trace("Job scheduled at:" + date)
+      LOG.trace("Job scheduled at:$date")
     } else {
       // if schedule is not defined
       // sending init url into the queue for crawling

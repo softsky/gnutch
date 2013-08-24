@@ -13,7 +13,7 @@ Depends on :routing:1.2.4 or higher
 
         // ....
 
-        build ":routing:1.2.4" // you may use higher version 
+        build ":routing:1.2.4" // you may use higher version
         build ":gnutch:0.2"
 
         // ....
@@ -48,7 +48,7 @@ file: `$GNUTCH_HOME/grails-app/conf/Config.groovy` will be appended with that se
 
 
        http {
-         // UserAgent string. Better if contain email address of person who is responsible 
+         // UserAgent string. Better if contain email address of person who is responsible
          // for crawling. That will allow source owners to contact person directly
          userAgent = 'GNutch crawler (https://github.com/softsky/gnutch/). Contact: yourname@domain.com'
 
@@ -65,10 +65,9 @@ file: `$GNUTCH_HOME/grails-app/conf/Config.groovy` will be appended with that se
          // URL to Solr server where we send crawled data for indexing
          serverUrl = 'http://localhost:8983/solr'
        }
- 
-  
+
        activemq {
-         // URL to AMQ message broker. 
+         // URL to AMQ message broker.
          // For simple configuration it runs embedded AMQ
          // More on possible connection strings here: http://activemq.apache.org/configuring-transports.html
          // brokerURL = 'tcp://0.0.0.0:61616'
@@ -76,5 +75,5 @@ file: `$GNUTCH_HOME/grails-app/conf/Config.groovy` will be appended with that se
 
          // For more complex cases it could contain external AMQ configuration
          //conf = 'classpath:activemq.xml'
-       } 
+       }
      }
