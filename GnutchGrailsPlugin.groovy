@@ -1,17 +1,21 @@
+import gnutch.http.HttpClientConfigurer
+
+import org.apache.activemq.ActiveMQConnectionFactory
+import org.apache.activemq.pool.PooledConnectionFactory
+import org.apache.camel.component.http.HttpComponent
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager
+import org.apache.commons.httpclient.params.HttpConnectionManagerParams
+
 class GnutchGrailsPlugin {
 
     def version = "0.2"
     def grailsVersion = "2.0.0 > *"
     def loadAfter = ['controllers', 'services', 'routing']
-    def pluginExcludes = [
-        "grails-app/views/error.gsp"
-    ]
     def title = "Grails Apache Nutch alternative"
     def author = "Arsen A. Gutsal"
     def authorEmail = "gutsal.arsen@gmail.com"
     def documentation = "http://grails.org/plugin/gnutch"
     def license = "GPL3"
-    //    def developers = [ [ name: "", email: "" ]]
     def issueManagement = [ system: "GitHub", url: "https://github.com/softsky/gnutch/issues" ]
     def scm = [ url: "https://github.com/softsky/gnutch" ]
     def description = '''\
@@ -30,25 +34,25 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
         importBeans conf.gnutch.activemq.conf
       }
 
-      jmsFactory(org.apache.activemq.ActiveMQConnectionFactory) {
+      jmsFactory(ActiveMQConnectionFactory) {
         brokerURL = conf.gnutch.activemq.brokerURL
       }
 
-      jmsConnectionFactory(org.apache.activemq.pool.PooledConnectionFactory) {
+      jmsConnectionFactory(PooledConnectionFactory) {
         connectionFactory = ref('jmsFactory')
       }
 
-      http(org.apache.camel.component.http.HttpComponent){
+      http(HttpComponent){
         camelContext = ref('camelContext')
         httpConnectionManager = ref('httpConnectionManager')
-        httpClientConfigurer = new gnutch.http.HttpClientConfigurer(conf.gnutch.http.userAgent)
+        httpClientConfigurer = new HttpClientConfigurer(conf.gnutch.http.userAgent)
       }
 
-      httpConnectionManager(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager){
+      httpConnectionManager(MultiThreadedHttpConnectionManager){
         params = ref('httpConnectionManagerParams')
       }
 
-      httpConnectionManagerParams(org.apache.commons.httpclient.params.HttpConnectionManagerParams){
+      httpConnectionManagerParams(HttpConnectionManagerParams){
         defaultMaxConnectionsPerHost = conf.gnutch.http.defaultMaxConnectionsPerHost
         maxTotalConnections = conf.gnutch.http.maxTotalConnections
       }
@@ -64,29 +68,5 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
       schedulerService(gnutch.quartz.SchedulerService)
 
       tikaContentExtractor(gnutch.TikaContentExtractor)
-
-    }
-   
-    def doWithDynamicMethods = { ctx ->
-        // TODO Implement registering dynamic methods to classes (optional)
-    }
-
-    def doWithApplicationContext = { applicationContext ->
-        // TODO Implement post initialization spring config (optional)
-    }
-
-    def onChange = { event ->
-        // TODO Implement code that is executed when any artefact that this plugin is
-        // watching is modified and reloaded. The event contains: event.source,
-        // event.application, event.manager, event.ctx, and event.plugin.
-    }
-
-    def onConfigChange = { event ->
-        // TODO Implement code that is executed when the project configuration changes.
-        // The event is the same as for 'onChange'.
-    }
-
-    def onShutdown = { event ->
-        // TODO Implement code that is executed when the application shuts down (optional)
     }
 }

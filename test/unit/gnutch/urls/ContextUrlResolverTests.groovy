@@ -1,24 +1,13 @@
 package gnutch.urls
 
-import org.apache.camel.Exchange
-import org.apache.camel.impl.DefaultExchange
-import org.apache.camel.CamelContext
+import grails.test.GrailsUnitTestCase
+
 import org.apache.camel.impl.DefaultCamelContext
-import org.apache.camel.Processor
-
-import grails.test.*
-
+import org.apache.camel.impl.DefaultExchange
 
 class ContextUrlResolverTests extends GrailsUnitTestCase {
-  def processor
-    protected void setUp() {
-        super.setUp()
-        processor = new ContextUrlResolver()
-    }
 
-    protected void tearDown() {
-        super.tearDown()
-    }
+    private processor = new ContextUrlResolver()
 
     void testProcess() {
       def ctx = new DefaultCamelContext()
@@ -157,15 +146,11 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
       processor.process(ex)
       assert ex.in.body == 'http://www.sidbiventure.co.in/Docs/Advertisement for placement agent - foreign fund raising_UK_Europe.pdf'
 
-
       // URL escaping
       ex.in.headers['contextURI'] = 'http://www.example.com/a/b/c'
       ex.in.body = 'verDoc.axd?t={a7b04ee8-2497-4c6d-a16e-065e40ea280d}'
       processor.process(ex)
       assert ex.in.body == 'http://www.example.com/a/b/verDoc.axd?t={a7b04ee8-2497-4c6d-a16e-065e40ea280d}'
-
-
-          
     }
 
     void testUnescape(){
@@ -173,6 +158,5 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
         assert ContextUrlResolver.unescape('%E2%80%A2') == '•'
         assert ContextUrlResolver.unescape('%E2%80%A2%2C') == '•,'
         assert ContextUrlResolver.unescape('r%E2%80%A2o%E2%80%A2m') == 'r•o•m'
-
     }
 }

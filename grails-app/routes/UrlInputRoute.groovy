@@ -1,4 +1,5 @@
 import org.apache.camel.builder.RouteBuilder
+import org.w3c.dom.Document
 
 class UrlInputRoute extends RouteBuilder {
   def grailsApplication
@@ -8,7 +9,7 @@ class UrlInputRoute extends RouteBuilder {
       def config = grailsApplication?.config
 
       from("${config.gnutch.inputRoute}").
-      convertBodyTo(org.w3c.dom.Document).
+      convertBodyTo(Document).
       beanRef('sourceUrlsProducerService', 'produce')
     }
 }

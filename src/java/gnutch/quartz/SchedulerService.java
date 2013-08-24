@@ -1,15 +1,12 @@
 package gnutch.quartz;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Iterator;
-import java.util.Collections;
 import java.util.Properties;
-import java.util.Date;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import org.quartz.Job;
 import org.quartz.JobBuilder;
@@ -26,6 +23,8 @@ import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.spi.JobFactory;
 import org.quartz.spi.TriggerFiredBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a Java Bean which has these fields: <br/>
@@ -48,37 +47,36 @@ import org.quartz.spi.TriggerFiredBundle;
  * @author rumen.dimov.mail@gmail.com
  * @version %I%, %G%
  */
-public class SchedulerService 
-{
+public class SchedulerService {
+
     Logger LOG = LoggerFactory.getLogger(SchedulerService.class);
     /**
      * Generic Scheduler Job that invokes all the associated TimeoutListener instances.
      */
     private class TimeoutListenerInvokingJob implements Job {
-		
+
         @Override
         public void execute(JobExecutionContext context) throws JobExecutionException {
-            String key = 
-                context.getJobDetail().getKey().getName();
+            String key = context.getJobDetail().getKey().getName();
             LOG.trace("Triggering job with key:" + key);
             synchronized(SchedulerService.this) {
                 TimeoutListener listener = null;
                 Iterator<TimeoutListener> it = timeoutListeners.iterator();
-                    while(it.hasNext()){
-                        listener = it.next();
-                        listener.onTimeout(key);
-                    }
+                while(it.hasNext()){
+                    listener = it.next();
+                    listener.onTimeout(key);
+                }
             }
         }
     }
-	
-    protected List<TimeoutListener> timeoutListeners; // we need it protected for testin
+
+    protected List<TimeoutListener> timeoutListeners; // we need it protected for testin'
     private Properties properties;
     private Scheduler quartzScheduler;
 
     /**
      * Default constructor.
-     * 
+     *
      * @throws SchedulerException
      */
     public SchedulerService() throws SchedulerException {
@@ -86,20 +84,18 @@ public class SchedulerService
         quartzScheduler = sf.getScheduler();
         // The following is needed because Class#newInstance() does not work for inner classes
         quartzScheduler.setJobFactory(new JobFactory(){
-        	@Override
-        	public Job newJob(TriggerFiredBundle paramTriggerFiredBundle,
-                                  Scheduler paramScheduler) throws SchedulerException {
-                    // TODO Auto-generated method stub
-                    return new TimeoutListenerInvokingJob();
-        	}
-            });
+        	   public Job newJob(TriggerFiredBundle paramTriggerFiredBundle,
+                              Scheduler paramScheduler) throws SchedulerException {
+                return new TimeoutListenerInvokingJob();
+        	   }
+        });
         timeoutListeners = Collections.synchronizedList(new ArrayList<TimeoutListener>());
         quartzScheduler.start();
-    }	
+    }
 
     /**
      * Stores the TimeoutListener under the given key name for later use.
-     * 
+     *
      * @param key
      * @param listener
      */
@@ -108,13 +104,13 @@ public class SchedulerService
             LOG.trace("Adding TimeoutListener");
             timeoutListeners.add(listener);
         } else {
-            LOG.trace("Ignoring to add TimeoutListener");            
+            LOG.trace("Ignoring to add TimeoutListener");
         }
     }
 
     /**
      * Stores the TimeoutListener under the given key name for later use.
-     * 
+     *
      * @param key
      * @param listener
      */
@@ -127,15 +123,12 @@ public class SchedulerService
         }
     }
 
-    
-
     /**
      * @return the properties
      */
     public Properties getProperties() {
         return properties;
     }
-
 
     /**
      * Properties defines all scheduled jobs and timeouts in form: <br/>
@@ -151,10 +144,10 @@ public class SchedulerService
      * The jobs are distinguished by the Property keys used as their names in the Scheduler.<br/>
      * <br/>
      * <b>Given the above, rescheduling a job within 100 ms around its fire point may result in extra fires.<b/><br/>
-     * <br/> 
+     * <br/>
      * @param properties the properties to set
      * @throws SchedulerException
-     * 
+     *
      * @see {@link #addTimeoutListener(String, TimeoutListener)}
      */
     public synchronized void setProperties(Properties properties) throws SchedulerException {
@@ -163,8 +156,7 @@ public class SchedulerService
         } else {
             this.properties = (Properties)properties.clone(); // shallow copy, prevent from modifying behind the scenes
             for(Entry entry : this.properties.entrySet()) {
-                String key = 
-                    entry.getKey().toString().trim();
+                String key = entry.getKey().toString().trim();
                 scheduleJob(key, (String)entry.getValue());
             }
         }
@@ -172,22 +164,21 @@ public class SchedulerService
 
     /**
      * Schedules the job named `key` with timeout `timeout`
-     * 
+     *
      * @return Date object on which scheduled job will invoke
      */
     public Date scheduleJob(String key, String timeout) throws SchedulerException {
-        // Remove the indicated Trigger from the scheduler 
+        // Remove the indicated Trigger from the scheduler
         // If the related job does not have any other triggers, and the job is not durable, then the job will also be deleted
-        quartzScheduler
-            .deleteJob(new JobKey(key,key)); // see how we define a new TriggerKey below
+        quartzScheduler.deleteJob(new JobKey(key,key)); // see how we define a new TriggerKey below
         // Define the new job
-        // Note the Scheduler needs a custom JobFactory to instantiate the inner class below 
+        // Note the Scheduler needs a custom JobFactory to instantiate the inner class below
         JobDetail job = JobBuilder.newJob(TimeoutListenerInvokingJob.class)
             .withIdentity(key, key) // name "key", group "key"
             .build();
         Long interval = StringDateUtils.fromStringToIntervalMs(timeout);
         LOG.trace("Job is scheduling to be fired in " + timeout + " interval, which is:" + interval + " msec");
-        // Trigger the job to run now and forever through regular intervals 
+        // Trigger the job to run now and forever through regular intervals
         Trigger trigger = TriggerBuilder.newTrigger()
             .withIdentity(key, key) // name "key", group "key"
             .startNow()
