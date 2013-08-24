@@ -14,7 +14,7 @@ Depends on :routing:1.2.4 or higher
         // ....
 
         build ":routing:1.2.4" // you may use higher version 
-        build ":gnutch:0.1.7"
+        build ":gnutch:0.2"
 
         // ....
         }
