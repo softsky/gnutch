@@ -38,9 +38,10 @@ class DocumentIndexingRoute extends RouteBuilder {
       aggregate(constant('null')).completionInterval(60000L).groupExchanges().
         processRef('docsAggregator').
         log(LoggingLevel.DEBUG, 'gnutch','Committing index').
-        setHeader(Exchange.HTTP_URI, constant("${config.gnutch.solr.serverUrl}/update?commit=true")). 
-        setHeader(Exchange.HTTP_METHOD, constant('POST')).
-        setHeader(Exchange.CONTENT_TYPE, constant('application/xml')).
-        to("http://null")
+        to('direct:publish')
+
+        config.gnutch.publish.delegate = this
+        config.gnutch.publish.call()
+
     }
 }

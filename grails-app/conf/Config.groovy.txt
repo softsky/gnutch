@@ -16,6 +16,21 @@ gnutch {
   // ex.in.body contains org.w3c.dom.Document object represending XML result of XSL transformation
   postProcessorXML = {ex ->}
 
+  publish = {
+    /** 
+   // This route will save files to a directory
+   from('direct:publish').
+      to("file:///tmp/gnutch-output/")
+   */
+
+   // This route will commit to a solr server
+   from('direct:publish').
+      setHeader(org.apache.camel.Exchange.HTTP_URI, constant("http://localhost:8983/solr/collection1/update?commit=true")).
+      setHeader(org.apache.camel.Exchange.HTTP_METHOD, constant('POST')).
+      setHeader(org.apache.camel.Exchange.CONTENT_TYPE, constant('application/xml')).
+      to("http://null")
+  }       
+
 
   http {
     // UserAgent string. Better if contain email address of person who is responsible 
