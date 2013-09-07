@@ -7,30 +7,39 @@ gnutch {
     threads = 40
   }
 
-  // post processors
-  // define custom post processing closure which is called for HTML pages
-  // ex.in.body contains org.w3c.dom.Document object represending XHTML page just crawled
-  postProcessorHTML = {ex ->}
+  handlers {
+    // post processors
+    // define custom post processing closure which is called for HTML pages
+    // ex.in.body contains org.w3c.dom.Document object represending XHTML page just crawled
+    postXHTML = {ex ->}
 
-  // define custom post processing closure which is called for XML document which was received after XSLT
-  // ex.in.body contains org.w3c.dom.Document object represending XML result of XSL transformation
-  postProcessorXML = {ex ->}
+    // define custom post processing closure which is called for XML document which was received after XSLT
+    // ex.in.body contains org.w3c.dom.Document object represending XML result of XSL transformation
+    postXML = {ex ->}
 
-  publish = {
-    /** 
-   // This route will save files to a directory
-   from('direct:publish').
-      to("file:///tmp/gnutch-output/")
-   */
+    validate = { ex ->
+      def title = org.apache.xpath.XPathAPI.eval(ex.in.body, "//field[@name = 'title']").str()
+      def content = org.apache.xpath.XPathAPI.eval(ex.in.body, "//field[@name = 'content']").str()
 
-   // This route will commit to a solr server
-   from('direct:publish').
+      return (title.equals("") == false) && (content.equals("") == false)
+    }
+
+
+    publish = {
+      /** 
+       // This route will save files to a directory
+       from('direct:publish').
+       to("file:///tmp/gnutch-output/")
+      */
+
+      // This route will commit to a solr server
+      from('direct:publish').
       setHeader(org.apache.camel.Exchange.HTTP_URI, constant("http://localhost:8983/solr/collection1/update?commit=true")).
       setHeader(org.apache.camel.Exchange.HTTP_METHOD, constant('POST')).
       setHeader(org.apache.camel.Exchange.CONTENT_TYPE, constant('application/xml')).
       to("http://null")
-  }       
-
+    }       
+  }
 
   http {
     // UserAgent string. Better if contain email address of person who is responsible 

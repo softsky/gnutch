@@ -11,11 +11,9 @@ class DocumentIndexingRoute extends RouteBuilder {
       def config = grailsApplication?.config
 
       from('direct:index-xhtml').
-         log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
          beanRef('documentIndexer', 'index').
-         log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
-         process { ex -> (config.gnutch.postProcessorXML as org.apache.camel.Processor).process(ex) }.
-         to('direct:aggregate-documents')
+         process { ex -> (config.gnutch.handlers.postXML as org.apache.camel.Processor).process(ex) }.
+         to('seda:aggregate-documents')
 
       from('direct:index-binary').
          process { ex -> 
@@ -29,16 +27,23 @@ class DocumentIndexingRoute extends RouteBuilder {
            ex.in.body = writer.toString()
          }.
          convertBodyTo(org.w3c.dom.Document).
-         log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
-         process { ex -> (config.gnutch.postProcessorXML as org.apache.camel.Processor).process(ex) }.
-         to('direct:aggregate-documents')
+         process { ex -> (config.gnutch.handlers.postXML as org.apache.camel.Processor).process(ex) }.
+         to('seda:aggregate-documents')
 
         
-      from('direct:aggregate-documents').
-      aggregate(constant('null')).completionInterval(60000L).groupExchanges().
-        processRef('docsAggregator').
-        log(LoggingLevel.DEBUG, 'gnutch','Committing index').
-        to('direct:publish')
+      from('seda:aggregate-documents').
+       choice().
+       when(config.gnutch.handlers.validate).
+         log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
+         aggregate(constant('null')).completionInterval(60000L).groupExchanges().
+           processRef('docsAggregator').
+           log(LoggingLevel.INFO, 'gnutch','Committing index').
+           to('direct:publish').
+       end().
+       otherwise().
+         log(LoggingLevel.DEBUG, 'gnutch', 'Ignoring ${headers.contextURI}').
+         beanRef('invalidDocumentCollectorService', 'collect').
+       end()
 
         config.gnutch.publish.delegate = this
         config.gnutch.publish.call()

@@ -46,7 +46,7 @@ class UrlCrawlRoute extends RouteBuilder {
           log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tidy').
           unmarshal().tidyMarkup().
           log(LoggingLevel.OFF, 'gnutch', body().toString()).
-          process { ex -> (config.gnutch.postProcessorHTML as org.apache.camel.Processor).process(ex) }.
+          process { ex -> (config.gnutch.handlers.postXHTML as org.apache.camel.Processor).process(ex) }.
           multicast().
             // extracting links
             to('direct:extract-links').
