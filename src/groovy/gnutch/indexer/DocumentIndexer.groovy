@@ -11,11 +11,14 @@ import org.springframework.core.io.ClassPathResource
 
 import javax.xml.transform.dom.DOMSource
 import javax.xml.transform.dom.DOMResult
+
 import javax.xml.transform.stream.StreamSource
 import javax.xml.transform.TransformerFactory
 import javax.xml.transform.Transformer
 
 import org.apache.commons.logging.LogFactory
+
+import javax.xml.transform.stream.StreamResult
 
 class DocumentIndexer {
   private static def log = LogFactory.getLog(this)
@@ -45,6 +48,15 @@ as trasnformation is executed couple of times. Please, check your transformation
 
         transformer.setParameter('contextURI', contextURI)
         transformer.transform(new DOMSource(body), domResult)
+
+        // if TRACE log level is enabled for gnutch.indexer.DocumentIndexer.dom
+        // dumping input XHTML onto System.out
+        if(LogFactory.getLog(this.getClass().name + ".dom").isTraceEnabled()){
+          def t = tf.newTransformer()
+          t.transform(new DOMSource(body), new StreamResult(System.out))
+        }
+
+ 
         result = domResult.node
       }
     }
