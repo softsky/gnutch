@@ -13,11 +13,11 @@ public class StringDateUtils {
 
     /** Maximum number of entries in the following pattern */
     private static int MAX_GROUPS = 14;
-    private static String INTERVAL_PATTERN_AS_STRONG = 
+    private static String INTERVAL_PATTERN_AS_STRONG =
     	"(\\s*\\d+\\s*(?:seconds?|minutes?|hours?|days?|weeks?|months?|years?))+";
     private static Pattern INTERVAL_PATTERN =
         Pattern.compile(INTERVAL_PATTERN_AS_STRONG);
-	
+
     /**
      * Converts string literal => milliseconds time.<br>
      * <br>
@@ -28,16 +28,16 @@ public class StringDateUtils {
      * <br>
      * Available words are second(s) minute(s) hour(s) day(s) week(s) month(s) year(s).<br>
      * To simplify the task we won't make difference between correct word end.<br>
-     * So these strings are equal: 5 hours 10 minutes 2 seconds = 5 hour 10 minute 2 second, however we should recognize words with both w/ and w/o `s` end. 
+     * So these strings are equal: 5 hours 10 minutes 2 seconds = 5 hour 10 minute 2 second, however we should recognize words with both w/ and w/o `s` end.
      */
     public static Long fromStringToIntervalMs(String str) {
         if(str == null) {
             throw new IllegalArgumentException("Null argument");
         }
         // Normalize space and convert to lower-case before parsing
-        return sum((long)0, str.trim().replaceAll("\\s+", " ").toLowerCase(), 0);
+        return sum(0, str.trim().replaceAll("\\s+", " ").toLowerCase(), 0);
     }
-	
+
     private static Long sum(long v1, String v2, int invokationNumber) {
         if(v2.length() > 0) {
             return sum(v1, v2, INTERVAL_PATTERN.matcher(v2), invokationNumber);
@@ -46,19 +46,19 @@ public class StringDateUtils {
     }
 
     private static Long sum(long v1, String v2, Matcher m, int invokationNumber) {
-        if(m.matches() && invokationNumber < MAX_GROUPS) { 
+        if(m.matches() && invokationNumber < MAX_GROUPS) {
             // The Matcher captures the last occurrence of the group, so
             // cut it and continue with the preceding part of the string
             return sum( addSafe(v1, toMillis( m.group(1).trim().replaceFirst("(.*)s$", "$1").split("\\s+")))
                         , v2.substring(0, v2.length() - m.group(1).length()).trim()
-                        , 1 + invokationNumber); 
-        } else {
-            throw new IllegalArgumentException("Invalid syntax. Please, follow this regex: " + INTERVAL_PATTERN_AS_STRONG);
+                        , 1 + invokationNumber);
         }
+
+        throw new IllegalArgumentException("Invalid syntax. Please, follow this regex: " + INTERVAL_PATTERN_AS_STRONG);
     }
 
     /**
-     * 
+     *
      * @param time { number, unit }
      * @return
      */
@@ -79,7 +79,7 @@ public class StringDateUtils {
 
     /**
      * Checks for and overflow before multiplication
-     * 
+     *
      * @param time
      * @param factor
      * @return
@@ -96,7 +96,7 @@ public class StringDateUtils {
 
     /**
      * Checks for and overflow before addition
-     * 
+     *
      * @param v1
      * @param v2
      * @return

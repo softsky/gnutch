@@ -3,4 +3,5 @@
 *.zip.sha1
 plugin.xml
 target
-
+web-app
+/*.log

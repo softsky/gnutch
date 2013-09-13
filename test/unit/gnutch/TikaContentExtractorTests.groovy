@@ -1,13 +1,10 @@
 package gnutch
 
-import grails.test.mixin.TestMixin
 import grails.test.mixin.support.GrailsUnitTestMixin
-import org.codehaus.groovy.grails.io.support.FileSystemResource
 
-import org.apache.camel.Exchange
-import org.apache.camel.impl.DefaultExchange
 import org.apache.camel.impl.DefaultCamelContext
-
+import org.apache.camel.impl.DefaultExchange
+import org.springframework.core.io.FileSystemResource
 
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
@@ -15,19 +12,8 @@ import org.apache.camel.impl.DefaultCamelContext
 @TestMixin(GrailsUnitTestMixin)
 class TikaContentExtractorTests {
 
-  def contentExtractor
-  def exchange
-
-    void setUp() {
-        contentExtractor = new TikaContentExtractor()
-
-        def defaultCamelContext = new DefaultCamelContext()
-        exchange = new DefaultExchange(defaultCamelContext)
-    }
-
-    void tearDown() {
-        // Tear down logic here
-    }
+    def contentExtractor = new TikaContentExtractor()
+    def exchange = new DefaultExchange(new DefaultCamelContext())
 
     void testExtract() {
         String result
@@ -46,7 +32,6 @@ class TikaContentExtractorTests {
         //excel file extraction----------------------------------------------------------------------
         is = new FileSystemResource('test/unit/resources/gnutch/Document extracted.xlsx').inputStream
         result = contentExtractor.extract(is, exchange)
-
 
         assert result
         assert result.contains('Document extracted')
@@ -87,6 +72,5 @@ class TikaContentExtractorTests {
         assert exchange.in.headers['Tika-Metadata']
         assert exchange.in.headers['Tika-Metadata']['title'] == 'Document extracted'
         //----------------------------------------------------------------------
-
     }
 }

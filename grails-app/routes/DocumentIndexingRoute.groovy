@@ -1,18 +1,21 @@
+import groovy.xml.MarkupBuilder
+
 import org.apache.camel.Exchange
 import org.apache.camel.LoggingLevel
+import org.apache.camel.Processor
 import org.apache.camel.builder.RouteBuilder
-
+import org.w3c.dom.Document
 
 class DocumentIndexingRoute extends RouteBuilder {
   def grailsApplication
 
-  @Override  
+  @Override
   void configure(){
-      def config = grailsApplication?.config
+    def config = grailsApplication?.config
 
       from('direct:index-xhtml').
          beanRef('documentIndexer', 'index').
-         process { ex -> (config.gnutch.handlers.postXML as org.apache.camel.Processor).process(ex) }.
+         process { ex -> (config.gnutch.handlers.postXML as Processor).process(ex) }.
          to('seda:aggregate-documents')
 
       from('direct:index-binary').
@@ -26,8 +29,8 @@ class DocumentIndexingRoute extends RouteBuilder {
            }
            ex.in.body = writer.toString()
          }.
-         convertBodyTo(org.w3c.dom.Document).
-         process { ex -> (config.gnutch.handlers.postXML as org.apache.camel.Processor).process(ex) }.
+         convertBodyTo(Document).
+         process { ex -> (config.gnutch.handlers.postXML as Processor).process(ex) }.
          to('seda:aggregate-documents')
 
         
