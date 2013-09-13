@@ -12,10 +12,13 @@ class GnutchGrailsPlugin {
     def grailsVersion = "2.0.0 > *"
     def loadAfter = ['controllers', 'services', 'routing']
     def title = "Grails Apache Nutch alternative"
-    def author = "Arsen A. Gutsal"
-    def authorEmail = "gutsal.arsen@gmail.com"
+
     def documentation = "http://grails.org/plugin/gnutch"
-    def license = "GPL3"
+
+    def license = "APACHE"
+    def developers = [
+      [name: "Arsen A. Gutsal", email: "gutsal.arsen@gmail.com"]
+    ]
     def issueManagement = [ system: "GitHub", url: "https://github.com/softsky/gnutch/issues" ]
     def scm = [ url: "https://github.com/softsky/gnutch" ]
     def description = '''\
