@@ -48,8 +48,8 @@ class DocumentIndexingRoute extends RouteBuilder {
          beanRef('invalidDocumentCollectorService', 'collect').
        end()
 
-        config.gnutch.publish.delegate = this
-        config.gnutch.publish.call()
+        config.gnutch.handlers.publish.delegate = this
+        config.gnutch.handlers.publish.call()
 
     }
 }
