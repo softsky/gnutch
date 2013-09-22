@@ -39,8 +39,7 @@ grails.project.dependency.resolution = {
    }
 
    plugins {
-      compile(":routing:1.2.5")
-
+      compile(":routing:1.2.6")
       build ':release:2.2.1', ':rest-client-builder:1.0.3', {
          export = false
       }
