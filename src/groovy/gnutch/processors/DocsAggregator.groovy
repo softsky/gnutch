@@ -5,14 +5,14 @@ import javax.xml.parsers.DocumentBuilderFactory
 import org.apache.camel.Exchange
 import org.apache.camel.Processor
 import org.apache.xpath.XPathAPI
-import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.w3c.dom.Document
 
 /**
  * @author gutsal.arsen
  */
 class DocsAggregator implements Processor {
-    private static final log = Logger.getLogger(this)
+  private static final log = LoggerFactory.getLogger(DocsAggregator.class)
 
     void process(Exchange exchange) {
 
