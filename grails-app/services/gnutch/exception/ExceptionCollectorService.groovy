@@ -1,9 +1,7 @@
 package gnutch.exception
 
 import org.apache.camel.Exchange
-import grails.plugin.mail.MailService
 
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.DependsOn
 
 @DependsOn("camelContext")
