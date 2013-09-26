@@ -16,7 +16,6 @@ class ContextUrlResolver implements Processor {
       contextBase = null
 
       def body = UrlEscaper.unescape(exchange.in.body.trim())
-      println "============== body: ${body}"
       def URL url
 
       // FIXME: this is a dirty hack
