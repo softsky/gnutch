@@ -10,4 +10,6 @@ log4j = {
           'org.springframework',
           'org.hibernate',
           'net.sf.ehcache.hibernate'
+
+   trace 'gnutch.indexer.DocumentIndexer.dom' 
 }
