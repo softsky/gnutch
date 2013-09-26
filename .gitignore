@@ -5,3 +5,4 @@ plugin.xml
 target
 web-app
 /*.log
+/activemq-data
