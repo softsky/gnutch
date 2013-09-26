@@ -49,6 +49,8 @@ as trasnformation is executed couple of times. Please, check your transformation
   }
 
   boolean isIndexable(@Header("contextURI") String contextURI){
-    return transformations.keySet().any { contextURI.matches(it) }
+    synchronized(transformations){
+      return transformations.keySet().any { contextURI.matches(it) }
+    }
   }
 }
