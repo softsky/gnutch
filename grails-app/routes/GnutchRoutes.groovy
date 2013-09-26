@@ -46,20 +46,12 @@ class GnutchRoutes extends RouteBuilder {
       */
       
       // link crawler route
-      from("activemq:input-url?concurrentConsumers=${config.gnutch.crawl.threads}").
+      from("activemq:input-url?concurrentConsumers=${config.gnutch.crawl.threads * 10}").
         setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
         setHeader(Exchange.HTTP_URI, body(String)). 
         setBody(constant()).
         log(LoggingLevel.DEBUG, 'gnutch', 'Retrieving ${headers.contextURI}').
         to('http://null'). // invoking HttpClient
-        process {ex -> 
-          byte [] bytes = Base64.encodeBase64(ex.in.headers[Exchange.HTTP_URI].bytes)
-          // base64 encoded file might contain slash (/), replacing it with underline (_)
-          // and splitting the resulted string into 100-chars chunks 
-          // to prevent from `File name too long` exception
-          String [] fileNameParts = UrlEscaper.split(new String(bytes).replaceAll("/", "_"), 100)
-          ex.in.headers[Exchange.FILE_NAME] = fileNameParts.join('/')
-        }.
         choice().
         // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
         when(header('Content-Type').contains("text/html")).
@@ -69,23 +61,11 @@ class GnutchRoutes extends RouteBuilder {
        end() 
 
        // Processing Tidy entrie
-      from("seda:process-html?concurrentConsumers=${config.gnutch.crawl.threads * 2}").
-        process {ex -> 
-          String fileName = ex.in.headers[Exchange.FILE_NAME].replaceAll(/\//,'')
-          byte [] bytes = Base64.decodeBase64(fileName.bytes);
-          ex.in.headers[Exchange.HTTP_URI] = new String(bytes).replaceAll("_", "/")
-        }.
-        setHeader('contextURI', header(Exchange.HTTP_URI)). // duplicating original uri in contextURI header
+      from("seda:process-html?concurrentConsumers=${config.gnutch.crawl.threads * 5}").
         to("direct:process-tidy")
 
        // Processing Tika entrie
-      from("seda:process-binary?concurrentConsumers=${config.gnutch.crawl.threads * 2}").
-        process {ex -> 
-          String fileName = ex.in.headers[Exchange.FILE_NAME].replaceAll(/\//,'')
-          byte [] bytes = Base64.decodeBase64(fileName.bytes);
-          ex.in.headers[Exchange.HTTP_URI] = new String(bytes).replaceAll("_", "/")
-        }.
-        setHeader('contextURI', header(Exchange.HTTP_URI)). // duplicating original uri in contextURI header
+      from("seda:process-binary?concurrentConsumers=${config.gnutch.crawl.threads * 5}").
         to("direct:process-tika")
 
 
