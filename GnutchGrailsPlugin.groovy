@@ -8,7 +8,7 @@ import org.apache.commons.httpclient.params.HttpConnectionManagerParams
 
 class GnutchGrailsPlugin {
 
-    def version = "0.2.2.7"
+    def version = "0.2.2.8"
     def grailsVersion = "2.0.0 > *"
     def loadAfter = ['controllers', 'services', 'routing']
     def title = "Grails Apache Nutch alternative"

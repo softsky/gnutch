@@ -1,7 +1,7 @@
 grails.project.work.dir = "target"
 
-def camelVersion = '2.11.0' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
-def activeMQVersion = '5.7.0'
+def camelVersion = '2.11.1' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
+def activeMQVersion = '5.8.0'
 
 grails.project.dependency.resolution = {
 
@@ -29,9 +29,14 @@ grails.project.dependency.resolution = {
       compile ("org.apache.tika:tika-core:1.3")
       compile ("org.apache.tika:tika-parsers:1.3") { excludes "tika-core" }
 
-      runtime("org.apache.activemq:activemq-core:${activeMQVersion}")  {
+      runtime("org.apache.activemq:activemq-broker:${activeMQVersion}")  {
          excludes 'commons-logging',  'spring-context', 'slf4j-api'
       }
+
+      runtime("org.apache.activemq:activemq-kahadb-store:${activeMQVersion}")  {
+        excludes 'spring-context', 'spring-aop', 'spring-core'
+      }
+
       runtime("org.apache.activemq:activemq-camel:${activeMQVersion}")  {
          excludes 'commons-logging', 'slf4j-api', 'camel-core', 'camel-jms', 'camel-spring', 'camel-groovy'
       }
