@@ -89,7 +89,7 @@ class GnutchRoutes extends RouteBuilder {
        filter().method('documentIndexer', 'isIndexable').
          beanRef('tikaContentExtractor', 'extract').
          to('direct:index-binary'). // submitting tika for future processing
-         end()
+       end()
 
 
 
