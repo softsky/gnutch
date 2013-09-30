@@ -20,7 +20,7 @@ class DocsAggregator implements Processor {
         def Document parentDoc = builder.parse(new ByteArrayInputStream("<?xml version='1.0'?><add></add>".bytes))
         def groupedExchanges = exchange.properties.find {it.key == 'CamelGroupedExchange'}
 
-        log.debug "+++++++++++++++++++++ ${groupedExchanges.value.size()}"
+        log.info "+++++++++++++++++++++ ${groupedExchanges.value.size()}"
         groupedExchanges.value.each { Exchange x ->
             Document doc = x.'in'.body
 
