@@ -70,7 +70,7 @@ public class SchedulerService {
         }
     }
 
-    protected List<TimeoutListener> timeoutListeners; // we need it protected for testin'
+    private List<TimeoutListener> timeoutListeners; // we need it protected for testin'
     private Properties properties;
     private Scheduler quartzScheduler;
 
@@ -188,6 +188,10 @@ public class SchedulerService {
             .build();
         // Schedule the job
         return quartzScheduler.scheduleJob(job, trigger);
+    }
+
+    public List<TimeoutListener> getTimeoutListeners() {
+        return timeoutListeners;
     }
 
     /**

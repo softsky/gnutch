@@ -28,11 +28,11 @@ public class SchedulerServiceTest extends TestCase {
     public void testAddRemoveListeners() throws SchedulerException{
         SchedulerService schedulerService = new SchedulerService();
         TimeoutListenerImpl timeoutListener = new TimeoutListenerImpl();
-        assertEquals(schedulerService.timeoutListeners.size(), 0);
+        assertEquals(schedulerService.getTimeoutListeners().size(), 0);
         schedulerService.addTimeoutListener(timeoutListener);
-        assertEquals(schedulerService.timeoutListeners.size(), 1);
+        assertEquals(schedulerService.getTimeoutListeners().size(), 1);
         schedulerService.removeTimeoutListener(timeoutListener);
-        assertEquals(schedulerService.timeoutListeners.size(), 0);
+        assertEquals(schedulerService.getTimeoutListeners().size(), 0);
     }
 
     /**
