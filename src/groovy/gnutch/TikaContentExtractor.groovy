@@ -36,6 +36,7 @@ class TikaContentExtractor {
 
     } finally {
       is.close()
+      sw.close()
     }
   }
 }
