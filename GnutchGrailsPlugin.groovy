@@ -6,9 +6,11 @@ import org.apache.camel.component.http.HttpComponent
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager
 import org.apache.commons.httpclient.params.HttpConnectionManagerParams
 
+import org.apache.camel.Exchange
+
 class GnutchGrailsPlugin {
 
-    def version = "0.2.2.8"
+    def version = "0.2.2.30"
     def grailsVersion = "2.0.0 > *"
     def loadAfter = ['controllers', 'services', 'routing']
     def title = "Grails Apache Nutch alternative"
@@ -30,15 +32,44 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
 
     def doWithSpring = {
 
-      def conf = application.config
+      // Defaulting config
+      def conf = application.config.gnutch ?: [:]
 
-      if(conf.gnutch.activemq?.conf){
-        println "Importing activemq configuration from ${conf.gnutch.activemq.conf}"
-        importBeans conf.gnutch.activemq.conf
+      conf.inputRoute = conf.inputRoute ?: 'file:///home/archer/tmp/gnutch-input'
+
+      conf.aggregationTime = conf.aggregationTime ?: 30000L
+      conf.crawl = conf.crawl ?: [:]
+      conf.crawl.threads = conf.crawl.threads ?: 1
+      conf.handlers = conf.handlers ?: [
+        postXHTML: { Exchange ex -> },
+        postXML: { Exchange ex -> },
+        validate: { Exchange ex -> },
+        publish: { }
+      ]
+      conf.http = conf.http  ?: [
+        // UserAgent string. Better if contain email address of person who is responsible 
+        // for crawling. That will allow source owners to contact person directly
+        userAgent: 'GNutch crawler (https://github.com/softsky/gnutch): admin@gnutch.org',
+        // Maximmum number of connections per host
+        defaultMaxConnectionsPerHost: 1000,
+        // Maximmum number of total connections
+        maxTotalConnections: 1000,
+      ]
+
+      conf.activemq = conf.activemq ?: [
+        // URL to message broker
+        brokerURL: 'vm://localhost'
+        // brokerURL: 'tcp://localhost:61616'
+        // conf: 'classpath:activemq.xml'
+      ]
+
+      if(conf.activemq.conf){
+        println "Importing activemq configuration from ${conf.activemq.conf}"
+        importBeans conf.activemq.conf
       }
 
       jmsFactory(ActiveMQConnectionFactory) {
-        brokerURL = conf.gnutch.activemq.brokerURL
+        brokerURL = conf.activemq.brokerURL
       }
 
       jmsConnectionFactory(PooledConnectionFactory) {
@@ -48,7 +79,7 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
       http(HttpComponent){
         camelContext = ref('camelContext')
         httpConnectionManager = ref('httpConnectionManager')
-        httpClientConfigurer = new HttpClientConfigurer(conf.gnutch.http.userAgent)
+        httpClientConfigurer = new HttpClientConfigurer(conf.http.userAgent)
       }
 
       httpConnectionManager(MultiThreadedHttpConnectionManager){
@@ -56,8 +87,8 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
       }
 
       httpConnectionManagerParams(HttpConnectionManagerParams){
-        defaultMaxConnectionsPerHost = conf.gnutch.http.defaultMaxConnectionsPerHost
-        maxTotalConnections = conf.gnutch.http.maxTotalConnections
+        defaultMaxConnectionsPerHost = conf.http.defaultMaxConnectionsPerHost
+        maxTotalConnections = conf.http.maxTotalConnections
       }
 
       docsAggregator(gnutch.processors.DocsAggregator)
