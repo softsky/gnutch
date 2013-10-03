@@ -1,10 +1,13 @@
 import org.apache.camel.Exchange
 import org.apache.xpath.XPathAPI
 import java.text.SimpleDateFormat
+import org.apache.camel.LoggingLevel
 
 gnutch {
   // Input route definition 
   inputRoute = 'file:///home/archer/tmp/gnutch-input'
+
+  aggregationTime = 60000L
 
   crawl {
    // Size of crawling thread pool
