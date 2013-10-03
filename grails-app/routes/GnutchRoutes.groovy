@@ -13,8 +13,7 @@ class GnutchRoutes extends RouteBuilder {
   @Override
   void configure() {
       def config = grailsApplication?.config
-
-
+      
       onException(HttpOperationFailedException).
         handled(true).
         logStackTrace(false).
@@ -38,6 +37,7 @@ class GnutchRoutes extends RouteBuilder {
         Input route. 
       */
       from("${config.gnutch.inputRoute}").
+      routeId('inputRoute').
         convertBodyTo(org.w3c.dom.Document).
         beanRef('sourceUrlsProducerService', 'produce')
 
@@ -47,6 +47,7 @@ class GnutchRoutes extends RouteBuilder {
       
       // link crawler route
       from("activemq:input-url?concurrentConsumers=${config.gnutch.crawl.threads * 10}").
+      routeId('inputUrl').
         setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
         setHeader(Exchange.HTTP_URI, body(String)). 
         setBody(constant()).
@@ -62,15 +63,18 @@ class GnutchRoutes extends RouteBuilder {
 
        // Processing Tidy entrie
       from("seda:process-html?concurrentConsumers=${config.gnutch.crawl.threads * 5}").
+      routeId('sedaProcessTidy').
         to("direct:process-tidy")
 
        // Processing Tika entrie
       from("seda:process-binary?concurrentConsumers=${config.gnutch.crawl.threads * 5}").
+      routeId('sedaProcessTika').
         to("direct:process-tika")
 
 
 
      from("direct:process-tidy").
+     routeId('processTidy').
        log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tidy').
        unmarshal().tidyMarkup().
        log(LoggingLevel.OFF, 'gnutch', body().toString()).
@@ -85,6 +89,7 @@ class GnutchRoutes extends RouteBuilder {
       end()
 
      from("direct:process-tika").
+     routeId('processTika').
        log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tika').
        filter().method('documentIndexer', 'isIndexable').
          beanRef('tikaContentExtractor', 'extract').
@@ -95,6 +100,7 @@ class GnutchRoutes extends RouteBuilder {
 
       // links extractor route
      from('direct:extract-links').
+      routeId('extractLinks').
        setHeader('contextBase', xpath('//base/@href')). // setting contextBase using //base/@href value
        // extracting links
        split(xpath('//a/@href|//iframe/@src')). // extracting all a/@href and iframe/@src
@@ -133,13 +139,14 @@ class GnutchRoutes extends RouteBuilder {
           Indexing routes
         */
       from('direct:index-xhtml').
-      routeId('Tidy').
+      routeId('indexHtml').
          beanRef('documentIndexer', 'index').
          log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
          process { ex -> (config.gnutch.handlers.postXML as org.apache.camel.Processor).process(ex) }.
          to('direct:aggregate-documents')
 
       from('direct:index-binary').
+      routeId('indexBinary').
          process { ex -> 
            def writer = new StringWriter()
            def xml = new groovy.xml.MarkupBuilder(writer)
@@ -155,12 +162,14 @@ class GnutchRoutes extends RouteBuilder {
          to('direct:aggregate-documents')
 
       from('direct:aggregate-documents').
+       routeId('aggregation').
+       convertBodyTo(org.w3c.dom.Document).
        choice().
        when(config.gnutch.handlers.validate).
          log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
-         aggregate(constant('null')).completionInterval(60000L).groupExchanges().
+         aggregate(constant('null')).completionInterval(config.gnutch.aggregationTime).groupExchanges().
            processRef('docsAggregator').
-           log(LoggingLevel.INFO, 'gnutch','Committing index').
+           log(LoggingLevel.INFO, 'gnutch','Committing index ${body.getElementsByTagName("doc").length}').
            to('direct:publish').
        end().
        otherwise().
@@ -168,8 +177,7 @@ class GnutchRoutes extends RouteBuilder {
          beanRef('invalidDocumentCollectorService', 'collect').
        end()
 
-        config.gnutch.handlers.publish.delegate = this
-        config.gnutch.handlers.publish.call()
-
+       config.gnutch.handlers.publish.delegate = this
+       config.gnutch.handlers.publish.call()
     }
 }
