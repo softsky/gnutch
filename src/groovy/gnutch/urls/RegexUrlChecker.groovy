@@ -14,13 +14,15 @@ class RegexUrlChecker {
    * <false> is returned. If does not match any - return <true>
    */
   boolean check(String url){
-    boolean result
+    boolean result, allowedResult, ignoredResult
     synchronized(allowedPatternList){
-      synchronized(ignoredPatternList){
-        result= (allowedPatternList.any { pattern -> url.matches(pattern) })  &&
-        (ignoredPatternList.any { pattern -> url.matches(pattern) }  == false)
-      }
+      allowedResult = (allowedPatternList.any { pattern -> url.matches(pattern) })
     }
+    synchronized(ignoredPatternList){
+      ignoredResult = ignoredPatternList.any { pattern -> url.matches(pattern) } 
+    }
+
+    result =  allowedPatternList && (ignoredResult == false)
     log.trace("Checking ${url}: ${result}")
     return result
   }
