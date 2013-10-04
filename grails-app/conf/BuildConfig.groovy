@@ -18,12 +18,8 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile ("org.apache.camel:camel-core:${camelVersion}") { excludes 'slf4j-api' }
     compile ("org.apache.camel:camel-http:${camelVersion}") { excludes 'commons-codec' }
-    compile ("org.apache.camel:camel-mail:${camelVersion}")
-    compile ("org.apache.camel:camel-groovy:${camelVersion}") { excludes 'groovy-all' }
-    compile ("org.apache.camel:camel-spring:${camelVersion}") { excludes 'log4j', 'spring-tx', 'spring-jms','spring-context', 'spring-beans', 'spring-aop' }
-    compile ("org.apache.camel:camel-jms:${camelVersion}")  { excludes 'spring-tx', 'spring-jms','spring-context', 'spring-beans', 'spring-aop', 'spring-core' }
+    compile ("org.apache.camel:camel-jms:${camelVersion}") { excludes 'spring-tx', 'spring-jms','spring-context', 'spring-beans', 'spring-aop', 'spring-core' }
     compile ("org.apache.camel:camel-cache:${camelVersion}") { excludes 'xercesImpl', 'xml-apis', 'slf4j-api', 'ehcache'  }
     compile ("org.apache.camel:camel-tagsoup:${camelVersion}")
 
@@ -46,10 +42,11 @@ grails.project.dependency.resolution = {
       excludes 'commons-logging', 'slf4j-api', 'camel-core', 'camel-jms', 'camel-spring', 'camel-groovy', 'spring-beans', 'spring-core'
     }
     runtime("org.apache.xbean:xbean-spring:3.8") { excludes 'commons-logging' }
+
   }
 
   plugins {
-    compile(":routing:1.2.8")
+    compile ":routing:1.2.8"
     build ':release:2.2.1', ':rest-client-builder:1.0.3', {
       export = false
     }
