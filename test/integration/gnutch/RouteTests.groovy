@@ -15,12 +15,14 @@ import org.apache.camel.LoggingLevel
 
 import org.springframework.test.annotation.DirtiesContext
 
+import javax.management.ObjectName
+import javax.management.remote.JMXConnectorFactory
+import javax.management.remote.JMXServiceURL
+
 import org.codehaus.groovy.grails.commons.ApplicationHolder
 import java.util.concurrent.TimeUnit
 
-import javax.xml.transform.TransformerFactory
-import javax.xml.transform.dom.DOMSource
-import javax.xml.transform.stream.StreamResult
+import org.codehaus.groovy.grails.io.support.ClassPathResource
 
 class RouteTests extends CamelTestSupport {
 
@@ -29,52 +31,150 @@ class RouteTests extends CamelTestSupport {
   ProducerTemplate producerTemplate;
   CamelContext camelContext
 
+  def jmsConnectionFactory
+
   protected CamelContext createCamelContext() throws Exception {
     return camelContext
+  }
+
+  @Before
+  void setUp(){
+    super.setUp()
+    camelContext.start() // starting camel ourselves
+
+    camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
+  }
+
+  @After 
+  void tearDown(){
+    camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
+
+    def serverUrl = 'service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi'
+    def connector = JMXConnectorFactory.connect(new JMXServiceURL(serverUrl))
+    def server = connector.MBeanServerConnection
+    def localhostBroker = 'org.apache.activemq:type=Broker,brokerName=localhost'
+    def brokerId = new GroovyMBean(server, "${localhostBroker}").BrokerId
+    println "Connected to: $brokerId"
+
+    def queue = new GroovyMBean(server, "${localhostBroker},destinationType=Queue,destinationName=input-url")
+    try {
+      println "Before purge:" + queue.QueueSize
+      queue.purge()
+      println "After purge:" + queue.QueueSize
+      println "Method purge() executed normally"
+    }catch(exception){
+      exception.printStackTrace()
+    }
+    connector.close()
+    super.tearDown()
   }
 
   @Test
   @DirtiesContext
   void testAggregate() {
     camelContext.
-      getRouteDefinition('aggregation').
-      adviceWith(camelContext,
-                 new AdviceWithRouteBuilder() { 
-                   @Override
-                   public void configure() throws Exception {
-                     mockEndpointsAndSkip("direct:publish")
-                   }
-                 })
+    getRouteDefinition('aggregation').
+    adviceWith(camelContext,
+               new AdviceWithRouteBuilder() { 
+                 @Override
+                 public void configure() throws Exception {
+                   mockEndpointsAndSkip("direct:publish")
+                 }
+               })
 
-      String [] docs = ['''<doc>
+    String [] docs = ['''<doc>
        <field name="title">foo</field>
        <field name="content">bar</field>
       </doc>''', 
-      '''<doc>
+                      '''<doc>
        <field name="title">foo1</field>
        <field name="content">bar1</field>
       </doc>''',
-      '''<doc>
+                      '''<doc>
        <field name="title">foo2</field>
        <field name="content">bar2</field>
       </doc>''']
 
-      assertNotNull(camelContext.hasEndpoint('mock:direct:publish'))
-      //def mockEndpoint = camelContext.getEndpoint("mock:direct:publish")
-      def mockEndpoint = getMockEndpoint("mock:direct:publish")
+    assertNotNull(camelContext.hasEndpoint('mock:direct:publish'))
+    def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
-      mockEndpoint.expectedMessageCount(1)
-      def expectation = { 
-        def ex = receivedExchanges[0]
-        assert ex.in.body.documentElement.nodeName == 'add'
-        assert ex.in.body.getElementsByTagName('doc').length == 3
-      }
-      expectation.delegate = mockEndpoint
-      mockEndpoint.expects(expectation)
-      docs.each { doc ->
-        producerTemplate.sendBody("direct:aggregate-documents", doc) 
-      }
+    mockEndpoint.expectedMessageCount(1)
+    def expectation = { 
+      def ex = receivedExchanges[0]
+      assert ex.in.body.documentElement.nodeName == 'add'
+      assert ex.in.body.getElementsByTagName('doc').length == 3
+    }
+    expectation.delegate = mockEndpoint
+    mockEndpoint.expects(expectation)
+    docs.each { doc ->
+      producerTemplate.sendBody("direct:aggregate-documents", doc) 
+    }
 
-      assertMockEndpointsSatisfied()
+    assertMockEndpointsSatisfied(1, TimeUnit.MINUTES)
   }
+
+  @Test
+  @DirtiesContext
+  void testFullCycle() {
+    camelContext.
+    getRouteDefinition('aggregation').
+    adviceWith(camelContext,
+               new AdviceWithRouteBuilder() { 
+                 @Override
+                 public void configure() throws Exception {
+                   mockEndpointsAndSkip("direct:publish")
+                 }
+               });
+    def resourceStream = new ClassPathResource('xslt/4.xsl').inputStream
+    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/4.xsl')
+    destFile.append(resourceStream)
+
+    def mockEndpoint = getMockEndpoint("mock:direct:publish")
+
+    mockEndpoint.expectedMessageCount(1)
+    def expectation = {-> 
+      def ex = receivedExchanges[0]
+      assert ex.in.body.documentElement.nodeName == 'add'
+      assert ex.in.body.getElementsByTagName('doc').length > 0
+      
+    } as Runnable
+    expectation.delegate = mockEndpoint
+    mockEndpoint.expects(expectation)
+
+    assertMockEndpointsSatisfied(1, TimeUnit.MINUTES)
+  }
+
+  @Test
+  @DirtiesContext
+  void testStress() {
+    camelContext.
+    getRouteDefinition('aggregation').
+    adviceWith(camelContext,
+               new AdviceWithRouteBuilder() { 
+                 @Override
+                 public void configure() throws Exception {
+                   mockEndpointsAndSkip("direct:publish")
+                 }
+               });
+    def xsltDir = new File('/home/archer/dev/sourcingtool/grails-app/conf/xslt')
+    xsltDir.eachFile { file ->
+      def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/' + file.name)
+      destFile.append(file.newInputStream())
+    }
+
+    def mockEndpoint = getMockEndpoint("mock:direct:publish")
+
+    mockEndpoint.expectedMessageCount(6 * 60) // let this test work for 1 hour
+    def expectation = {-> 
+      def ex = receivedExchanges[0]
+      assert ex.in.body.documentElement.nodeName == 'add'
+      assert ex.in.body.getElementsByTagName('doc').length > 0
+      println "Commit happened"
+    } as Runnable
+    expectation.delegate = mockEndpoint
+    mockEndpoint.expects(expectation)
+
+    assertMockEndpointsSatisfied(1, TimeUnit.HOURS)
+  }
+
 }
