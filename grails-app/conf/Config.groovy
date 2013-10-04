@@ -3,14 +3,6 @@ import org.apache.xpath.XPathAPI
 import java.text.SimpleDateFormat
 import org.apache.camel.LoggingLevel
 
-grails.config.locations = [
-  "classpath:${appName}-config.properties",
-  "classpath:${appName}-config.groovy",
-  //  GnutchConfig,
-  "file:${userHome}/.grails/${appName}-config.properties",
-  "file:${userHome}/.grails/${appName}-config.groovy" ]
-
-
 log4j = {
     error 'org.codehaus.groovy.grails',
           'org.springframework',
@@ -19,6 +11,7 @@ log4j = {
           
 
    warn  'org.apache.camel'
+   info  'gnutch.RouteTests'
    info  'gnutch'
 
    //trace 'gnutch.indexer.DocumentIndexer.dom' 
@@ -32,7 +25,7 @@ environments {
       // Input route definition 
       inputRoute = 'file:///home/archer/tmp/gnutch-input'
 
-      aggregationTime = 500L
+      aggregationTime = 10000L
 
       crawl {
         // Size of crawling thread pool
@@ -76,12 +69,11 @@ environments {
   
       activemq {
         // URL to message broker
-        brokerURL = 'vm://localhost'
-        // brokerURL = 'tcp://localhost:61616'
+        // brokerURL = 'vm://localhost'
+        brokerURL = 'tcp://localhost:61616'
         // conf = 'classpath:activemq.xml'
       }   
     }
-
     
   }
 }
