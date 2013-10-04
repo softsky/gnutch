@@ -37,7 +37,7 @@ class GnutchRoutes extends RouteBuilder {
         Input route. 
       */
       from("${config.gnutch.inputRoute}").
-      routeId('inputRoute').
+      routeId('inputRoute').startupOrder(10).
         convertBodyTo(org.w3c.dom.Document).
         beanRef('sourceUrlsProducerService', 'produce')
 
@@ -47,7 +47,7 @@ class GnutchRoutes extends RouteBuilder {
       
       // link crawler route
       from("activemq:input-url?concurrentConsumers=${config.gnutch.crawl.threads * 10}").
-      routeId('inputUrl').
+      routeId('inputUrl').startupOrder(9).
         setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
         setHeader(Exchange.HTTP_URI, body(String)). 
         setBody(constant()).
@@ -56,25 +56,25 @@ class GnutchRoutes extends RouteBuilder {
         choice().
         // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
         when(header('Content-Type').contains("text/html")).
-          to("seda:process-html").
+          to("seda:process-html"). // ?size=2048&blockWhenFull=true
        otherwise().
           to("seda:process-binary").
        end() 
 
        // Processing Tidy entrie
       from("seda:process-html?concurrentConsumers=${config.gnutch.crawl.threads * 5}").
-      routeId('sedaProcessTidy').
+      routeId('sedaProcessTidy').startupOrder(8).
         to("direct:process-tidy")
 
        // Processing Tika entrie
       from("seda:process-binary?concurrentConsumers=${config.gnutch.crawl.threads * 5}").
-      routeId('sedaProcessTika').
+      routeId('sedaProcessTika').startupOrder(7).
         to("direct:process-tika")
 
 
 
      from("direct:process-tidy").
-     routeId('processTidy').
+     routeId('processTidy').startupOrder(5).
        log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tidy').
        unmarshal().tidyMarkup().
        log(LoggingLevel.OFF, 'gnutch', body().toString()).
@@ -89,7 +89,7 @@ class GnutchRoutes extends RouteBuilder {
       end()
 
      from("direct:process-tika").
-     routeId('processTika').
+     routeId('processTika').startupOrder(4).
        log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tika').
        filter().method('documentIndexer', 'isIndexable').
          beanRef('tikaContentExtractor', 'extract').
@@ -100,7 +100,7 @@ class GnutchRoutes extends RouteBuilder {
 
       // links extractor route
      from('direct:extract-links').
-      routeId('extractLinks').
+      routeId('extractLinks').startupOrder(6).
        setHeader('contextBase', xpath('//base/@href')). // setting contextBase using //base/@href value
        // extracting links
        split(xpath('//a/@href|//iframe/@src')). // extracting all a/@href and iframe/@src
@@ -139,14 +139,14 @@ class GnutchRoutes extends RouteBuilder {
           Indexing routes
         */
       from('direct:index-xhtml').
-      routeId('indexHtml').
+      routeId('indexHtml').startupOrder(3).
          beanRef('documentIndexer', 'index').
          log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
          process { ex -> (config.gnutch.handlers.postXML as org.apache.camel.Processor).process(ex) }.
          to('direct:aggregate-documents')
 
       from('direct:index-binary').
-      routeId('indexBinary').
+      routeId('indexBinary').startupOrder(2).
          process { ex -> 
            def writer = new StringWriter()
            def xml = new groovy.xml.MarkupBuilder(writer)
@@ -162,7 +162,7 @@ class GnutchRoutes extends RouteBuilder {
          to('direct:aggregate-documents')
 
       from('direct:aggregate-documents').
-       routeId('aggregation').
+       routeId('aggregation').startupOrder(1).
        convertBodyTo(org.w3c.dom.Document).
        choice().
        when(config.gnutch.handlers.validate).
