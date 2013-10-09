@@ -167,7 +167,7 @@ class GnutchRoutes extends RouteBuilder {
        choice().
        when(config.gnutch.handlers.validate).
          log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
-         aggregate(constant('null')).completionInterval(config.gnutch.aggregationTime).groupExchanges().
+         aggregate(constant(true).completionInterval(config.gnutch.aggregationTime).groupExchanges().
            processRef('docsAggregator').
            log(LoggingLevel.INFO, 'gnutch','Committing index ${body.getElementsByTagName("doc").length}').
            to('direct:publish').
