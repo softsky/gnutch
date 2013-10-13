@@ -164,7 +164,7 @@ class RouteTests extends CamelTestSupport {
 
     def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
-    mockEndpoint.expectedMessageCount(6 * 60) // let this test work for 1 hour
+    mockEndpoint.expectedMessageCount(6 * 60 * 24) // let this test work for 1 hour
     def expectation = {-> 
       def ex = receivedExchanges[0]
       assert ex.in.body.documentElement.nodeName == 'add'
@@ -174,7 +174,7 @@ class RouteTests extends CamelTestSupport {
     expectation.delegate = mockEndpoint
     mockEndpoint.expects(expectation)
 
-    assertMockEndpointsSatisfied(1, TimeUnit.HOURS)
+    assertMockEndpointsSatisfied(1, TimeUnit.DAYS)
   }
 
 }
