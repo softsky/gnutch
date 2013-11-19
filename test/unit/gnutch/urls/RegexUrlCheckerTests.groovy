@@ -9,8 +9,8 @@ class RegexUrlCheckerTests extends GrailsUnitTestCase {
   void testCheckInclusive() {
 
     [
-      /^http.*google\.com\/a.*/,
-      /^http.*google\.com\/b.*/
+      /http.*google\.com\/a.*/,
+      /http.*google\.com\/b.*/
     ].each { regexUrlChecker.allowedPatternList << it }
 
     [
@@ -30,14 +30,16 @@ class RegexUrlCheckerTests extends GrailsUnitTestCase {
 
   void testCheckExclusive() {
 
-    regexUrlChecker.allowedPatternList << /^http.*google\.com\/a.*/
+    regexUrlChecker.allowedPatternList << /http.*google\.com\/a.*/
     regexUrlChecker.ignoredPatternList <<  /.*\/b.*/
 
     assertTrue regexUrlChecker.check('http://www.google.com/abc')
-    assertFalse regexUrlChecker.check('http://www.google.com/bc')
+    assertFalse regexUrlChecker.check('http://www.google.com/bc') // starts with /b
     assertFalse regexUrlChecker.check('http://www.google.com/a/b/c') // contains /b pattern
 
-    assertFalse regexUrlChecker.check('http://www.yahoo.com/abx') // ends with x
-    assertFalse regexUrlChecker.check('http://www.yandex.com/bcy') // ends with y
+    assertFalse regexUrlChecker.check('http://www.yahoo.com/abc') // yahoo
+    assertFalse regexUrlChecker.check('http://www.yandex.com/bcy') // yandex
+    assertTrue regexUrlChecker.check('http://www.google.com/acy') // starts with /b
+    assertFalse regexUrlChecker.check('http://www.google.com/bcy') // starts with /b
   }
 }

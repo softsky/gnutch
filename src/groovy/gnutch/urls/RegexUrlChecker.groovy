@@ -22,7 +22,7 @@ class RegexUrlChecker {
       ignoredResult = ignoredPatternList.any { pattern -> url.matches(pattern) } 
     }
 
-    result =  allowedPatternList && (ignoredResult == false)
+    result = (allowedResult && (ignoredResult == false))
     log.trace("Checking ${url}: ${result}")
     return result
   }
