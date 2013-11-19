@@ -11,8 +11,7 @@ log4j = {
           
 
    warn  'org.apache.camel'
-   info  'gnutch.RouteTests'
-   info  'gnutch'
+   trace  'gnutch'
 
    //trace 'gnutch.indexer.DocumentIndexer.dom' 
 }
@@ -30,6 +29,7 @@ environments {
       crawl {
         // Size of crawling thread pool
         threads = {-> java.lang.Runtime.getRuntime().availableProcessors() }()
+        multiplier = 5
       }
 
       handlers {

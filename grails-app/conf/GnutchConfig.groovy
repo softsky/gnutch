@@ -10,8 +10,9 @@ gnutch {
   aggregationTime = 60000L
 
   crawl {
-   // Size of crawling thread pool
+    // Size of crawling thread pool
     threads = {-> java.lang.Runtime.getRuntime().availableProcessors() }()
+    multiplier = 5
   }
 
   handlers {

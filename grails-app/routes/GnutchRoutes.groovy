@@ -46,7 +46,7 @@ class GnutchRoutes extends RouteBuilder {
       */
       
       // link crawler route
-      from("activemq:input-url?concurrentConsumers=${config.gnutch.crawl.threads * 10}").
+      from("activemq:input-url?concurrentConsumers=${config.gnutch.crawl.threads * config.gnutch.crawl.multiplier * 2}").
       routeId('inputUrl').startupOrder(9).
         setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
         setHeader(Exchange.HTTP_URI, body(String)). 
@@ -61,13 +61,13 @@ class GnutchRoutes extends RouteBuilder {
           to("seda:process-binary").
        end() 
 
-       // Processing Tidy entrie
-      from("seda:process-html?concurrentConsumers=${config.gnutch.crawl.threads * 5}").
+       // Processing Tidy entries
+      from("seda:process-html?concurrentConsumers=${config.gnutch.crawl.threads * config.gnutch.crawl.multiplier}").
       routeId('sedaProcessTidy').startupOrder(8).
         to("direct:process-tidy")
 
-       // Processing Tika entrie
-      from("seda:process-binary?concurrentConsumers=${config.gnutch.crawl.threads * 5}").
+       // Processing Tika entries
+      from("seda:process-binary?concurrentConsumers=${config.gnutch.crawl.threads * config.gnutch.crawl.multiplier}").
       routeId('sedaProcessTika').startupOrder(7).
         to("direct:process-tika")
 
@@ -167,7 +167,7 @@ class GnutchRoutes extends RouteBuilder {
        choice().
        when(config.gnutch.handlers.validate).
          log(LoggingLevel.DEBUG, 'gnutch', 'Indexing ${headers.contextURI}').
-         aggregate(constant(true).completionInterval(config.gnutch.aggregationTime).groupExchanges().
+         aggregate(constant(true)).completionInterval(config.gnutch.aggregationTime).groupExchanges().
            processRef('docsAggregator').
            log(LoggingLevel.INFO, 'gnutch','Committing index ${body.getElementsByTagName("doc").length}').
            to('direct:publish').
