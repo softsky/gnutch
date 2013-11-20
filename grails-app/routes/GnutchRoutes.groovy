@@ -150,9 +150,11 @@ class GnutchRoutes extends RouteBuilder {
          process { ex -> 
            def writer = new StringWriter()
            def xml = new groovy.xml.MarkupBuilder(writer)
+           def title = ex.in.headers['Tika-Metadata']['title']?.trim()
+           def firstSentance = ex.in.body.split(/\./)[0]
            xml.doc(){
              field(name:'id', ex.in.headers['contextURI'])
-             field(name:'title', ex.in.headers['Tika-Metadata']['title']?.trim())
+             field(name:'title', (title?title:(firstSentance?firstSentance:'No title')).trim())
              field(name:'content', ex.in.body.trim())
            }
            ex.in.body = writer.toString()
