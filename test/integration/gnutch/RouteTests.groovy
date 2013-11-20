@@ -12,6 +12,7 @@ import org.apache.camel.test.junit4.CamelTestSupport
 import org.apache.camel.processor.interceptor.Tracer
 import org.apache.camel.processor.interceptor.DefaultTraceFormatter
 import org.apache.camel.LoggingLevel
+import org.apache.xpath.XPathAPI
 
 import org.springframework.test.annotation.DirtiesContext
 
@@ -47,8 +48,8 @@ class RouteTests extends CamelTestSupport {
 
   @After 
   void tearDown(){
-    camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
-
+    //camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
+    /*
     def serverUrl = 'service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi'
     def connector = JMXConnectorFactory.connect(new JMXServiceURL(serverUrl))
     def server = connector.MBeanServerConnection
@@ -66,6 +67,7 @@ class RouteTests extends CamelTestSupport {
       exception.printStackTrace()
     }
     connector.close()
+    */
     super.tearDown()
   }
 
@@ -115,6 +117,42 @@ class RouteTests extends CamelTestSupport {
 
   @Test
   @DirtiesContext
+  void testProcessTika() {
+    camelContext.
+    getRouteDefinition('indexBinary').
+    adviceWith(camelContext,
+               new AdviceWithRouteBuilder() { 
+                 @Override
+                 public void configure() throws Exception {
+                   mockEndpointsAndSkip("direct:aggregate-documents")
+                 }
+               });
+
+    def pdfIs = new ClassPathResource('resources/2012-03-21-sunrise.pdf').inputStream
+    grailsApplication.mainContext.getBean('documentIndexer').transformations.put("http://www.abc.com", null)
+
+    assertNotNull(camelContext.hasEndpoint('mock:direct:aggregate-documents'))
+    def mockEndpoint = getMockEndpoint("mock:direct:aggregate-documents")
+
+    def expectation = { 
+      def ex = receivedExchanges[0]
+      assertEquals ex.in.body.documentElement.nodeName, 'doc'
+
+      assertEquals XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="id"]/text()').nodeValue, 'http://www.abc.com'
+      assert XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="title"]').textContent?.length() > 0
+      assert XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="content"]').textContent?.length() > 0
+    }
+    expectation.delegate = mockEndpoint
+
+    mockEndpoint.expects(expectation)
+
+    producerTemplate.sendBodyAndHeaders("direct:process-tika", pdfIs, [contextURI: 'http://www.abc.com'])
+
+    assertMockEndpointsSatisfied(10, TimeUnit.SECONDS)
+  }
+
+  @Test
+  @DirtiesContext
   void testFullCycle() {
     camelContext.
     getRouteDefinition('aggregation').
@@ -125,10 +163,6 @@ class RouteTests extends CamelTestSupport {
                    mockEndpointsAndSkip("direct:publish")
                  }
                });
-    def resourceStream = new ClassPathResource('xslt/4.xsl').inputStream
-    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/4.xsl')
-    destFile.append(resourceStream)
-
     def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
     mockEndpoint.expectedMessageCount(1)
@@ -140,6 +174,11 @@ class RouteTests extends CamelTestSupport {
     } as Runnable
     expectation.delegate = mockEndpoint
     mockEndpoint.expects(expectation)
+
+    // saving file
+    def resourceStream = new ClassPathResource('xslt/4.xsl').inputStream
+    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/4.xsl')
+    destFile.append(resourceStream)
 
     assertMockEndpointsSatisfied(1, TimeUnit.MINUTES)
   }
@@ -156,7 +195,7 @@ class RouteTests extends CamelTestSupport {
                    mockEndpointsAndSkip("direct:publish")
                  }
                });
-    def xsltDir = new File('/home/archer/dev/sourcingtool/grails-app/conf/xslt')
+    def xsltDir = new ClassPathResource('xslt').file
     xsltDir.eachFile { file ->
       def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/' + file.name)
       destFile.append(file.newInputStream())
@@ -164,7 +203,7 @@ class RouteTests extends CamelTestSupport {
 
     def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
-    mockEndpoint.expectedMessageCount(6 * 60 * 24) // let this test work for 1 hour
+    mockEndpoint.expectedMinimumMessageCount(1) // expecting some messages
     def expectation = {-> 
       def ex = receivedExchanges[0]
       assert ex.in.body.documentElement.nodeName == 'add'
@@ -174,7 +213,7 @@ class RouteTests extends CamelTestSupport {
     expectation.delegate = mockEndpoint
     mockEndpoint.expects(expectation)
 
-    assertMockEndpointsSatisfied(1, TimeUnit.DAYS)
+    assertMockEndpointsSatisfied(5, TimeUnit.MINUTES) // let this test work for 5 minutes
   }
 
 }
