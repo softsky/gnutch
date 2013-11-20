@@ -50,6 +50,9 @@ class GnutchRoutes extends RouteBuilder {
       routeId('inputUrl').startupOrder(9).
         setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
         setHeader(Exchange.HTTP_URI, body(String)). 
+        setHeader(Exchange.HTTP_METHOD, constant('GET')).
+        removeHeader(Exchange.HTTP_QUERY).
+        removeHeader(Exchange.CONTENT_TYPE).
         setBody(constant()).
         log(LoggingLevel.DEBUG, 'gnutch', 'Retrieving ${headers.contextURI}').
         to('http://null'). // invoking HttpClient
