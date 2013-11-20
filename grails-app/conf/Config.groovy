@@ -69,8 +69,8 @@ environments {
   
       activemq {
         // URL to message broker
-        // brokerURL = 'vm://localhost'
-        brokerURL = 'tcp://localhost:61616'
+        brokerURL = 'vm://localhost'
+        // brokerURL = 'tcp://localhost:61616'
         // conf = 'classpath:activemq.xml'
       }   
     }
