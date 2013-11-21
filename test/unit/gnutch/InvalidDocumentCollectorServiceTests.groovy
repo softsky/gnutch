@@ -85,7 +85,7 @@ class InvalidDocumentCollectorServiceTests {
         def ex = new DefaultExchange(camelContext)
 
         ex.in.body = doc
-        ex.in.headers['ContextURI'] = url
+        ex.in.headers['contextURI'] = url
         service.collect(ex)
     } as Runnable
 

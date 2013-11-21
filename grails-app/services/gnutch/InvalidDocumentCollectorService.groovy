@@ -86,7 +86,7 @@ class InvalidDocumentCollectorService {
       if(documents[source] == null)
         documents[source] = new ArrayList<String>()
         synchronized(documents[source]){
-          documents[source] << new Entry<String, String>(result, ex.in.headers["ContextURI"])
+          documents[source] << new Entry<String, String>(result, ex.in.headers["contextURI"])
         }
     }
   }
