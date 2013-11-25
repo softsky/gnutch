@@ -1,6 +1,6 @@
 package gnutch.exception
 
-class ExceptionCollectorServiceController {
+class ExceptionCollectorController {
 
   def exceptionCollectorService
 
