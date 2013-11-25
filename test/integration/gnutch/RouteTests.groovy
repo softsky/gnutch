@@ -48,8 +48,8 @@ class RouteTests extends CamelTestSupport {
 
   @After 
   void tearDown(){
-    //camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
-    /*
+    camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
+
     def serverUrl = 'service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi'
     def connector = JMXConnectorFactory.connect(new JMXServiceURL(serverUrl))
     def server = connector.MBeanServerConnection
@@ -67,7 +67,7 @@ class RouteTests extends CamelTestSupport {
       exception.printStackTrace()
     }
     connector.close()
-    */
+
     super.tearDown()
   }
 

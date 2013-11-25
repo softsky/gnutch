@@ -1,8 +1,11 @@
-.emacs.*
 *.zip
 *.zip.sha1
+.emacs.*
+/*.log
+/.idea
+/activemq-data
+/gnutch-grailsPlugins.iml
+/gnutch.iml
 plugin.xml
 target
 web-app
-/*.log
-/activemq-data
