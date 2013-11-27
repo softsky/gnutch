@@ -145,6 +145,7 @@ class GnutchRoutes extends RouteBuilder {
       routeId('indexHtml').startupOrder(3).
          beanRef('documentIndexer', 'index').
          log(LoggingLevel.TRACE, 'gnutch','Indexed: ${body}').
+         convertBodyTo(org.w3c.dom.Document).
          process { ex -> (config.gnutch.handlers.postXML as org.apache.camel.Processor).process(ex) }.
          to('direct:aggregate-documents')
 
