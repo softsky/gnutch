@@ -30,7 +30,7 @@ class DocumentIndexer {
     new ThreadLocal<TransformerFactory>() {
       @Override 
       protected TransformerFactory initialValue() {
-        System.out.println("Creating initial value of TransformerFactory")
+        log.debug("Creating initial value of TransformerFactory");
         return  TransformerFactory.newInstance(TRANSFORMER_FACTORY_CLASS, null);
       }
     };
