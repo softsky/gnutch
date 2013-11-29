@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired
 import javax.annotation.PostConstruct
 import javax.xml.xpath.*
 import javax.xml.namespace.NamespaceContext
+import java.util.regex.Pattern
+
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import gnutch.indexer.DocumentIndexer
-import gnutch.urls.RegexUrlChecker
+import gnutch.urls.PatternService
 import gnutch.quartz.SchedulerService
 import gnutch.quartz.TimeoutListener
 
@@ -24,10 +26,10 @@ class SourceUrlsProducerService {
   Logger LOG = LoggerFactory.getLogger(SourceUrlsProducerService.class);
 
   @Autowired
-  def DocumentIndexer documentIndexer
+  def PatternService patternService
 
   @Autowired
-  def RegexUrlChecker regexUrlChecker
+  def DocumentIndexer documentIndexer
 
   @Autowired
   def SchedulerService schedulerService
@@ -71,9 +73,16 @@ class SourceUrlsProducerService {
       line = line.trim()
       if(line != "")
         switch(line.charAt(0)){
-          case '+':regexUrlChecker.allowedPatternList << line.substring(1);break;
-          case '-':regexUrlChecker.ignoredPatternList << line.substring(1);break;
-          default: throw new RuntimeException("gn:filter entry should start with +/-");break;
+        case '+': L:{
+          patternService.addAllowedPattern(Pattern.compile(line.substring(1)))
+          LOG.trace('Setting new allow value for RegexUrlChecker:' + line.substring(1));
+        };break;
+        case '-': L:{
+          patternService.addIgnoredPattern(Pattern.compile(line.substring(1)))
+          LOG.trace('Setting new ignore value for RegexUrlChecker:' + line.substring(1));
+        };break;
+          
+        default: throw new RuntimeException("gn:filter entry should start with +/-");break;
         }
     }
   

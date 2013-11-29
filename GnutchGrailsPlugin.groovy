@@ -95,8 +95,13 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
 
       docsAggregator(gnutch.processors.DocsAggregator)
 
+      patternService(gnutch.urls.PatternService){ bean ->
+        bean.scope = 'singleton' // explicitly setting scope to `singleton`
+      }
+
       regexUrlChecker(gnutch.urls.RegexUrlChecker){ bean ->
-        bean.scope = 'singleton'
+        bean.scope = 'prototype'
+        bean.factoryMethod = 'getInstance'
       }
 
       contextUrlResolver(gnutch.urls.ContextUrlResolver)

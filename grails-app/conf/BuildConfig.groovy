@@ -4,6 +4,9 @@ String camelVersion = '2.12.1' // don't upgrade/downgrade camel. it seems best r
 String activeMQVersion = '5.8.0'
 String tikaVersion  = "1.4"
 
+grails.project.source.level = 1.7
+grails.project.target.level = 1.7
+
 grails.project.dependency.resolution = {
 
   inherits('global') {
