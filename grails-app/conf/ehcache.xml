@@ -12,9 +12,11 @@
       memoryStoreEvictionPolicy="LRU"
       />
 
-
+  <diskStore path="/tmp/ehcache/"/>
   <cache name="processedUrlCache"
          maxElementsInMemory="50000"
+         diskPersistent="true"
+         overflowToDisk="true"
          eternal="true">
 
     <!-- <terracotta/> -->
