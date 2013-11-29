@@ -60,10 +60,10 @@ class GnutchRoutes extends RouteBuilder {
         // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
         when(header('Content-Type').contains("text/html")).
           log(LoggingLevel.OFF, 'gnutch', 'Sending to process-html').
-          to("seda:process-html?size=2048&blockWhenFull=true"). // ?size=2048&blockWhenFull=true
+          to("seda:process-html?size=1024&blockWhenFull=true"). // ?size=2048&blockWhenFull=true
        otherwise().
          log(LoggingLevel.OFF, 'gnutch', 'Sending to process-binary').
-         to("seda:process-binary?size=2048&blockWhenFull=true").
+         to("seda:process-binary?size=1024&blockWhenFull=true").
        end() 
 
        // Processing Tidy entries
