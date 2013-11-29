@@ -59,9 +59,11 @@ class GnutchRoutes extends RouteBuilder {
         choice().
         // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
         when(header('Content-Type').contains("text/html")).
-          to("seda:process-html"). // ?size=2048&blockWhenFull=true
+          log(LoggingLevel.OFF, 'gnutch', 'Sending to process-html').
+          to("seda:process-html?size=2048&blockWhenFull=true"). // ?size=2048&blockWhenFull=true
        otherwise().
-          to("seda:process-binary").
+         log(LoggingLevel.OFF, 'gnutch', 'Sending to process-binary').
+         to("seda:process-binary?size=2048&blockWhenFull=true").
        end() 
 
        // Processing Tidy entries
@@ -74,20 +76,18 @@ class GnutchRoutes extends RouteBuilder {
       routeId('sedaProcessTika').startupOrder(7).
         to("direct:process-tika")
 
-
-
      from("direct:process-tidy").
      routeId('processTidy').startupOrder(5).
        log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tidy').
        unmarshal().tidyMarkup().
-       log(LoggingLevel.OFF, 'gnutch', body().toString()).
        process { ex -> (config.gnutch.handlers.postXHTML as org.apache.camel.Processor).process(ex) }.
        multicast().
          // extracting links
          to('direct:extract-links').
          // indexing, if page should be indexed
          filter().method('documentIndexer', 'isIndexable').
-           to('direct:index-xhtml'). // submitting page XHTML for future processing
+         log(LoggingLevel.OFF, 'gnutch', 'Sending to index-html').
+         to('direct:index-xhtml'). // submitting page XHTML for future processing
          end().
       end()
 
