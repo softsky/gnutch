@@ -11,7 +11,7 @@ import org.apache.camel.Exchange
 class GnutchGrailsPlugin {
 
     def version = "0.2.2.42"
-    def grailsVersion = "2.0.0 > *"
+    def grailsVersion = "2.2 > *"
     def loadAfter = ['controllers', 'services', 'routing']
     def title = "Grails Apache Nutch alternative"
 
@@ -35,11 +35,13 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
       // Defaulting config
       def conf = application.config.gnutch ?: [:]
 
+      println "Config:" + conf
+
       conf.inputRoute = conf.inputRoute ?: 'file:///home/archer/tmp/gnutch-input'
 
       conf.aggregationTime = conf.aggregationTime ?: 30000L
-      conf.crawl = conf.crawl ?: [:]
-      conf.crawl.threads = conf.crawl.threads ?: 1
+      conf.crawl = conf.crawl ?: [ threads: 1, multiplier: 1]
+
       conf.handlers = conf.handlers ?: [
         postXHTML: { Exchange ex -> },
         postXML: { Exchange ex -> },
@@ -93,7 +95,9 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
 
       docsAggregator(gnutch.processors.DocsAggregator)
 
-      regexUrlChecker(gnutch.urls.RegexUrlChecker)
+      regexUrlChecker(gnutch.urls.RegexUrlChecker){ bean ->
+        bean.scope = 'singleton'
+      }
 
       contextUrlResolver(gnutch.urls.ContextUrlResolver)
 
