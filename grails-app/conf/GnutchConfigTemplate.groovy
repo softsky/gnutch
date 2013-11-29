@@ -48,7 +48,7 @@ gnutch {
   
   activemq {
     // URL to message broker
-    brokerURL = 'vm://localhost'
+    brokerURL = 'vm://localhost?broker.persistent=false'
     // brokerURL = 'tcp://localhost:61616'
     // conf = 'classpath:activemq.xml'
   }   
