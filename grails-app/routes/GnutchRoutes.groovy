@@ -123,18 +123,18 @@ class GnutchRoutes extends RouteBuilder {
             // Check if entry was not found
             choice().
              when(header(CacheConstants.CACHE_ELEMENT_WAS_FOUND).isNull()).
-             // If not found, get the payload and put it to cache
-             process {ex -> ex.in.body = ex.in.body.replaceAll(/\s/, '%20')}.
-             log(LoggingLevel.TRACE, 'gnutch', 'Sending to activemq:input-url ${body}').
-             to('activemq:input-url').
+             log(LoggingLevel.TRACE, 'gnutch', 'Element was not found in cache: ${body}').
              // Adding contextURI entry to cache
              log(LoggingLevel.TRACE, 'gnutch', 'Adding to cache: ${body}').
              setHeader(CacheConstants.CACHE_OPERATION, constant(CacheConstants.CACHE_OPERATION_ADD)).
              setHeader(CacheConstants.CACHE_KEY, body()).
              to("cache://processedUrlCache").
+             // If not found, get the payload and put it to cache
+             process {ex -> ex.in.body = ex.in.body.replaceAll(/\s/, '%20')}.
+             to('activemq:input-url').
              otherwise().
              log(LoggingLevel.TRACE, 'gnutch', 'Ignoring ${body} as it\'s cached').
-          end().
+             end().
          end().
        end()
 

@@ -24,7 +24,7 @@ println '''
 
 println "Copying configurations"
 
-ant.copy(file:"${pluginBasedir}/grails-app/conf/gnutch-ehcache.xml", tofile:"${basedir}/grails-app/conf/ehcache.xml")
+ant.copy(file:"${pluginBasedir}/grails-app/conf/ehcache.xml", tofile:"${basedir}/grails-app/conf/ehcache.xml")
 
 def src = "${pluginBasedir}/grails-app/conf/GnutchConfigTemplate.groovy"
 def dst = "${basedir}/grails-app/conf/GnutchConfig.groovy"
