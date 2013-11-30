@@ -28,7 +28,7 @@ environments {
           
 
       warn  'org.apache.camel'
-      debug 'gnutch'
+      info 'gnutch'
 
       //trace 'gnutch.indexer.DocumentIndexer.dom' 
     }
@@ -42,7 +42,7 @@ environments {
       crawl {
         // Size of crawling thread pool
         threads = {-> java.lang.Runtime.getRuntime().availableProcessors() }()
-        multiplier = 5
+        multiplier = 10
       }
       handlers {
         // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML 

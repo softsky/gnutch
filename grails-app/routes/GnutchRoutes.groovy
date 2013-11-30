@@ -60,19 +60,23 @@ class GnutchRoutes extends RouteBuilder {
         // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
         when(header('Content-Type').contains("text/html")).
           log(LoggingLevel.OFF, 'gnutch', 'Sending to process-html').
-          to("seda:process-html?size=1024&blockWhenFull=true"). // ?size=2048&blockWhenFull=true
+          to("direct:process-html").
+          //to("seda:process-html?size=1024&blockWhenFull=true"). // ?size=2048&blockWhenFull=true
        otherwise().
          log(LoggingLevel.OFF, 'gnutch', 'Sending to process-binary').
-         to("seda:process-binary?size=1024&blockWhenFull=true").
+          to("direct:process-binary").
+         //to("seda:process-binary?size=1024&blockWhenFull=true").
        end() 
 
        // Processing Tidy entries
-      from("seda:process-html?concurrentConsumers=${config.gnutch.crawl.threads * config.gnutch.crawl.multiplier}").
+       //from("seda:process-html?concurrentConsumers=${config.gnutch.crawl.threads * config.gnutch.crawl.multiplier}").
+      from("direct:process-html").
       routeId('sedaProcessTidy').startupOrder(8).
         to("direct:process-tidy")
 
        // Processing Tika entries
-      from("seda:process-binary?concurrentConsumers=${config.gnutch.crawl.threads * config.gnutch.crawl.multiplier}").
+      //from("seda:process-binary?concurrentConsumers=${config.gnutch.crawl.threads * config.gnutch.crawl.multiplier}").
+      from("direct:process-binary").
       routeId('sedaProcessTika').startupOrder(7).
         to("direct:process-tika")
 
