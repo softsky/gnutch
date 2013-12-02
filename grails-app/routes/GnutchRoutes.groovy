@@ -16,8 +16,8 @@ class GnutchRoutes extends RouteBuilder {
       
       onException(HttpOperationFailedException).
         handled(true).
-        logStackTrace(false).
-        log(LoggingLevel.ERROR, 'gnutch', 'HTTP 404 Exception: ${headers.contextURI}').
+        logStackTrace(true).
+        log(LoggingLevel.ERROR, 'gnutch', 'HTTP ${exception.statusCode} Exception: ${headers.contextURI}').
         filter().
           groovy ('exchange.getProperty(org.apache.camel.Exchange.EXCEPTION_CAUGHT).hasRedirectLocation()').
         log(LoggingLevel.TRACE, 'gnutch', 'Redirect to ${exception.redirectLocation} found. Original url: ${body}').
