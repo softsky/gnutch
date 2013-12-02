@@ -10,8 +10,10 @@ class ContextUrlResolver implements Processor {
     // contextURI always starts with http://
     def contextURI = new URL(UrlEscaper.unescape(exchange.in.headers['contextURI']))
     def contextBase = exchange.in.headers['contextBase']
-    if(contextBase && contextBase.length)
-      contextBase = new URL(contextBase.item(0).nodeValue)
+    if(contextBase){
+      contextBase = new URL(contextBase)
+      contextURI = contextBase;
+    }
       else
       contextBase = null
 

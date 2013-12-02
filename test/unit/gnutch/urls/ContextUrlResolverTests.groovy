@@ -164,4 +164,15 @@ class ContextUrlResolverTests extends GrailsUnitTestCase {
       processor.process(ex)
       assert ex.in.body == 'http://www.example.com/a/b/verDoc.axd?t={a7b04ee8-2497-4c6d-a16e-065e40ea280d}'
     }
+
+    void testProcessWithContextBase() {
+      def ctx = new DefaultCamelContext()
+      def ex = new DefaultExchange(ctx)
+
+      ex.in.headers['contextURI'] = 'http://www.google.com/a/b/c'
+      ex.in.headers['contextBase'] = 'http://www.google.com'
+      ex.in.body = 'document/a/b/c'
+      processor.process(ex)
+      assert ex.in.body == 'http://www.google.com/document/a/b/c'
+    }
 }
