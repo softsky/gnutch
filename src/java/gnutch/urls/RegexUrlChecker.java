@@ -39,7 +39,7 @@ class RegexUrlChecker {
         }
 
         result = (allowedResult && (ignoredResult == false));
-        log.trace("Checking ${url}: ${result}");
+        log.trace("Checking " + url + ": " + result);
         return result;
     };
 
