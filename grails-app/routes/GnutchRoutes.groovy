@@ -108,7 +108,7 @@ class GnutchRoutes extends RouteBuilder {
       // links extractor route
      from('direct:extract-links').
       routeId('extractLinks').startupOrder(6).
-       setHeader('contextBase', xpath('string(//base/@href)')). // setting contextBase using //base/@href value
+       setHeader('contextBase').xpath('//base/@href', String.class). // setting contextBase using //base/@href value
        // extracting links
        split(xpath('//a/@href|//iframe/@src')). // extracting all a/@href and iframe/@src
        process { ex -> ex.in.body = ex.in.body.value }. // extracting AttrNodeImpl.getValue()

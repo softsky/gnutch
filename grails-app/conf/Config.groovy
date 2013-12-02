@@ -28,7 +28,7 @@ environments {
           
 
       warn  'org.apache.camel'
-      info 'gnutch'
+      debug 'gnutch'
 
       //trace 'gnutch.indexer.DocumentIndexer.dom' 
     }
