@@ -61,15 +61,10 @@ public class SchedulerService {
      * @throws SchedulerException
      */
     public SchedulerService() throws SchedulerException {
+        timeoutListeners = Collections.synchronizedList(new ArrayList<TimeoutListener>());
+
         SchedulerFactory sf = new StdSchedulerFactory();
         quartzScheduler = sf.getScheduler();
-        // The following is needed because Class#newInstance() does not work for inner classes
-        // quartzScheduler.setJobFactory(new JobFactory(){
-        //         public Job newJob(TriggerFiredBundle paramTriggerFiredBundle, Scheduler paramScheduler) throws SchedulerException {
-        //             return new TimeoutListenerInvokingJob();
-        //         }
-        //     });
-        timeoutListeners = Collections.synchronizedList(new ArrayList<TimeoutListener>());
         quartzScheduler.start();
     }
 
