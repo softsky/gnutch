@@ -17,7 +17,7 @@ import gnutch.quartz.TimeoutListener;
 /**
  * Generic Scheduler Job that invokes all the associated TimeoutListener instances.
  */
-class TimeoutListenerInvokingJob implements Job {
+public class TimeoutListenerInvokingJob implements Job {
     private static Logger LOG = LoggerFactory.getLogger(TimeoutListenerInvokingJob.class);
 
     @Override

@@ -12,14 +12,22 @@ import java.util.concurrent.Executors
 
 import org.codehaus.groovy.grails.io.support.PathMatchingResourcePatternResolver
 
+import grails.test.GrailsUnitTestCase
 
 /**
  * See the API for {@link grails.test.mixin.services.ServiceUnitTestMixin} for usage instructions
  */
-@TestFor(InvalidDocumentCollectorService)
-class InvalidDocumentCollectorServiceTests {
-  def rnd = new Random()
+class InvalidDocumentCollectorServiceTests extends GrailsUnitTestCase {
+  def service
+  def rnd
+  
+  @Before
+  void setUp(){
+    service = new InvalidDocumentCollectorService()
+    rnd = new Random()
+  }
 
+  @Test
   void testCollect() {
     assert service
     def ALPHABET = 'abcdefgh'
@@ -29,8 +37,6 @@ class InvalidDocumentCollectorServiceTests {
     def executor = Executors.newFixedThreadPool(ncpus)
 
     def resources = new PathMatchingResourcePatternResolver().getResources("classpath:xslt/*.xsl")
-
-
 
     def r = { ->
       def reader

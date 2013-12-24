@@ -6,11 +6,11 @@ import org.apache.camel.impl.DefaultCamelContext
 import org.apache.camel.impl.DefaultExchange
 import org.springframework.core.io.FileSystemResource
 
+import grails.test.GrailsUnitTestCase
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
-@TestMixin(GrailsUnitTestMixin)
-class TikaContentExtractorTests {
+class TikaContentExtractorTests extends GrailsUnitTestCase {
 
     def contentExtractor = new TikaContentExtractor()
     def exchange = new DefaultExchange(new DefaultCamelContext())

@@ -6,11 +6,12 @@ import grails.test.mixin.*
 import grails.test.mixin.support.*
 import org.junit.*
 
+import grails.test.GrailsUnitTestCase
+
 /**
  * See the API for {@link grails.test.mixin.support.GrailsUnitTestMixin} for usage instructions
  */
-@TestMixin(GrailsUnitTestMixin)
-class UrlEscaperTests {
+class UrlEscaperTests extends GrailsUnitTestCase {
 
   void testUnescape() {
     assert UrlEscaper.unescape("http://www.abc.com/foo%20bar") == 'http://www.abc.com/foo bar'

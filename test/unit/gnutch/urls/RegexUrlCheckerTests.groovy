@@ -1,23 +1,32 @@
 package gnutch.urls
 
+import java.util.regex.Pattern;
+
 import grails.test.GrailsUnitTestCase
 
 class RegexUrlCheckerTests extends GrailsUnitTestCase {
 
-  private regexUrlChecker = new RegexUrlChecker()
+  private regexUrlChecker
+  private patternService
+
+  public void setUp(){
+    regexUrlChecker = new RegexUrlChecker()
+    patternService = new PatternService()
+    regexUrlChecker.patternService = patternService
+  }
 
   void testCheckInclusive() {
 
     [
       /http.*google\.com\/a.*/,
       /http.*google\.com\/b.*/
-    ].each { regexUrlChecker.allowedPatternList << it }
+    ].each { patternService.getAllowedPatterns() << Pattern.compile(it) }
 
     [
       /^.*x$/,
       /^.*y$/,
       /^.*z$/
-    ].each { regexUrlChecker.ignoredPatternList << it}
+    ].each { patternService.getIgnoredPatterns() << Pattern.compile(it) }
 
     assertTrue regexUrlChecker.check('http://www.google.com/abc')
     assertTrue regexUrlChecker.check('http://www.google.com/bc')
@@ -30,8 +39,8 @@ class RegexUrlCheckerTests extends GrailsUnitTestCase {
 
   void testCheckExclusive() {
 
-    regexUrlChecker.allowedPatternList << /http.*google\.com\/a.*/
-    regexUrlChecker.ignoredPatternList <<  /.*\/b.*/
+    patternService.getAllowedPatterns() << Pattern.compile(/http.*google\.com\/a.*/)
+    patternService.getIgnoredPatterns() << Pattern.compile(/.*\/b.*/)
 
     assertTrue regexUrlChecker.check('http://www.google.com/abc')
     assertFalse regexUrlChecker.check('http://www.google.com/bc') // starts with /b
