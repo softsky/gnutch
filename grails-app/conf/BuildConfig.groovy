@@ -29,10 +29,10 @@ grails.project.dependency.resolution = {
 
     test ("org.apache.camel:camel-test:${camelVersion}") { excludes "junit" }
 
-    compile ("org.quartz-scheduler:quartz:2.2.1") { excludes 'slf4j-api' }
-
     compile ("org.apache.tika:tika-core:${tikaVersion}")
     compile ("org.apache.tika:tika-parsers:${tikaVersion}") { excludes "tika-core", "commons-codec", "commons-logging", "slf4j-api" }
+
+    compile ("org.quartz-scheduler:quartz:2.2.1") { excludes 'slf4j-api' }
       
     runtime("org.apache.activemq:activemq-broker:${activeMQVersion}")  {
       excludes 'commons-logging',  'spring-context', 'slf4j-api'
