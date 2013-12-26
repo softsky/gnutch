@@ -36,8 +36,7 @@ class InvalidDocumentCollectorServiceTests extends GrailsUnitTestCase {
     def ncpus = java.lang.Runtime.getRuntime().availableProcessors()
     def executor = Executors.newFixedThreadPool(ncpus)
 
-    def resources = new PathMatchingResourcePatternResolver().getResources("classpath:resources/xslt/*.xsl")
-
+    def resources = new PathMatchingResourcePatternResolver().getResources("classpath:xslt/*.xsl")
     def r = { ->
       def reader
       def url = null
@@ -59,40 +58,41 @@ class InvalidDocumentCollectorServiceTests extends GrailsUnitTestCase {
       }
 
       // FIXME this is hardcoded hack
-      if(url == null)
+      if(url == null){
         url = 'http://www.newswire.ca'
+      }
 
-        def source = url
+      def source = url
 
-        url += ALPHABET.collect{
-          rnd.nextBoolean()?it + '/':''
-        }.join()
+      url += ALPHABET.collect{
+        it += rnd.nextBoolean()?'/':''
+      }.join()
 
-        def writer = new StringWriter()
-        def xml = new groovy.xml.MarkupBuilder(writer)
-        xml.doc(){
-          field(name:'id', url)
-          field(name:'title', ALPHABET.collect { rnd.nextBoolean()?it:''}.join())
-          field(name:'content', ALPHABET.collect { rnd.nextBoolean()?it:''}.join())
-          field(name:'source', (source =~ /http:\/\/(.*)/)[0][1])
-        };
+      def writer = new StringWriter()
+      def xml = new groovy.xml.MarkupBuilder(writer)
+      xml.doc(){
+        field(name:'id', url)
+        field(name:'title', ALPHABET.collect { rnd.nextBoolean()?it:''}.join())
+        field(name:'content', ALPHABET.collect { rnd.nextBoolean()?it:''}.join())
+        field(name:'source', (source =~ /http:\/\/(.*)/)[0][1])
+      };
 
-        def db = DocumentBuilderFactory.newInstance().newDocumentBuilder()
-        def xmlStr = writer.toString()
-        def doc = db.parse(new ByteArrayInputStream(xmlStr.getBytes()))
+      def db = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+      def xmlStr = writer.toString()
+      def doc = db.parse(new ByteArrayInputStream(xmlStr.getBytes()))
 
-        if(rnd.nextBoolean()){
-          XPathAPI.selectSingleNode(doc, "//field[@name = 'title']/text()")?.setNodeValue('')
-        } else {
-          XPathAPI.selectSingleNode(doc, "//field[@name = 'content']/text()")?.setNodeValue('')
-        }
+      if(rnd.nextBoolean()){
+        XPathAPI.selectSingleNode(doc, "//field[@name = 'title']/text()")?.setNodeValue('')
+      } else {
+        XPathAPI.selectSingleNode(doc, "//field[@name = 'content']/text()")?.setNodeValue('')
+      }
 
-        def camelContext = new DefaultCamelContext()
-        def ex = new DefaultExchange(camelContext)
+      def camelContext = new DefaultCamelContext()
+      def ex = new DefaultExchange(camelContext)
 
-        ex.in.body = doc
-        ex.in.headers['contextURI'] = url
-        service.collect(ex)
+      ex.in.body = doc
+      ex.in.headers['contextURI'] = url
+      service.collect(ex)
     } as Runnable
 
     def ncount = 1000
