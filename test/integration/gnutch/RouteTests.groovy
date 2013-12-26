@@ -176,7 +176,7 @@ class RouteTests extends CamelTestSupport {
     mockEndpoint.expects(expectation)
 
     // saving file
-    def resourceStream = new ClassPathResource('xslt/4.xsl').inputStream
+    def resourceStream = new ClassPathResource('resources/xslt/4.xsl').inputStream
     def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/4.xsl')
     destFile.append(resourceStream)
 
@@ -195,7 +195,7 @@ class RouteTests extends CamelTestSupport {
                    mockEndpointsAndSkip("direct:publish")
                  }
                });
-    def xsltDir = new ClassPathResource('xslt').file
+    def xsltDir = new ClassPathResource('resources/xslt').file
     xsltDir.eachFile { file ->
       def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/' + file.name)
       destFile.append(file.newInputStream())

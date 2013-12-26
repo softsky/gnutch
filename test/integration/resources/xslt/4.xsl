@@ -4,13 +4,13 @@
     xmlns:gn="https://github.com/softsky/gnutch"    
     exclude-result-prefixes="gn"
     version="1.0">
-  <!-- FIXME: does not crawl title, content -->
-  <gn:init>http://www.kase.kz/en/news</gn:init>
+
+  <gn:init>http://www.newswire.ca/en/search?N=11+33</gn:init>
   <gn:filter>
-    +http://www.kase.kz/en/news/kase[\/\d\.]*
-    +http://www.kase.kz/en/news/show/\d*
+	+http://www.newswire.ca/en/search\?N=11.+33&amp;No=\d+&amp;Ntt=&amp;remOrg=1&amp;Nf=
+	+http://www.newswire.ca/en/story/\d*/.*
   </gn:filter>
-  <gn:index>http://www.kase.kz/en/news/show/\d*</gn:index>
+  <gn:index>http://www.newswire.ca/en/story/\d*/.*</gn:index>
   <gn:schedule>2 weeks</gn:schedule>
 
   <xsl:output
@@ -22,13 +22,13 @@
   <xsl:template match="/">
     <doc>
       <field name="id"><xsl:value-of select="$contextURI"/></field>
-      <xsl:apply-templates select="//body/div"/>
+      <xsl:apply-templates select="//div[@id='release_content']"/>
     </doc>
   </xsl:template>
 
-  <xsl:template match="div">
-    <field name="title"><xsl:value-of select="b"/></field>
-    <field name="content"><xsl:value-of select="pre"/></field>
+  <xsl:template match="div[@id='release_content']">
+    <field name="title"><xsl:value-of select="div[@class='content']/h1/span"/></field>
+    <field name="content"><xsl:value-of select="div[@id='ReleaseContent']"/></field>
   </xsl:template>
 
 </xsl:stylesheet>
