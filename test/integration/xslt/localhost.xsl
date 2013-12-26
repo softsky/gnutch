@@ -4,13 +4,13 @@
     xmlns:gn="https://github.com/softsky/gnutch"    
     exclude-result-prefixes="gn"
     version="1.0">
-  <!-- FIXME: does not crawl title, content -->
-  <gn:init>http://www.kase.kz/en/news</gn:init>
+
+  <!-- This file is used for testing. We will use embedded Jetty server to test it -->
+  <gn:init>http://localhost:8080/</gn:init>
   <gn:filter>
-    +http://www.kase.kz/en/news/kase[\/\d\.]*
-    +http://www.kase.kz/en/news/show/\d*
+    +http://localhost:8080/\d\.html
   </gn:filter>
-  <gn:index>http://www.kase.kz/en/news/show/\d*</gn:index>
+  <gn:index>http://localhost:8080/\d\.html</gn:index>
   <gn:schedule>2 weeks</gn:schedule>
 
   <xsl:output
@@ -22,13 +22,13 @@
   <xsl:template match="/">
     <doc>
       <field name="id"><xsl:value-of select="$contextURI"/></field>
-      <xsl:apply-templates select="//body/div"/>
+      <xsl:apply-templates select="/html/body"/>
     </doc>
   </xsl:template>
 
-  <xsl:template match="div">
-    <field name="title"><xsl:value-of select="b"/></field>
-    <field name="content"><xsl:value-of select="pre"/></field>
+  <xsl:template match="body">
+    <field name="title"><xsl:value-of select="normalize-space(text())"/></field>
+    <field name="content"><xsl:value-of select="normalize-space(text())"/></field>
   </xsl:template>
 
 </xsl:stylesheet>

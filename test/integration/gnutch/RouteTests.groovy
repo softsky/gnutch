@@ -25,6 +25,12 @@ import java.util.concurrent.TimeUnit
 
 import org.codehaus.groovy.grails.io.support.ClassPathResource
 
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.DefaultHandler;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+
 class RouteTests extends CamelTestSupport {
 
   def grailsApplication
@@ -33,6 +39,8 @@ class RouteTests extends CamelTestSupport {
   CamelContext camelContext
 
   def jmsConnectionFactory
+
+  private Server server  // jetty server
 
   protected CamelContext createCamelContext() throws Exception {
     return camelContext
@@ -44,11 +52,26 @@ class RouteTests extends CamelTestSupport {
     camelContext.start() // starting camel ourselves
 
     camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
+
+    // Running embedded Jetty server to crawl from. Application sits in test/integation/resources/web-app
+    server = new Server(8080);
+    ResourceHandler resource_handler = new ResourceHandler();
+    resource_handler.directoriesListed = true;
+    resource_handler.welcomeFiles = ["index.html"];
+
+    resource_handler.resourceBase = "test/integration/resources/web-app";
+          
+    HandlerList handlers = new HandlerList();
+    handlers.handlers = [resource_handler, new DefaultHandler()];
+    server.handler = handlers;
+    server.start();
   }
 
   @After 
   void tearDown(){
     camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
+
+    server.stop();
 
     def serverUrl = 'service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi'
     def connector = JMXConnectorFactory.connect(new JMXServiceURL(serverUrl))
@@ -117,42 +140,6 @@ class RouteTests extends CamelTestSupport {
 
   @Test
   @DirtiesContext
-  void testProcessTika() {
-    camelContext.
-    getRouteDefinition('indexBinary').
-    adviceWith(camelContext,
-               new AdviceWithRouteBuilder() { 
-                 @Override
-                 public void configure() throws Exception {
-                   mockEndpointsAndSkip("direct:aggregate-documents")
-                 }
-               });
-
-    def pdfIs = new ClassPathResource('resources/2012-03-21-sunrise.pdf').inputStream
-    grailsApplication.mainContext.getBean('documentIndexer').transformations.put("http://www.abc.com", null)
-
-    assertNotNull(camelContext.hasEndpoint('mock:direct:aggregate-documents'))
-    def mockEndpoint = getMockEndpoint("mock:direct:aggregate-documents")
-
-    def expectation = { 
-      def ex = receivedExchanges[0]
-      assertEquals ex.in.body.documentElement.nodeName, 'doc'
-
-      assertEquals XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="id"]/text()').nodeValue, 'http://www.abc.com'
-      assert XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="title"]').textContent?.length() > 0
-      assert XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="content"]').textContent?.length() > 0
-    }
-    expectation.delegate = mockEndpoint
-
-    mockEndpoint.expects(expectation)
-
-    producerTemplate.sendBodyAndHeaders("direct:process-tika", pdfIs, [contextURI: 'http://www.abc.com'])
-
-    assertMockEndpointsSatisfied(10, TimeUnit.SECONDS)
-  }
-
-  @Test
-  @DirtiesContext
   void testFullCycle() {
     camelContext.
     getRouteDefinition('aggregation').
@@ -176,11 +163,11 @@ class RouteTests extends CamelTestSupport {
     mockEndpoint.expects(expectation)
 
     // saving file
-    def resourceStream = new ClassPathResource('xslt/4.xsl').inputStream
-    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/4.xsl')
+    def resourceStream = new ClassPathResource('xslt/localhost.xsl').inputStream
+    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
     destFile.append(resourceStream)
 
-    assertMockEndpointsSatisfied(1, TimeUnit.MINUTES)
+    assertMockEndpointsSatisfied(15, TimeUnit.SECONDS)
   }
 
   @Test
@@ -213,7 +200,45 @@ class RouteTests extends CamelTestSupport {
     expectation.delegate = mockEndpoint
     mockEndpoint.expects(expectation)
 
-    assertMockEndpointsSatisfied(5, TimeUnit.MINUTES) // let this test work for 5 minutes
+    assertMockEndpointsSatisfied(15, TimeUnit.SECONDS) // let this test work for 15 seconds
+  }
+
+
+  // this test goes at the end as it use adviceWith for aggregate-documents
+  @Test
+  @DirtiesContext
+  void testProcessTika() {
+    camelContext.
+    getRouteDefinition('indexBinary').
+    adviceWith(camelContext,
+               new AdviceWithRouteBuilder() { 
+                 @Override
+                 public void configure() throws Exception {
+                   mockEndpointsAndSkip("direct:aggregate-documents")
+                 }
+               });
+
+    def pdfIs = new ClassPathResource('resources/2012-03-21-sunrise.pdf').inputStream
+    grailsApplication.mainContext.getBean('documentIndexer').transformations.put("http://www.abc.com", null)
+
+    assertNotNull(camelContext.hasEndpoint('mock:direct:aggregate-documents'))
+    def mockEndpoint = getMockEndpoint("mock:direct:aggregate-documents")
+
+    def expectation = { 
+      def ex = receivedExchanges[0]
+      assertEquals ex.in.body.documentElement.nodeName, 'doc'
+
+      assertEquals XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="id"]/text()').nodeValue, 'http://www.abc.com'
+      assert XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="title"]').textContent?.length() > 0
+      assert XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="content"]').textContent?.length() > 0
+    }
+    expectation.delegate = mockEndpoint
+
+    mockEndpoint.expects(expectation)
+
+    producerTemplate.sendBodyAndHeaders("direct:process-tika", pdfIs, [contextURI: 'http://www.abc.com'])
+
+    assertMockEndpointsSatisfied(10, TimeUnit.SECONDS)
   }
 
 }
