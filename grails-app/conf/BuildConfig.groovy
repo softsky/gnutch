@@ -45,6 +45,8 @@ grails.project.dependency.resolution = {
     }
     runtime("org.apache.xbean:xbean-spring:3.8") { excludes 'commons-logging' }
 
+    test("org.eclipse.jetty:jetty-server:9.1.0.v20131115")
+
   }
 
   plugins {
