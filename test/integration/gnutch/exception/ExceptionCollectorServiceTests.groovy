@@ -8,6 +8,8 @@ import org.apache.camel.Exchange
 import org.apache.camel.impl.DefaultCamelContext
 import org.apache.camel.impl.DefaultExchange
 
+import org.springframework.test.annotation.DirtiesContext
+
 class ExceptionCollectorServiceTests {
 
   def exceptionCollectorService
@@ -27,6 +29,7 @@ class ExceptionCollectorServiceTests {
   }
 
   @Test
+  @DirtiesContext
   void testCollectException() {
     exchange.setProperty(org.apache.camel.Exchange.EXCEPTION_CAUGHT, new Exception('This is first exception'))
     exchange.in.headers['contextURI'] = 'http://www.example.com/a/1'
