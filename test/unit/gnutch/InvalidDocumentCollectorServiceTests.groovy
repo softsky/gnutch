@@ -36,7 +36,7 @@ class InvalidDocumentCollectorServiceTests extends GrailsUnitTestCase {
     def ncpus = java.lang.Runtime.getRuntime().availableProcessors()
     def executor = Executors.newFixedThreadPool(ncpus)
 
-    def resources = new PathMatchingResourcePatternResolver().getResources("classpath:xslt/*.xsl")
+    def resources = new PathMatchingResourcePatternResolver().getResources("classpath:resources/xslt/*.xsl")
 
     def r = { ->
       def reader
