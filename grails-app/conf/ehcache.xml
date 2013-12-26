@@ -13,10 +13,11 @@
       />
 
   <diskStore path="/tmp/ehcache/"/>
+
   <cache name="processedUrlCache"
          maxElementsInMemory="50000"
-         diskPersistent="true"
-         overflowToDisk="true"
+         diskPersistent="false"
+         overflowToDisk="false"
          eternal="true">
 
     <!-- <terracotta/> -->
