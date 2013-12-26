@@ -63,7 +63,6 @@ class InvalidDocumentCollectorService {
 
     String invalidSource = XPathAPI.eval(ex.in.body, "//field[@name = 'source']/text()").str()
 
-
     def resources = new PathMatchingResourcePatternResolver().getResources("classpath:xslt/*.xsl")
     def reader
     resources.each { resource ->
