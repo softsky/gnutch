@@ -8,7 +8,6 @@ log4j = {
           'org.springframework',
           'org.hibernate',
           'net.sf.ehcache.hibernate'
-          
 
    warn  'org.apache.camel'
    trace  'gnutch'
@@ -28,7 +27,7 @@ environments {
           
 
       warn  'org.apache.camel'
-      trace 'gnutch'
+      debug 'gnutch'
 
       //trace 'gnutch.indexer.DocumentIndexer.dom' 
     }
@@ -87,6 +86,7 @@ environments {
         // Route definition. Should consume from 'direct:publish' and provide some business logic
         publish = {
           from('direct:publish').
+          //to("file:///home/archer/tmp/gnutch-output")
           setHeader(Exchange.HTTP_URI, constant("${gnutch.solr.coreUrl}/update?commit=true")).
           setHeader(Exchange.HTTP_QUERY, constant('commit=true')).
           setHeader(Exchange.HTTP_METHOD, constant('POST')).
@@ -103,6 +103,9 @@ environments {
         defaultMaxConnectionsPerHost = 1000
         // Maximmum number of total connections
         maxTotalConnections = 1000
+        customHeaders = [
+        Cookie: 'PacerUser="mu023901391517923                                66uziNFVAR."; PacerSession=4weby3qfsJY8BzLiG2bP8+6WpaY6iHw0yHus6YIiEtUC1o1rGgh4R5RhatqFWeKXVNTyt9Ak7Xlcqh80IUD+Hjy2btQCzWiG; PacerPref=receipt=Y'
+        ]
       }
 
       solr {
@@ -111,8 +114,8 @@ environments {
   
       activemq {
         // URL to message broker
-        // brokerURL = 'vm://localhost'
-        brokerURL = 'tcp://localhost:61616'
+        brokerURL = 'vm://localhost'
+        // brokerURL = 'tcp://localhost:61616'
         // conf = 'classpath:activemq.xml'
       } 
     }
