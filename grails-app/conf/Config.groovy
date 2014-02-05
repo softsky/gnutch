@@ -46,6 +46,11 @@ environments {
       handlers {
         // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML 
         // ex.in.body contains XHML document (actually contains reference to org.w3c.org.Document)
+        postHTTP = { Exchange ex ->
+          
+        }
+        // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML 
+        // ex.in.body contains XHML document (actually contains reference to org.w3c.org.Document)
         postXHTML = { Exchange ex ->
 
         } 
@@ -77,6 +82,7 @@ environments {
         }
 
         validate = { Exchange ex ->
+          return true
           def title = XPathAPI.eval(ex.in.body, "//field[@name = 'title']").str()
           def content = XPathAPI.eval(ex.in.body, "//field[@name = 'content']").str()
 
@@ -86,12 +92,12 @@ environments {
         // Route definition. Should consume from 'direct:publish' and provide some business logic
         publish = {
           from('direct:publish').
-          //to("file:///home/archer/tmp/gnutch-output")
-          setHeader(Exchange.HTTP_URI, constant("${gnutch.solr.coreUrl}/update?commit=true")).
-          setHeader(Exchange.HTTP_QUERY, constant('commit=true')).
-          setHeader(Exchange.HTTP_METHOD, constant('POST')).
-          setHeader(Exchange.CONTENT_TYPE, constant('application/xml')).
-          to("http://null")
+          to("file:///home/archer/tmp/gnutch-output")
+          // setHeader(Exchange.HTTP_URI, constant("${gnutch.solr.coreUrl}/update?commit=true")).
+          // setHeader(Exchange.HTTP_QUERY, constant('commit=true')).
+          // setHeader(Exchange.HTTP_METHOD, constant('POST')).
+          // setHeader(Exchange.CONTENT_TYPE, constant('application/xml')).
+          // to("http://null")
         }
       }
 

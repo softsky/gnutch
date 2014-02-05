@@ -62,7 +62,7 @@ class GnutchRoutes extends RouteBuilder {
         setBody(constant()).
         log(LoggingLevel.DEBUG, 'gnutch', 'Retrieving ${headers.contextURI}').
         to('http://null'). // invoking HttpClient
-        inOut('direct:postHttp').
+        process { ex -> (config.gnutch.handlers.postHTTP as org.apache.camel.Processor).process(ex) }.
         choice().
         // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
         when(header('Content-Type').contains("text/html")).
@@ -193,10 +193,6 @@ class GnutchRoutes extends RouteBuilder {
          log(LoggingLevel.DEBUG, 'gnutch', 'Ignoring ${headers.contextURI}').
          beanRef('invalidDocumentCollectorService', 'collect').
        end()
-
-       from('direct:postHttp').
-       convertBodyTo(java.lang.String) // doing nothing, just converting to String
-
 
        config.gnutch.handlers.publish.delegate = this
        config.gnutch.handlers.publish.call()
