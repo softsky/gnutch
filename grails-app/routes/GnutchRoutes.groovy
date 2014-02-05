@@ -7,6 +7,8 @@ import org.apache.camel.component.cache.CacheConstants
 import org.apache.camel.component.http.HttpOperationFailedException
 import org.apache.commons.codec.binary.Base64;
 
+import org.apache.xpath.XPathAPI
+
 class GnutchRoutes extends RouteBuilder {
   def grailsApplication
 
@@ -90,6 +92,10 @@ class GnutchRoutes extends RouteBuilder {
      routeId('processTidy').startupOrder(5).
        log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tidy').
        unmarshal().tidyMarkup().
+       // setHeader('encoding').xpath('//meta[@http-equiv="Content-Type"]/@content', String.class).
+       // process { ex ->
+       //   ex.in.headers['encoding'] = (ex.in.headers['encoding'] =~ /.*charset=(.*)/)[0][1]
+       // }.
        process { ex -> (config.gnutch.handlers.postXHTML as org.apache.camel.Processor).process(ex) }.
        multicast().
          // extracting links
