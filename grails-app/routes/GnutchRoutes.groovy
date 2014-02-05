@@ -7,8 +7,6 @@ import org.apache.camel.component.cache.CacheConstants
 import org.apache.camel.component.http.HttpOperationFailedException
 import org.apache.commons.codec.binary.Base64;
 
-import org.apache.xpath.XPathAPI
-
 class GnutchRoutes extends RouteBuilder {
   def grailsApplication
 
@@ -64,6 +62,7 @@ class GnutchRoutes extends RouteBuilder {
         setBody(constant()).
         log(LoggingLevel.DEBUG, 'gnutch', 'Retrieving ${headers.contextURI}').
         to('http://null'). // invoking HttpClient
+        inOut('direct:postHttp').
         choice().
         // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
         when(header('Content-Type').contains("text/html")).
@@ -92,10 +91,6 @@ class GnutchRoutes extends RouteBuilder {
      routeId('processTidy').startupOrder(5).
        log(LoggingLevel.TRACE, 'gnutch', 'Processing with Tidy').
        unmarshal().tidyMarkup().
-       // setHeader('encoding').xpath('//meta[@http-equiv="Content-Type"]/@content', String.class).
-       // process { ex ->
-       //   ex.in.headers['encoding'] = (ex.in.headers['encoding'] =~ /.*charset=(.*)/)[0][1]
-       // }.
        process { ex -> (config.gnutch.handlers.postXHTML as org.apache.camel.Processor).process(ex) }.
        multicast().
          // extracting links
@@ -198,6 +193,10 @@ class GnutchRoutes extends RouteBuilder {
          log(LoggingLevel.DEBUG, 'gnutch', 'Ignoring ${headers.contextURI}').
          beanRef('invalidDocumentCollectorService', 'collect').
        end()
+
+       from('direct:postHttp').
+       convertBodyTo(java.lang.String) // doing nothing, just converting to String
+
 
        config.gnutch.handlers.publish.delegate = this
        config.gnutch.handlers.publish.call()
