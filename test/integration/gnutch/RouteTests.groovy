@@ -31,9 +31,8 @@ import org.eclipse.jetty.server.handler.DefaultHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 
-@Ignore
-class RouteTests extends CamelTestSupport {
 
+class RouteTests extends CamelTestSupport {
     def grailsApplication
 
     ProducerTemplate producerTemplate;
@@ -48,6 +47,7 @@ class RouteTests extends CamelTestSupport {
     }
 
     @Before
+    @Ignore
     void setUp() {
         super.setUp()
         camelContext.start() // starting camel ourselves
@@ -68,6 +68,7 @@ class RouteTests extends CamelTestSupport {
         server.start();
     }
 
+    @Ignore
     @After
     void tearDown() {
         camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
@@ -95,6 +96,7 @@ class RouteTests extends CamelTestSupport {
         super.tearDown()
     }
 
+    @Ignore
     @Test
     @DirtiesContext
     void testAggregate() {
@@ -139,6 +141,7 @@ class RouteTests extends CamelTestSupport {
         assertMockEndpointsSatisfied(1, TimeUnit.MINUTES)
     }
 
+    @Ignore
     @Test
     @DirtiesContext
     void testFullCycle() {
@@ -171,6 +174,7 @@ class RouteTests extends CamelTestSupport {
         assertMockEndpointsSatisfied(15, TimeUnit.SECONDS)
     }
 
+    @Ignore
     @Test
     @DirtiesContext
     void testStress() {
@@ -205,6 +209,7 @@ class RouteTests extends CamelTestSupport {
     }
 
     // this test goes at the end as it use adviceWith for aggregate-documents
+    @Ignore
     @Test
     @DirtiesContext
     void testProcessTika() {

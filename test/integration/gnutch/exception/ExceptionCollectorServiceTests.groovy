@@ -10,9 +10,7 @@ import org.apache.camel.impl.DefaultExchange
 
 import org.springframework.test.annotation.DirtiesContext
 
-@Ignore
 class ExceptionCollectorServiceTests {
-
 
     def exceptionCollectorService
 
