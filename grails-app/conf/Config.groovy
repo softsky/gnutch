@@ -12,7 +12,7 @@ log4j = {
    warn  'org.apache.camel'
    trace  'gnutch'
 
-   //trace 'gnutch.indexer.DocumentIndexer.dom' 
+   //trace 'gnutch.indexer.DocumentIndexer.dom'
 }
 
 
@@ -24,16 +24,16 @@ environments {
       'org.springframework',
       'org.hibernate',
       'net.sf.ehcache.hibernate'
-          
+
 
       warn  'org.apache.camel'
       debug 'gnutch'
 
-      //trace 'gnutch.indexer.DocumentIndexer.dom' 
+      //trace 'gnutch.indexer.DocumentIndexer.dom'
     }
 
     gnutch {
-      // Input route definition 
+      // Input route definition
       inputRoute = 'file:///home/archer/tmp/gnutch-input'
 
       aggregationTime = 60000L
@@ -44,16 +44,16 @@ environments {
         multiplier = 10
       }
       handlers {
-        // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML 
+        // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML
         // ex.in.body contains XHML document (actually contains reference to org.w3c.org.Document)
         postHTTP = { Exchange ex ->
-          
+
         }
-        // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML 
+        // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML
         // ex.in.body contains XHML document (actually contains reference to org.w3c.org.Document)
         postXHTML = { Exchange ex ->
 
-        } 
+        }
 
         // org.apache.camel.Processor definition. Called after XML is built
         // ex.in.body contains XML document (actually contains reference to org.w3c.org.Document)
@@ -69,7 +69,7 @@ environments {
           // aquiring `source` field
           def nodeList = doc.getElementsByTagName("field")
           def id = nodeList.find { it.getAttribute("name") == "id"}.textContent
-    
+
           def m = id =~ /https?:\/\/([^\/]*)\//
           try{
             def sourceElement = doc.createElement("field")
@@ -102,34 +102,32 @@ environments {
       }
 
       http {
-        // UserAgent string. Better if contain email address of person who is responsible 
+        // UserAgent string. Better if contain email address of person who is responsible
         // for crawling. That will allow source owners to contact person directly
         userAgent = "GNutch crawler. Contact maintainer: admin@softsky.com.ua"
         // Maximmum number of connections per host
         defaultMaxConnectionsPerHost = 1000
         // Maximmum number of total connections
         maxTotalConnections = 1000
-        customHeaders = [
-        Cookie: 'PacerUser="mu023901391517923                                66uziNFVAR."; PacerSession=4weby3qfsJY8BzLiG2bP8+6WpaY6iHw0yHus6YIiEtUC1o1rGgh4R5RhatqFWeKXVNTyt9Ak7Xlcqh80IUD+Hjy2btQCzWiG; PacerPref=receipt=Y'
-        ]
+        customHeaders = []
       }
 
       solr {
         coreUrl = 'http://92.52.145.2:8983/solr/collection1'
       }
-  
+
       activemq {
         // URL to message broker
         brokerURL = 'vm://localhost'
         // brokerURL = 'tcp://localhost:61616'
         // conf = 'classpath:activemq.xml'
-      } 
+      }
     }
   }
 
   test {
     gnutch {
-      // Input route definition 
+      // Input route definition
       inputRoute = 'file:///home/archer/tmp/gnutch-input'
 
       aggregationTime = 10000L
@@ -141,17 +139,17 @@ environments {
       }
 
       handlers {
-        // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML 
+        // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML
         // ex.in.body contains XHML document (actually contains reference to org.w3c.org.Document)
         postXHTML = { Exchange ex ->
 
-        } 
+        }
 
         // org.apache.camel.Processor definition. Called after XML is built
         // ex.in.body contains XML document (actually contains reference to org.w3c.org.Document)
         postXML = { Exchange ex ->
 
-        } 
+        }
 
         validate = { Exchange ex ->
           return true
@@ -164,9 +162,9 @@ environments {
         }
 
       }
-  
+
       http {
-        // UserAgent string. Better if contain email address of person who is responsible 
+        // UserAgent string. Better if contain email address of person who is responsible
         // for crawling. That will allow source owners to contact person directly
         userAgent = "GNutch crawler (https://github.com/softsky/gnutch): admin@gnutch.org"
         // Maximmum number of connections per host
@@ -174,14 +172,14 @@ environments {
         // Maximmum number of total connections
         maxTotalConnections = 1000
       }
-  
+
       activemq {
         // URL to message broker
         brokerURL = 'vm://localhost?broker.persistent=false'
         // brokerURL = 'tcp://localhost:61616'
         // conf = 'classpath:activemq.xml'
-      }   
+      }
     }
-    
+
   }
 }
