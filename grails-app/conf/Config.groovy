@@ -109,7 +109,7 @@ environments {
         defaultMaxConnectionsPerHost = 1000
         // Maximmum number of total connections
         maxTotalConnections = 1000
-        customHeaders = []
+        customHeaders = [ ]
       }
 
       solr {
