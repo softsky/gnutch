@@ -70,7 +70,7 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile(":routing:1.2.9")    
+    compile(":routing:1.3.0")    
     runtime ":hibernate:3.6.10.6"
 
     build(":tomcat:7.0.47", ':release:3.0.1', ':rest-client-builder:2.0.1') {
