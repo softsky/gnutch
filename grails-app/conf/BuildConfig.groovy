@@ -7,6 +7,26 @@ String tikaVersion  = "1.4"
 grails.project.source.level = 1.7
 grails.project.target.level = 1.7
 
+grails.project.fork = [
+
+  // configure settings for the test-app JVM, uses the daemon by default
+
+test: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, daemon:true],
+
+// configure settings for the run-app JVM
+
+run: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+
+// configure settings for the run-war JVM
+
+war: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256, forkReserve:false],
+
+// configure settings for the Console UI JVM
+
+console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
+
+]
+
 grails.project.dependency.resolution = {
 
   inherits('global') {
@@ -21,7 +41,7 @@ grails.project.dependency.resolution = {
 
   dependencies {
     compile ("org.apache.camel:camel-http:${camelVersion}") { excludes 'commons-codec' }
-    compile ("org.apache.camel:camel-jms:${camelVersion}") { excludes 'spring-tx', 'spring-jms','spring-context', 'spring-beans', 'spring-aop', 'spring-core' }
+    compile ("org.apache.camel:camel-jms:${camelVersion}")
     compile ("org.apache.camel:camel-cache:${camelVersion}") { excludes 'xercesImpl', 'xml-apis', 'slf4j-api', 'ehcache'  }
     compile ("org.apache.camel:camel-tagsoup:${camelVersion}")
 
@@ -50,9 +70,10 @@ grails.project.dependency.resolution = {
   }
 
   plugins {
-    compile(":routing:1.2.8")
+    compile(":routing:1.2.9")    
+    runtime ":hibernate:3.6.10.6"
 
-    build(":tomcat:$grailsVersion", ':release:2.2.1', ':rest-client-builder:1.0.3') {
+    build(":tomcat:7.0.47", ':release:3.0.1', ':rest-client-builder:2.0.1') {
       export = false
     }
   }

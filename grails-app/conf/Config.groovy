@@ -92,12 +92,12 @@ environments {
         // Route definition. Should consume from 'direct:publish' and provide some business logic
         publish = {
           from('direct:publish').
-          to("file:///home/archer/tmp/gnutch-output")
-          // setHeader(Exchange.HTTP_URI, constant("${gnutch.solr.coreUrl}/update?commit=true")).
-          // setHeader(Exchange.HTTP_QUERY, constant('commit=true')).
-          // setHeader(Exchange.HTTP_METHOD, constant('POST')).
-          // setHeader(Exchange.CONTENT_TYPE, constant('application/xml')).
-          // to("http://null")
+          //to("file:///home/archer/tmp/gnutch-output")
+          setHeader(Exchange.HTTP_URI, constant("${gnutch.solr.coreUrl}/update?commit=true")).
+          setHeader(Exchange.HTTP_QUERY, constant('commit=true')).
+          setHeader(Exchange.HTTP_METHOD, constant('POST')).
+          setHeader(Exchange.CONTENT_TYPE, constant('application/xml')).
+          to("http://null")
         }
       }
 
@@ -113,7 +113,7 @@ environments {
       }
 
       solr {
-        coreUrl = 'http://92.52.145.2:8983/solr/collection1'
+        coreUrl = 'http://217.196.165.81:8983/solr/collection1'
       }
 
       activemq {
@@ -183,3 +183,27 @@ environments {
 
   }
 }
+
+// Uncomment and edit the following lines to start using Grails encoding & escaping improvements
+
+/* remove this line 
+// GSP settings
+grails {
+    views {
+        gsp {
+            encoding = 'UTF-8'
+            htmlcodec = 'xml' // use xml escaping instead of HTML4 escaping
+            codecs {
+                expression = 'html' // escapes values inside null
+                scriptlet = 'none' // escapes output from scriptlets in GSPs
+                taglib = 'none' // escapes output from taglibs
+                staticparts = 'none' // escapes output from static template parts
+            }
+        }
+        // escapes all not-encoded output at final stage of outputting
+        filteringCodecForContentType {
+            //'text/html' = 'html'
+        }
+    }
+}
+remove this line */
