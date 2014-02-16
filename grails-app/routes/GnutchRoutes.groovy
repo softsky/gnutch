@@ -53,8 +53,10 @@ class GnutchRoutes extends RouteBuilder {
         setHeader(Exchange.HTTP_METHOD, constant('GET')).        
         process { ex ->
           // setting up custom headers
-          config.gnutch.http.customHeaders.each { k, v ->
-            ex.in.headers[k] = v
+          config.gnutch.http.customHeaders.each { header ->
+            header.each { k, v ->
+              ex.in.headers[k] = v
+            }
           }
         }.
         removeHeader(Exchange.HTTP_QUERY).
@@ -194,7 +196,9 @@ class GnutchRoutes extends RouteBuilder {
          beanRef('invalidDocumentCollectorService', 'collect').
        end()
 
-       config.gnutch.handlers.publish.delegate = this
-       config.gnutch.handlers.publish.call()
+       if(config.gnutch.handlers.publish){
+         config.gnutch.handlers.publish.delegate = this
+         config.gnutch.handlers.publish.call()
+       }
     }
 }
