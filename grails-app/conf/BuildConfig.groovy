@@ -27,6 +27,8 @@ console: [maxMemory: 768, minMemory: 64, debug: false, maxPerm: 256]
 
 ]
 
+grails.project.dependency.resolver = "maven" // or ivy
+
 grails.project.dependency.resolution = {
 
   inherits('global') {
@@ -40,30 +42,25 @@ grails.project.dependency.resolution = {
   }
 
   dependencies {
-    compile ("org.apache.camel:camel-http:${camelVersion}") { excludes 'commons-codec' }
+    compile ("org.apache.camel:camel-http:${camelVersion}") 
     compile ("org.apache.camel:camel-jms:${camelVersion}")
-    compile ("org.apache.camel:camel-cache:${camelVersion}") { excludes 'xercesImpl', 'xml-apis', 'slf4j-api', 'ehcache'  }
+    compile ("org.apache.camel:camel-cache:${camelVersion}") 
     compile ("org.apache.camel:camel-tagsoup:${camelVersion}")
 
-    test ("org.apache.camel:camel-test:${camelVersion}") { excludes "junit" }
+    test ("org.apache.camel:camel-test:${camelVersion}")
 
     compile ("org.apache.tika:tika-core:${tikaVersion}")
-    compile ("org.apache.tika:tika-parsers:${tikaVersion}") { excludes "tika-core", "commons-codec", "commons-logging", "slf4j-api" }
+    compile ("org.apache.tika:tika-parsers:${tikaVersion}")
 
-    compile ("org.quartz-scheduler:quartz:2.2.1") { excludes 'slf4j-api' }
+    compile ("org.quartz-scheduler:quartz:2.2.1")
       
-    runtime("org.apache.activemq:activemq-broker:${activeMQVersion}")  {
-      excludes 'commons-logging',  'spring-context', 'slf4j-api'
-    }
+    runtime("org.apache.activemq:activemq-broker:${activeMQVersion}")
 
-    runtime("org.apache.activemq:activemq-kahadb-store:${activeMQVersion}")  {
-      excludes 'spring-context', 'spring-aop', 'spring-core'
-    }
+    runtime("org.apache.activemq:activemq-kahadb-store:${activeMQVersion}")
 
-    runtime("org.apache.activemq:activemq-camel:${activeMQVersion}")  {
-      excludes 'commons-logging', 'slf4j-api', 'camel-core', 'camel-jms', 'camel-spring', 'camel-groovy', 'spring-beans', 'spring-core'
-    }
-    runtime("org.apache.xbean:xbean-spring:3.8") { excludes 'commons-logging' }
+    runtime("org.apache.activemq:activemq-camel:${activeMQVersion}")
+    runtime("org.apache.xbean:xbean-spring:3.8")
+    build("xerces:xercesImpl:2.8.0")
 
     test("org.eclipse.jetty:jetty-server:9.1.0.v20131115")
 
@@ -71,10 +68,10 @@ grails.project.dependency.resolution = {
 
   plugins {
     compile(":routing:1.3.0")    
-    runtime ":hibernate:3.6.10.6"
+    build(":tomcat:7.0.50")
 
-    build(":tomcat:7.0.50", ':release:3.0.1', ':rest-client-builder:2.0.1') {
-      export = false
+    build(':release:3.0.1', ':rest-client-builder:2.0.1') {
+      //export = false
     }
   }
 }
