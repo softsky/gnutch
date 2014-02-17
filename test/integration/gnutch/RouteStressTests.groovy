@@ -74,6 +74,7 @@ class RouteStressTests extends CamelTestSupport {
   }
 
   @Test
+  @DirtiesContext
   void testStress() {
     camelContext.
     getRouteDefinition('aggregation').
@@ -104,4 +105,37 @@ class RouteStressTests extends CamelTestSupport {
 
     assertMockEndpointsSatisfied(15, TimeUnit.SECONDS) // let this test work for 15 seconds
   }
+
+  @Test
+  @DirtiesContext
+  void testFullCycle() {
+    camelContext.
+    getRouteDefinition('aggregation').
+    adviceWith(camelContext,
+               new AdviceWithRouteBuilder() { 
+                 @Override
+                 public void configure() throws Exception {
+                   mockEndpointsAndSkip("direct:publish")
+                 }
+               });
+    def mockEndpoint = getMockEndpoint("mock:direct:publish")
+
+    mockEndpoint.expectedMessageCount(1)
+    def expectation = {-> 
+      def ex = receivedExchanges[0]
+      assert ex.in.body.documentElement.nodeName == 'add'
+      assert ex.in.body.getElementsByTagName('doc').length > 0
+      
+    } as Runnable
+    expectation.delegate = mockEndpoint
+    mockEndpoint.expects(expectation)
+
+    // saving file
+    def resourceStream = new ClassPathResource('xslt/localhost.xsl').inputStream
+    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
+    destFile.append(resourceStream)
+
+    assertMockEndpointsSatisfied(15, TimeUnit.SECONDS)
+  }
+
 }
