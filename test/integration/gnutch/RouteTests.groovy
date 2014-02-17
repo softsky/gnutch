@@ -73,23 +73,23 @@ class RouteTests extends CamelTestSupport {
 
     server.stop();
 
-    def serverUrl = 'service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi'
-    def connector = JMXConnectorFactory.connect(new JMXServiceURL(serverUrl))
-    def server = connector.MBeanServerConnection
-    def localhostBroker = 'org.apache.activemq:type=Broker,brokerName=localhost'
-    def brokerId = new GroovyMBean(server, "${localhostBroker}").BrokerId
-    println "Connected to: $brokerId"
+    // def serverUrl = 'service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi'
+    // def connector = JMXConnectorFactory.connect(new JMXServiceURL(serverUrl))
+    // def server = connector.MBeanServerConnection
+    // def localhostBroker = 'org.apache.activemq:type=Broker,brokerName=localhost'
+    // def brokerId = new GroovyMBean(server, "${localhostBroker}").BrokerId
+    // println "Connected to: $brokerId"
 
-    def queue = new GroovyMBean(server, "${localhostBroker},destinationType=Queue,destinationName=input-url")
-    try {
-      println "Before purge:" + queue.QueueSize
-      queue.purge()
-      println "After purge:" + queue.QueueSize
-      println "Method purge() executed normally"
-    }catch(exception){
-      exception.printStackTrace()
-    }
-    connector.close()
+    // def queue = new GroovyMBean(server, "${localhostBroker},destinationType=Queue,destinationName=input-url")
+    // try {
+    //   println "Before purge:" + queue.QueueSize
+    //   queue.purge()
+    //   println "After purge:" + queue.QueueSize
+    //   println "Method purge() executed normally"
+    // }catch(exception){
+    //   exception.printStackTrace()
+    // }
+    // connector.close()
 
     super.tearDown()
   }
