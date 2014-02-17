@@ -154,20 +154,21 @@ environments {
       'org.hibernate',
       'net.sf.ehcache.hibernate'
 
-      warn  'org.apache.camel'
-      debug 'gnutch'
+      debug  'org.apache.camel'
+      trace  'gnutch'
     }
 
-    gnutch {
-      crawl.threads = {-> java.lang.Runtime.getRuntime().availableProcessors() }()
-      crawl.multiplier = 5
+    gnutch.aggregationTime = 15000L
 
-      gnutch.handlers.publish = {
-        from('direct:publish').
-        log(LoggingLevel.DEBUG, 'gnutch', 'Committed')
-      }
-      gnutch.activemq.brokerURL = 'vm://localhost?broker.persistent=false'
+    gnutch.crawl.threads = {-> java.lang.Runtime.getRuntime().availableProcessors() }()
+    gnutch.crawl.multiplier = 5
+
+    gnutch.handlers.publish = {
+      from('direct:publish').
+      log(LoggingLevel.DEBUG, 'gnutch', 'Committed')
     }
+
+    gnutch.activemq.brokerURL = 'vm://localhost?broker.persistent=false'
 
   }
 }
