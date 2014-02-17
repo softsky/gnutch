@@ -98,9 +98,9 @@ environments {
   productoin {
     log4j = {
       error  'org.codehaus.groovy.grails',
-      'org.springframework',
-      'org.hibernate',
-      'net.sf.ehcache.hibernate'
+             'org.springframework',
+             'org.hibernate',
+             'net.sf.ehcache.hibernate'
 
       warn  'org.apache.camel'
       info 'gnutch'
@@ -120,9 +120,9 @@ environments {
   development {
     log4j = {
       error  'org.codehaus.groovy.grails',
-      'org.springframework',
-      'org.hibernate',
-      'net.sf.ehcache.hibernate'
+             'org.springframework',
+             'org.hibernate',
+             'net.sf.ehcache.hibernate'
 
       warn  'org.apache.camel'
       debug 'gnutch'
@@ -150,24 +150,25 @@ environments {
   test {
     log4j = {
       error  'org.codehaus.groovy.grails',
-      'org.springframework',
-      'org.hibernate',
-      'net.sf.ehcache.hibernate'
+             'org.springframework',
+             'org.hibernate',
+             'net.sf.ehcache.hibernate'
 
-      warn  'org.apache.camel'
-      debug 'gnutch'
+      debug  'org.apache.camel'
+      trace  'gnutch'
     }
 
-    gnutch {
-      crawl.threads = {-> java.lang.Runtime.getRuntime().availableProcessors() }()
-      crawl.multiplier = 5
+    gnutch.aggregationTime = 15000L
 
-      gnutch.handlers.publish = {
-        from('direct:publish').
-        log(LoggingLevel.DEBUG, 'gnutch', 'Committed')
-      }
-      gnutch.activemq.brokerURL = 'vm://localhost?broker.persistent=false'
+    gnutch.crawl.threads = {-> java.lang.Runtime.getRuntime().availableProcessors() }()
+    gnutch.crawl.multiplier = 5
+
+    gnutch.handlers.publish = {
+      from('direct:publish').
+      log(LoggingLevel.DEBUG, 'gnutch', 'Committed')
     }
+
+    gnutch.activemq.brokerURL = 'vm://localhost?broker.persistent=false'
 
   }
 }
