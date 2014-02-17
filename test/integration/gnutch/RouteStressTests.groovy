@@ -31,6 +31,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 
 class RouteStressTests extends CamelTestSupport {
   def grailsApplication
+  def config
 
   ProducerTemplate producerTemplate;
   CamelContext camelContext
@@ -46,6 +47,9 @@ class RouteStressTests extends CamelTestSupport {
   @Before
   void setUp(){
     super.setUp()
+
+    config = grailsApplication?.config
+
     camelContext.start() // starting camel ourselves
 
     camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
@@ -103,7 +107,7 @@ class RouteStressTests extends CamelTestSupport {
     expectation.delegate = mockEndpoint
     mockEndpoint.expects(expectation)
 
-    assertMockEndpointsSatisfied(15, TimeUnit.SECONDS) // let this test work for 15 seconds
+    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS) // let this test work for 15 seconds
   }
 
   @Test
@@ -135,7 +139,7 @@ class RouteStressTests extends CamelTestSupport {
     def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
     destFile.append(resourceStream)
 
-    assertMockEndpointsSatisfied(15, TimeUnit.SECONDS)
+    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
   }
 
 }

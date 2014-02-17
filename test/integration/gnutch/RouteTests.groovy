@@ -35,6 +35,8 @@ class RouteTests extends CamelTestSupport {
 
   def grailsApplication
 
+  def config
+
   ProducerTemplate producerTemplate;
   CamelContext camelContext
 
@@ -50,6 +52,7 @@ class RouteTests extends CamelTestSupport {
   void setUp(){
     super.setUp()
     camelContext.start() // starting camel ourselves
+    config = grailsApplication?.config
   }
 
   @After 
@@ -92,7 +95,7 @@ class RouteTests extends CamelTestSupport {
 
     producerTemplate.sendBodyAndHeaders("direct:process-tika", pdfIs, [contextURI: 'http://www.abc.com'])
 
-    assertMockEndpointsSatisfied(10, TimeUnit.SECONDS)
+    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
   }
 
   @Test
@@ -136,7 +139,7 @@ class RouteTests extends CamelTestSupport {
       producerTemplate.sendBody("direct:aggregate-documents", doc) 
     }
 
-    assertMockEndpointsSatisfied(20, TimeUnit.SECONDS)
+    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
   }
 
 }
