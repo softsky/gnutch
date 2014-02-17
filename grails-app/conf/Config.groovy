@@ -135,7 +135,7 @@ environments {
       setHeader(Exchange.HTTP_QUERY, constant('commit=true')).
       setHeader(Exchange.HTTP_METHOD, constant('POST')).
       setHeader(Exchange.CONTENT_TYPE, constant('application/xml')).
-      to("http://null")
+      to("http4://null")
     }
 
     gnutch.http.customHeaders = [
