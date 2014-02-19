@@ -31,6 +31,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 
 class RouteStressTests extends CamelTestSupport {
     def grailsApplication
+    def config
 
     ProducerTemplate producerTemplate;
     CamelContext camelContext
@@ -46,6 +47,9 @@ class RouteStressTests extends CamelTestSupport {
     @Before
     void setUp() {
         super.setUp()
+
+        config = grailsApplication?.config
+
         camelContext.start() // starting camel ourselves
 
         camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
@@ -102,5 +106,37 @@ class RouteStressTests extends CamelTestSupport {
         assertMockEndpointsSatisfied(grailsApplication.config.gnutch.aggregationTime + 10, TimeUnit.SECONDS)
 //        assertMockEndpointsSatisfied(15, TimeUnit.SECONDS)
         // let this test work for 15 seconds
+    }
+
+    @Test
+    @DirtiesContext
+    void testFullCycle() {
+        camelContext.
+                getRouteDefinition('aggregation').
+                adviceWith(camelContext,
+                        new AdviceWithRouteBuilder() {
+                            @Override
+                            public void configure() throws Exception {
+                                mockEndpointsAndSkip("direct:publish")
+                            }
+                        });
+        def mockEndpoint = getMockEndpoint("mock:direct:publish")
+
+        mockEndpoint.expectedMessageCount(1)
+        def expectation = { ->
+            def ex = receivedExchanges[0]
+            assert ex.in.body.documentElement.nodeName == 'add'
+            assert ex.in.body.getElementsByTagName('doc').length > 0
+
+        } as Runnable
+        expectation.delegate = mockEndpoint
+        mockEndpoint.expects(expectation)
+
+        // saving file
+        def resourceStream = new ClassPathResource('xslt/localhost.xsl').inputStream
+        def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
+        destFile.append(resourceStream)
+
+        assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
     }
 }

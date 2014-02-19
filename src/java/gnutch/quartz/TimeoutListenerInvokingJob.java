@@ -26,7 +26,6 @@ public class TimeoutListenerInvokingJob implements Job {
 
         String key = context.getJobDetail().getKey().getName();
         List<TimeoutListener> timeoutListeners = (List<TimeoutListener>)map.get("timeoutListeners");
-        System.out.println("Listeners:" + timeoutListeners);
         LOG.trace("Triggering job with key: " + key);
         synchronized(timeoutListeners) {
             TimeoutListener listener = null;
