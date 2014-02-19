@@ -1,5 +1,7 @@
 package gnutch
 
+import org.apache.camel.model.ModelCamelContext
+
 import static org.junit.Assert.*
 import org.junit.*
 
@@ -33,78 +35,72 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 
 class RouteFullCycleTests extends CamelTestSupport {
 
-  def grailsApplication
+    def grailsApplication
 
-  ProducerTemplate producerTemplate;
-  CamelContext camelContext
+    ProducerTemplate producerTemplate;
+    CamelContext camelContext
 
-  def jmsConnectionFactory
+    def jmsConnectionFactory
 
-  private Server server  // jetty server
+    private Server server  // jetty server
 
-  protected CamelContext createCamelContext() throws Exception {
-    return camelContext
-  }
+    protected CamelContext createCamelContext() throws Exception {
+        return camelContext
+    }
 
-  @Before
-  void setUp(){
-    super.setUp()
-    camelContext.start() // starting camel ourselves
+    @Before
+    void setUp() {
+        super.setUp()
+        camelContext.start() // starting camel ourselves
 
-    camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
+        camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
 
-    // Running embedded Jetty server to crawl from. Application sits in test/integation/resources/web-app
-    server = new Server(8080);
-    ResourceHandler resource_handler = new ResourceHandler();
-    resource_handler.directoriesListed = true;
-    resource_handler.welcomeFiles = ["index.html"];
+        // Running embedded Jetty server to crawl from. Application sits in test/integation/resources/web-app
+        server = new Server(8080);
+        ResourceHandler resource_handler = new ResourceHandler();
+        resource_handler.directoriesListed = true;
+        resource_handler.welcomeFiles = ["index.html"];
 
-    resource_handler.resourceBase = "test/integration/resources/web-app";
-          
-    HandlerList handlers = new HandlerList();
-    handlers.handlers = [resource_handler, new DefaultHandler()];
-    server.handler = handlers;
-    server.start();
-  }
+        resource_handler.resourceBase = "test/integration/resources/web-app";
 
-  @After 
-  void tearDown(){
-    camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
+        HandlerList handlers = new HandlerList();
+        handlers.handlers = [resource_handler, new DefaultHandler()];
+        server.handler = handlers;
+        server.start();
+    }
 
-    server.stop();
+    @After
+    void tearDown() {
+        camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
+        server.stop();
+        super.tearDown()
+    }
 
-    super.tearDown()
-  }
+    @Test
+    @DirtiesContext
+    void testFullCycle() {
+        camelContext.
+                getRouteDefinition('aggregation').
+                adviceWith(camelContext,
+                        new AdviceWithRouteBuilder() {
+                            @Override
+                            public void configure() throws Exception {
+                                mockEndpointsAndSkip("direct:publish")
+                            }
+                        });
 
-  @Test
-  @DirtiesContext
-  void testFullCycle() {
-    camelContext.
-    getRouteDefinition('aggregation').
-    adviceWith(camelContext,
-               new AdviceWithRouteBuilder() { 
-                 @Override
-                 public void configure() throws Exception {
-                   mockEndpointsAndSkip("direct:publish")
-                 }
-               });
-    def mockEndpoint = getMockEndpoint("mock:direct:publish")
-
-    mockEndpoint.expectedMessageCount(1)
-    def expectation = {-> 
-      def ex = receivedExchanges[0]
-      assert ex.in.body.documentElement.nodeName == 'add'
-      assert ex.in.body.getElementsByTagName('doc').length > 0
-      
-    } as Runnable
-    expectation.delegate = mockEndpoint
-    mockEndpoint.expects(expectation)
-
-    // saving file
-    def resourceStream = new ClassPathResource('xslt/localhost.xsl').inputStream
-    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
-    destFile.append(resourceStream)
-
-    assertMockEndpointsSatisfied(15, TimeUnit.SECONDS)
-  }
+        def resource = new ClassPathResource('xslt/localhost.xsl').inputStream
+        def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
+        destFile.append(resource)
+        def mockEndpoint = getMockEndpoint("mock:direct:publish")
+        mockEndpoint.expectedMinimumMessageCount(1) // expecting some messages
+        def expectation = { ->
+            def ex = receivedExchanges[0]
+            assert ex.in.body.documentElement.nodeName == 'add'
+            assert ex.in.body.getElementsByTagName('doc').length > 0
+        } as Runnable
+        expectation.delegate = mockEndpoint
+        mockEndpoint.expects(expectation)
+        assertMockEndpointsSatisfied(grailsApplication.config.gnutch.aggregationTime, TimeUnit.SECONDS)
+    }
 }

@@ -113,7 +113,7 @@ environments {
 
       activemq {
         brokerURL = 'tcp://localhost:61616'
-      }      
+      }
     }
   }
 
