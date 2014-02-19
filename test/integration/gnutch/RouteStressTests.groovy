@@ -50,7 +50,7 @@ class RouteStressTests extends CamelTestSupport {
 
         config = grailsApplication?.config
 
-        camelContext.start() // starting camel ourselves
+    camelContext.start() // starting camel ourselves
 
         camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
 
