@@ -139,7 +139,8 @@ class RouteTests extends CamelTestSupport {
       producerTemplate.sendBody("direct:aggregate-documents", doc) 
     }
 
-    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
+//    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
+    assertMockEndpointsSatisfied(config.gnutch.aggregationTime, TimeUnit.SECONDS)
   }
 
 }
