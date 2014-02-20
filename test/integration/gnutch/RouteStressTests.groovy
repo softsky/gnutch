@@ -91,7 +91,7 @@ class RouteStressTests extends CamelTestSupport {
                });
     def xsltDir = new ClassPathResource('xslt').file
     xsltDir.eachFile { file ->
-      def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/' + file.name)
+      def destFile = new File(config.gnutch.inputRoute.replace('file://', '') + '/' + file.name)
       destFile.append(file.newInputStream())
     }
 
@@ -108,7 +108,7 @@ class RouteStressTests extends CamelTestSupport {
     mockEndpoint.expects(expectation)
 
 //    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS) // let this test work for 15 seconds
-    assertMockEndpointsSatisfied(grailsApplication.config.gnutch.aggregationTime + 10, TimeUnit.SECONDS)
+    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 10, TimeUnit.SECONDS)
   }
 
   @Test
@@ -117,7 +117,7 @@ class RouteStressTests extends CamelTestSupport {
     camelContext.
     getRouteDefinition('aggregation').
     adviceWith(camelContext,
-               new AdviceWithRouteBuilder() { 
+               new AdviceWithRouteBuilder() {
                  @Override
                  public void configure() throws Exception {
                    mockEndpointsAndSkip("direct:publish")
@@ -126,18 +126,18 @@ class RouteStressTests extends CamelTestSupport {
     def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
     mockEndpoint.expectedMessageCount(1)
-    def expectation = {-> 
+    def expectation = {->
       def ex = receivedExchanges[0]
       assert ex.in.body.documentElement.nodeName == 'add'
       assert ex.in.body.getElementsByTagName('doc').length > 0
-      
+
     } as Runnable
     expectation.delegate = mockEndpoint
     mockEndpoint.expects(expectation)
 
     // saving file
     def resourceStream = new ClassPathResource('xslt/localhost.xsl').inputStream
-    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
+    def destFile = new File(config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
     destFile.append(resourceStream)
 
     assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)

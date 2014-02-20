@@ -140,7 +140,7 @@ class RouteTests extends CamelTestSupport {
     }
 
 //    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
-    assertMockEndpointsSatisfied(grailsApplication.config.gnutch.aggregationTime, TimeUnit.SECONDS)
+    assertMockEndpointsSatisfied(config.gnutch.aggregationTime, TimeUnit.SECONDS)
   }
 
 }
