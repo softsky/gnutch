@@ -30,113 +30,116 @@ import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 
 class RouteStressTests extends CamelTestSupport {
-    def grailsApplication
-    def config
+  def grailsApplication
+  def config
 
-    ProducerTemplate producerTemplate;
-    CamelContext camelContext
+  ProducerTemplate producerTemplate;
+  CamelContext camelContext
 
-    def jmsConnectionFactory
+  def jmsConnectionFactory
 
-    private Server server  // jetty server
+  private Server server  // jetty server
 
-    protected CamelContext createCamelContext() throws Exception {
-        return camelContext
-    }
+  protected CamelContext createCamelContext() throws Exception {
+    return camelContext
+  }
 
-    @Before
-    void setUp() {
-        super.setUp()
+  @Before
+  void setUp(){
+    super.setUp()
 
-        config = grailsApplication?.config
+    config = grailsApplication?.config
 
     camelContext.start() // starting camel ourselves
 
-        camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
+    camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
 
-        // Running embedded Jetty server to crawl from. Application sits in test/integation/resources/web-app
-        server = new Server(8080);
-        ResourceHandler resource_handler = new ResourceHandler();
-        resource_handler.directoriesListed = true;
-        resource_handler.welcomeFiles = ["index.html"];
+    // Running embedded Jetty server to crawl from. Application sits in test/integation/resources/web-app
+    server = new Server(8080);
+    ResourceHandler resource_handler = new ResourceHandler();
+    resource_handler.directoriesListed = true;
+    resource_handler.welcomeFiles = ["index.html"];
 
-        resource_handler.resourceBase = "test/integration/resources/web-app";
+    resource_handler.resourceBase = "test/integration/resources/web-app";
+          
+    HandlerList handlers = new HandlerList();
+    handlers.handlers = [resource_handler, new DefaultHandler()];
+    server.handler = handlers;
+    server.start();
+  }
 
-        HandlerList handlers = new HandlerList();
-        handlers.handlers = [resource_handler, new DefaultHandler()];
-        server.handler = handlers;
-        server.start();
+  @After
+  void tearDown(){
+    camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
+
+    server.stop();   
+ 
+    super.tearDown();
+  }
+
+  @Test
+  @DirtiesContext
+  void testStress() {
+    camelContext.
+    getRouteDefinition('aggregation').
+    adviceWith(camelContext,
+               new AdviceWithRouteBuilder() { 
+                 @Override
+                 public void configure() throws Exception {
+                   mockEndpointsAndSkip("direct:publish")
+                 }
+               });
+    def xsltDir = new ClassPathResource('xslt').file
+    xsltDir.eachFile { file ->
+      def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/' + file.name)
+      destFile.append(file.newInputStream())
     }
 
-    @After
-    void tearDown() {
-        camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
+    def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
-        server.stop();
+    mockEndpoint.expectedMinimumMessageCount(1) // expecting some messages
+    def expectation = {-> 
+      def ex = receivedExchanges[0]
+      assert ex.in.body.documentElement.nodeName == 'add'
+      assert ex.in.body.getElementsByTagName('doc').length > 0
+      println "Commit happened"
+    } as Runnable
+    expectation.delegate = mockEndpoint
+    mockEndpoint.expects(expectation)
 
-        super.tearDown();
-    }
+//    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS) // let this test work for 15 seconds
+    assertMockEndpointsSatisfied(grailsApplication.config.gnutch.aggregationTime + 10, TimeUnit.SECONDS)
+  }
 
-    @Test
-    @DirtiesContext
-    void testStress() {
-        camelContext.
-                getRouteDefinition('aggregation').
-                adviceWith(camelContext,
-                        new AdviceWithRouteBuilder() {
-                            @Override
-                            public void configure() throws Exception {
-                                mockEndpointsAndSkip("direct:publish")
-                            }
-                        });
-        def xsltDir = new ClassPathResource('xslt').file
-        xsltDir.eachFile { file ->
-            def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/' + file.name)
-            destFile.append(file.newInputStream())
-        }
-        def mockEndpoint = getMockEndpoint("mock:direct:publish")
-        mockEndpoint.expectedMinimumMessageCount(1) // expecting some messages
-        def expectation = { ->
-            def ex = receivedExchanges[0]
-            assert ex.in.body.documentElement.nodeName == 'add'
-            assert ex.in.body.getElementsByTagName('doc').length > 0
-        } as Runnable
-        expectation.delegate = mockEndpoint
-        mockEndpoint.expects(expectation)
-        assertMockEndpointsSatisfied(grailsApplication.config.gnutch.aggregationTime + 10, TimeUnit.SECONDS)
-//        assertMockEndpointsSatisfied(15, TimeUnit.SECONDS)
-        // let this test work for 15 seconds
-    }
+  @Test
+  @DirtiesContext
+  void testFullCycle() {
+    camelContext.
+    getRouteDefinition('aggregation').
+    adviceWith(camelContext,
+               new AdviceWithRouteBuilder() { 
+                 @Override
+                 public void configure() throws Exception {
+                   mockEndpointsAndSkip("direct:publish")
+                 }
+               });
+    def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
-    @Test
-    @DirtiesContext
-    void testFullCycle() {
-        camelContext.
-                getRouteDefinition('aggregation').
-                adviceWith(camelContext,
-                        new AdviceWithRouteBuilder() {
-                            @Override
-                            public void configure() throws Exception {
-                                mockEndpointsAndSkip("direct:publish")
-                            }
-                        });
-        def mockEndpoint = getMockEndpoint("mock:direct:publish")
+    mockEndpoint.expectedMessageCount(1)
+    def expectation = {-> 
+      def ex = receivedExchanges[0]
+      assert ex.in.body.documentElement.nodeName == 'add'
+      assert ex.in.body.getElementsByTagName('doc').length > 0
+      
+    } as Runnable
+    expectation.delegate = mockEndpoint
+    mockEndpoint.expects(expectation)
 
-        mockEndpoint.expectedMessageCount(1)
-        def expectation = { ->
-            def ex = receivedExchanges[0]
-            assert ex.in.body.documentElement.nodeName == 'add'
-            assert ex.in.body.getElementsByTagName('doc').length > 0
+    // saving file
+    def resourceStream = new ClassPathResource('xslt/localhost.xsl').inputStream
+    def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
+    destFile.append(resourceStream)
 
-        } as Runnable
-        expectation.delegate = mockEndpoint
-        mockEndpoint.expects(expectation)
-
-        // saving file
-        def resourceStream = new ClassPathResource('xslt/localhost.xsl').inputStream
-        def destFile = new File(grailsApplication.config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
-        destFile.append(resourceStream)
-
-        assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
-    }
+    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
+  }
 }
