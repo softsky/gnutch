@@ -55,25 +55,24 @@ class RouteStressTests extends CamelTestSupport {
     camelContext.shutdownStrategy.timeout = 60 // setting shutdown timeout to 1 minute (60 seconds)
 
     // Running embedded Jetty server to crawl from. Application sits in test/integation/resources/web-app
-    server = new Server(8080);
-    ResourceHandler resource_handler = new ResourceHandler();
-    resource_handler.directoriesListed = true;
-    resource_handler.welcomeFiles = ["index.html"];
-
-    resource_handler.resourceBase = "test/integration/resources/web-app";
-          
-    HandlerList handlers = new HandlerList();
-    handlers.handlers = [resource_handler, new DefaultHandler()];
-    server.handler = handlers;
-    server.start();
+//    server = new Server(8080);
+//    ResourceHandler resource_handler = new ResourceHandler();
+//    resource_handler.directoriesListed = true;
+//    resource_handler.welcomeFiles = ["index.html"];
+//
+//    resource_handler.resourceBase = "test/integration/resources/web-app";
+//    HandlerList handlers = new HandlerList();
+//    handlers.handlers = [resource_handler, new DefaultHandler()];
+//    server.handler = handlers;
+//    server.start();
   }
 
   @After
   void tearDown(){
     camelContext.stop() // stopping camel ourselves and after stop wiping out activemq queue
 
-    server.stop();   
- 
+//    server.stop();
+
     super.tearDown();
   }
 
@@ -83,7 +82,7 @@ class RouteStressTests extends CamelTestSupport {
     camelContext.
     getRouteDefinition('aggregation').
     adviceWith(camelContext,
-               new AdviceWithRouteBuilder() { 
+               new AdviceWithRouteBuilder() {
                  @Override
                  public void configure() throws Exception {
                    mockEndpointsAndSkip("direct:publish")
@@ -98,7 +97,7 @@ class RouteStressTests extends CamelTestSupport {
     def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
     mockEndpoint.expectedMinimumMessageCount(1) // expecting some messages
-    def expectation = {-> 
+    def expectation = {->
       def ex = receivedExchanges[0]
       assert ex.in.body.documentElement.nodeName == 'add'
       assert ex.in.body.getElementsByTagName('doc').length > 0
@@ -136,8 +135,8 @@ class RouteStressTests extends CamelTestSupport {
     mockEndpoint.expects(expectation)
 
     // saving file
-    def resourceStream = new ClassPathResource('xslt/localhost.xsl').inputStream
-    def destFile = new File(config.gnutch.inputRoute.replace('file://', '') + '/localhost.xsl')
+    def resourceStream = new ClassPathResource('xslt/98.xsl').inputStream
+    def destFile = new File(config.gnutch.inputRoute.replace('file://', '') + '/98.xsl')
     destFile.append(resourceStream)
 
     assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)

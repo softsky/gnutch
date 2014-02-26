@@ -62,41 +62,6 @@ class RouteTests extends CamelTestSupport {
     super.tearDown()
   }
 
-  @Test
-  @DirtiesContext
-  void testProcessTika() {
-    camelContext.
-    getRouteDefinition('indexBinary').
-    adviceWith(camelContext,
-               new AdviceWithRouteBuilder() { 
-                 @Override
-                 public void configure() throws Exception {
-                   mockEndpointsAndSkip("direct:aggregate-documents")
-                 }
-               });
-
-    def pdfIs = new ClassPathResource('resources/2012-03-21-sunrise.pdf').inputStream
-    grailsApplication.mainContext.getBean('documentIndexer').transformations.put("http://www.abc.com", null)
-
-    assertNotNull(camelContext.hasEndpoint('mock:direct:aggregate-documents'))
-    def mockEndpoint = getMockEndpoint("mock:direct:aggregate-documents")
-
-    def expectation = { 
-      def ex = receivedExchanges[0]
-      assertEquals ex.in.body.documentElement.nodeName, 'doc'
-
-      assertEquals XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="id"]/text()').nodeValue, 'http://www.abc.com'
-      assert XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="title"]').textContent?.length() > 0
-      assert XPathAPI.selectSingleNode(ex.in.body, '//doc/field[@name="content"]').textContent?.length() > 0
-    }
-    expectation.delegate = mockEndpoint
-
-    mockEndpoint.expects(expectation)
-
-    producerTemplate.sendBodyAndHeaders("direct:process-tika", pdfIs, [contextURI: 'http://www.abc.com'])
-
-    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
-  }
 
   @Test
   @DirtiesContext
@@ -104,7 +69,7 @@ class RouteTests extends CamelTestSupport {
     camelContext.
     getRouteDefinition('aggregation').
     adviceWith(camelContext,
-               new AdviceWithRouteBuilder() { 
+               new AdviceWithRouteBuilder() {
                  @Override
                  public void configure() throws Exception {
                    mockEndpointsAndSkip("direct:publish")
@@ -114,7 +79,7 @@ class RouteTests extends CamelTestSupport {
     String [] docs = ['''<doc>
        <field name="title">foo</field>
        <field name="content">bar</field>
-      </doc>''', 
+      </doc>''',
                       '''<doc>
        <field name="title">foo1</field>
        <field name="content">bar1</field>
@@ -128,7 +93,7 @@ class RouteTests extends CamelTestSupport {
     def mockEndpoint = getMockEndpoint("mock:direct:publish")
 
     mockEndpoint.expectedMessageCount(1)
-    def expectation = { 
+    def expectation = {
       def ex = receivedExchanges[0]
       assert ex.in.body.documentElement.nodeName == 'add'
       assert ex.in.body.getElementsByTagName('doc').length == 3
@@ -136,7 +101,7 @@ class RouteTests extends CamelTestSupport {
     expectation.delegate = mockEndpoint
     mockEndpoint.expects(expectation)
     docs.each { doc ->
-      producerTemplate.sendBody("direct:aggregate-documents", doc) 
+      producerTemplate.sendBody("direct:aggregate-documents", doc)
     }
 
 //    assertMockEndpointsSatisfied(config.gnutch.aggregationTime + 5, TimeUnit.SECONDS)
