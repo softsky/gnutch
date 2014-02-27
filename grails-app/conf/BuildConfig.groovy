@@ -1,6 +1,6 @@
 grails.project.work.dir = "target"
 
-String camelVersion = '2.12.1' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
+String camelVersion = '2.12.3' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
 String activeMQVersion = '5.8.0'
 String tikaVersion = "1.4"
 
