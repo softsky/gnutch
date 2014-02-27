@@ -14,7 +14,8 @@ public class HttpClientConfigurer implements org.apache.camel.component.http4.Ht
 
     @Override
     public void configureHttpClient(HttpClient client) {
-        client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1).setParameter(CoreProtocolPNames.HTTP_CONTENT_CHARSET,"UTF-8");
+        client.getParams()
+            .setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1)
         if (userAgent != null) {
             client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
         }
