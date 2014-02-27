@@ -6,11 +6,11 @@
     version="1.0">
 
   <!-- This file is used for testing. We will use embedded Jetty server to test it -->
-  <gn:init>http://localhost:8080/</gn:init>
+  <gn:init>http://localhost:8181/</gn:init>
   <gn:filter>
-    +http://localhost:8080/\d\.html
+    +http://localhost:8181/\d\.html
   </gn:filter>
-  <gn:index>http://localhost:8080/\d\.html</gn:index>
+  <gn:index>http://localhost:8181/\d\.html</gn:index>
   <gn:schedule>2 weeks</gn:schedule>
 
   <xsl:output
