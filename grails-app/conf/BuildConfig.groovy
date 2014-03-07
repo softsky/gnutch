@@ -65,7 +65,6 @@ grails.project.dependency.resolution = {
         build("xerces:xercesImpl:2.8.0")
 
         test("org.eclipse.jetty:jetty-server:9.1.0.v20131115")
-
     }
 
     plugins {
