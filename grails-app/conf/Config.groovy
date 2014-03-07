@@ -5,7 +5,7 @@ import org.apache.camel.LoggingLevel
 
 gnutch {
   // Input route definition
-  inputRoute = 'file:///home/archer/tmp/gnutch-input'
+  inputRoute = "file://${System.env.HOME}/.gnutch/input"
 
   aggregationTime = 60000L
 
@@ -130,7 +130,7 @@ environments {
 
     gnutch.handlers.publish = {
       from('direct:publish').
-      //to("file:///home/archer/tmp/gnutch-output")
+      //to("file://${System.env.HOME}/.gnutch/output")
       setHeader(Exchange.HTTP_URI, constant("${gnutch.solr.coreUrl}/update")).
       setHeader(Exchange.HTTP_QUERY, constant('commit=true')).
       setHeader(Exchange.HTTP_METHOD, constant('POST')).
