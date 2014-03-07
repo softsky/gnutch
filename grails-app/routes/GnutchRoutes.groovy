@@ -14,24 +14,24 @@ class GnutchRoutes extends RouteBuilder {
     void configure() {
         def config = grailsApplication?.config
 
-        // onException(HttpOperationFailedException).
-        //         handled(true).
-        //         logStackTrace(true).
-        //         log(LoggingLevel.ERROR, 'gnutch', 'HTTP ${exception.statusCode} Exception: ${headers.contextURI}').
-        //         filter().
-        //         groovy('exchange.getProperty(org.apache.camel.Exchange.EXCEPTION_CAUGHT).hasRedirectLocation()').
-        //         log(LoggingLevel.TRACE, 'gnutch', 'Redirect to ${exception.redirectLocation} found. Original url: ${body}').
-        //         process { exchange ->
-        //             def exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class)
-        //             exchange.in.body = exception.redirectLocation
-        //         }.
-        //         to('activemq:input-url')
+        onException(HttpOperationFailedException).
+                handled(true).
+                logStackTrace(true).
+                log(LoggingLevel.ERROR, 'gnutch', 'HTTP ${exception.statusCode} Exception: ${headers.contextURI}').
+                filter().
+                groovy('exchange.getProperty(org.apache.camel.Exchange.EXCEPTION_CAUGHT).hasRedirectLocation()').
+                log(LoggingLevel.TRACE, 'gnutch', 'Redirect to ${exception.redirectLocation} found. Original url: ${body}').
+                process { exchange ->
+                    def exception = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, Throwable.class)
+                    exchange.in.body = exception.redirectLocation
+                }.
+                to('activemq:input-url')
 
-        // onException().
-        //         handled(true).
-        //         logStackTrace(false).
-        //         log(LoggingLevel.ERROR, 'gnutch', 'EXCEPTION: ${exception.message}: ${headers.contextURI}').
-        //         beanRef('exceptionCollectorService', 'collectException')
+        onException().
+                handled(true).
+                logStackTrace(false).
+                log(LoggingLevel.ERROR, 'gnutch', 'EXCEPTION: ${exception.message}: ${headers.contextURI}').
+                beanRef('exceptionCollectorService', 'collectException')
 
         /**
          input route.
