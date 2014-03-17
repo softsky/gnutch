@@ -5,7 +5,8 @@ import org.apache.camel.LoggingLevel
 
 gnutch {
   // Input route definition 
-  inputRoute = 'file:///home/archer/tmp/gnutch-input'
+  inputRoute = "file://${System.env.HOME}/.gnutch/input"
+
 
   aggregationTime = 60000L
 
