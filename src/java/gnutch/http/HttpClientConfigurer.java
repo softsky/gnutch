@@ -2,6 +2,7 @@ package gnutch.http;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.params.CoreProtocolPNames;
 
 public class HttpClientConfigurer implements org.apache.camel.component.http4.HttpClientConfigurer {
@@ -13,10 +14,11 @@ public class HttpClientConfigurer implements org.apache.camel.component.http4.Ht
     }
 
     @Override
-    public void configureHttpClient(HttpClient client) {
+    public void configureHttpClient(HttpClientBuilder httpClientBuilder) {
+        HttpClient client = HttpClientBuilder.create().build();
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
         if (userAgent != null) {
-            client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
+             client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
         }
     }
 }
