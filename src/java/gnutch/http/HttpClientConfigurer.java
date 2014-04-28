@@ -15,10 +15,10 @@ public class HttpClientConfigurer implements org.apache.camel.component.http4.Ht
 
     @Override
     public void configureHttpClient(HttpClientBuilder httpClientBuilder) {
-        HttpClient client = HttpClientBuilder.create().build();
+        HttpClient client = httpClientBuilder.build();
         client.getParams().setParameter(CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
         if (userAgent != null) {
-             client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
+            client.getParams().setParameter(CoreProtocolPNames.USER_AGENT, userAgent);
         }
     }
 }
