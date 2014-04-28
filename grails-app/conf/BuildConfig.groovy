@@ -1,11 +1,11 @@
 grails.project.work.dir = "target"
 
-String camelVersion = '2.12.3' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
+String camelVersion = '2.13.0' // don't upgrade/downgrade camel. it seems best result is using 2.9.4 version
 String activeMQVersion = '5.8.0'
 String tikaVersion = "1.4"
 
-grails.project.source.level = 1.7
-grails.project.target.level = 1.7
+grails.project.source.level = 1.6
+grails.project.target.level = 1.6
 
 grails.project.fork = [
 
@@ -42,18 +42,12 @@ grails.project.dependency.resolution = {
     }
 
     dependencies {
-//        compile "org.apache.camel:camel-http4:${camelVersion}"
-//        compile("org.apache.camel:camel-jms:${camelVersion}")
-//        compile("org.apache.camel:camel-cache:${camelVersion}")
-//        compile("org.apache.camel:camel-tagsoup:${camelVersion}")
+        compile "org.apache.camel:camel-http4:${camelVersion}"
+        compile("org.apache.camel:camel-jms:${camelVersion}")
+        compile("org.apache.camel:camel-cache:${camelVersion}")
+        compile("org.apache.camel:camel-tagsoup:${camelVersion}")
 
-//        test("org.apache.camel:camel-test:${camelVersion}")
-
-//        compile 'org.apache.httpcomponents:httpclient:4.2.6'
-
-        compile 'org.apache.httpcomponents:httpclient:4.3.2'
-        compile 'net.sf.ehcache:ehcache:2.8.1'
-        compile 'xalan:xalan:2.7.1'
+        test("org.apache.camel:camel-test:${camelVersion}")
 
         compile("org.apache.tika:tika-core:${tikaVersion}")
         compile("org.apache.tika:tika-parsers:${tikaVersion}")
@@ -61,9 +55,7 @@ grails.project.dependency.resolution = {
         compile("org.quartz-scheduler:quartz:2.2.1")
 
         runtime("org.apache.activemq:activemq-broker:${activeMQVersion}")
-
         runtime("org.apache.activemq:activemq-kahadb-store:${activeMQVersion}")
-
         runtime("org.apache.activemq:activemq-camel:${activeMQVersion}")
         runtime("org.apache.xbean:xbean-spring:3.8")
         build("xerces:xercesImpl:2.8.0")
@@ -72,7 +64,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile(":routing:1.3.0")
+        compile(":routing:1.3.2")
         build(":tomcat:7.0.50")
 
         build(':release:3.0.1', ':rest-client-builder:2.0.1') {

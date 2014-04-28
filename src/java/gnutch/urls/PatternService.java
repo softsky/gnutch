@@ -19,13 +19,13 @@ public class PatternService {
     }
 
     public synchronized void addAllowedPattern(Pattern p) {
-        List<Pattern> newPatterns = new LinkedList<>(allowedPatternList.get());
+        List<Pattern> newPatterns = new LinkedList<Pattern>(allowedPatternList.get());
         newPatterns.add(p);
         allowedPatternList.set(Collections.unmodifiableList(newPatterns)); // or ImmutableList
     }
 
     public synchronized void addIgnoredPattern(Pattern p) {
-        List<Pattern> newPatterns = new LinkedList<>(ignoredPatternList.get());
+        List<Pattern> newPatterns = new LinkedList<Pattern>(ignoredPatternList.get());
         newPatterns.add(p);
         ignoredPatternList.set(Collections.unmodifiableList(newPatterns)); // or ImmutableList
     }
