@@ -7,7 +7,7 @@ import org.apache.camel.Exchange
 
 class GnutchGrailsPlugin {
 
-    def version = "0.2.2.63"
+    def version = "0.2.2.64"
     def grailsVersion = "2.2 > *"
     def loadAfter = ['controllers', 'services', 'routing']
     def title = "Grails Apache Nutch alternative"
@@ -74,7 +74,7 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
         jmsConnectionFactory(PooledConnectionFactory) {
             connectionFactory = ref('jmsFactory')
             maxConnections = 8;
-            maximumActive = 500;
+            //maximumActive = 500;
         }
 
         http4(HttpComponent) {
