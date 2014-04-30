@@ -68,15 +68,15 @@ class GnutchRoutes extends RouteBuilder {
                     (config.gnutch.handlers.postHTTP as org.apache.camel.Processor).process(ex)
                 }.
                 choice().
-        // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
+                // for text/html Content-type we unmarshall with Tidy, extracting sublinks and index page
                 when(header('Content-Type').contains("text/html")).
                 log(LoggingLevel.OFF, 'gnutch', 'Sending to process-html').
                 to("direct:process-html").
-        //to("seda:process-html?size=1024&blockWhenFull=true"). // ?size=2048&blockWhenFull=true
+                //to("seda:process-html?size=1024&blockWhenFull=true"). // ?size=2048&blockWhenFull=true
                 otherwise().
                 log(LoggingLevel.OFF, 'gnutch', 'Sending to process-binary').
                 to("direct:process-binary").
-        //to("seda:process-binary?size=1024&blockWhenFull=true").
+                //to("seda:process-binary?size=1024&blockWhenFull=true").
                 end()
 
         // Processing Tidy entries
