@@ -51,6 +51,7 @@ class GnutchRoutes extends RouteBuilder {
                 setHeader('contextURI', body(String)). // duplicating original uri in contextURI header
                 setHeader(Exchange.HTTP_URI, body(String)).
                 setHeader(Exchange.HTTP_METHOD, constant('GET')).
+                setHeader('User-Agent', constant('Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)')).
                 process { ex ->
                     // setting up custom headers
                     config.gnutch.http.customHeaders.each { header ->

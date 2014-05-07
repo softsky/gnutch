@@ -6,7 +6,7 @@ import org.apache.camel.Exchange
 
 class GnutchGrailsPlugin {
 
-    def version = "0.2.2.68"
+    def version = "0.2.2.69"
     def grailsVersion = "2.2 > *"
     def loadAfter = ['controllers', 'services', 'routing']
     def title = "Grails Apache Nutch alternative"
