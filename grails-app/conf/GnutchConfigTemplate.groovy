@@ -17,6 +17,12 @@ gnutch {
   }
 
   handlers {
+    // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML
+    // ex.in.body contains XHML document (actually contains reference to org.w3c.org.Document)
+    postHTTP = { Exchange ex ->
+
+    }
+
     // org.apache.camel.Processor definition. Called after HTML is transformed into XHTML 
     // ex.in.body contains XHML document (actually contains reference to org.w3c.org.Document)
     postXHTML = { Exchange ex ->

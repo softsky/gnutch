@@ -192,7 +192,7 @@ class GnutchRoutes extends RouteBuilder {
                 to('direct:publish').
                 end().
                 otherwise().
-                log(LoggingLevel.DEBUG, 'gnutch', 'Ignoring ${headers.contextURI}').
+                log(LoggingLevel.DEBUG, 'gnutch', 'Ignoring ${headers.contextURI} as didn\'t pass validation').
                 beanRef('invalidDocumentCollectorService', 'collect').
                 end()
 

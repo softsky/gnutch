@@ -1,4 +1,3 @@
-import gnutch.http.HttpClientConfigurer
 
 import org.apache.activemq.ActiveMQConnectionFactory
 import org.apache.activemq.pool.PooledConnectionFactory
@@ -7,7 +6,7 @@ import org.apache.camel.Exchange
 
 class GnutchGrailsPlugin {
 
-    def version = "0.2.2.65"
+    def version = "0.2.2.68"
     def grailsVersion = "2.2 > *"
     def loadAfter = ['controllers', 'services', 'routing']
     def title = "Grails Apache Nutch alternative"
@@ -81,7 +80,6 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
             camelContext = ref('camelContext')
             connectionsPerRoute = conf.http.defaultMaxConnectionsPerHost
             maxTotalConnections = conf.http.maxTotalConnections
-            httpClientConfigurer = new HttpClientConfigurer(conf.http.userAgent)
         }
 
         docsAggregator(gnutch.processors.DocsAggregator)

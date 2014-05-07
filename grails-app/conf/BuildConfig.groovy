@@ -47,6 +47,9 @@ grails.project.dependency.resolution = {
         compile("org.apache.camel:camel-cache:${camelVersion}")
         compile("org.apache.camel:camel-tagsoup:${camelVersion}")
 
+        build("xml-apis:xml-apis:2.0.2")
+        compile("org.apache.httpcomponents:httpclient:4.3")
+
         test("org.apache.camel:camel-test:${camelVersion}")
 
         compile("org.apache.tika:tika-core:${tikaVersion}")
