@@ -1,4 +1,3 @@
-
 import org.apache.activemq.ActiveMQConnectionFactory
 import org.apache.activemq.pool.PooledConnectionFactory
 import org.apache.camel.component.http4.HttpComponent
