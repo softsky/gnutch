@@ -67,7 +67,7 @@ grails.project.dependency.resolution = {
     }
 
     plugins {
-        compile(":routing:1.3.2")
+        compile(":routing:1.4.0")
         build(":tomcat:7.0.50")
 
         build(':release:3.0.1', ':rest-client-builder:2.0.1') {
