@@ -65,13 +65,24 @@ grails.project.dependency.resolution = {
 
         test("org.eclipse.jetty:jetty-server:9.1.0.v20131115")
     }
-
+    management {
+      dependency 'org.springframework:spring-beans:4.0.7.RELEASE'
+    }    
     plugins {
-        compile(":routing:1.4.0")
-        build(":tomcat:7.0.50")
+      // plugins for the build system only
+      build ':tomcat:7.0.52.1'
+      // plugins for the compile step
+      compile ':scaffolding:2.1.0'
+      compile ':cache:1.1.3'
+      compile ':asset-pipeline:1.8.3'
 
-        build(':release:3.0.1', ':rest-client-builder:2.0.1') {
-            //export = false
-        }
+      // plugins needed at runtime but not for compilation
+      runtime ':hibernate4:4.3.5.2' // or ':hibernate:3.6.10.14'
+      runtime ':database-migration:1.4.0'
+      runtime ':jquery:1.11.0.2'
+      compile(":routing:1.4.0")
+
+      build(':release:3.0.1', ':rest-client-builder:2.0.1') {
+      }
     }
 }
