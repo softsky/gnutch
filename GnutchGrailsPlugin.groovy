@@ -5,7 +5,7 @@ import org.apache.camel.Exchange
 
 class GnutchGrailsPlugin {
 
-    def version = "0.2.2.69"
+    def version = "0.2.3.1"
     def grailsVersion = "2.2 > *"
     def loadAfter = ['controllers', 'services', 'routing']
     def title = "Grails Apache Nutch alternative"
@@ -27,6 +27,7 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
 
     def doWithSpring = {
 
+      println "|:" + application.config.gnutch
         // Defaulting config
         def conf = application.config.gnutch ?: [:]
 
