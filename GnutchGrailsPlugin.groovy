@@ -27,7 +27,6 @@ Use "Apache Camel":http://camel.apache.org/ as integration framework and "Apache
 
     def doWithSpring = {
 
-      println "|:" + application.config.gnutch
         // Defaulting config
         def conf = application.config.gnutch ?: [:]
 
