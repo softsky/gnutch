@@ -32,13 +32,16 @@ gnutch {
     // org.apache.camel.Processor definition. Called after XML is built
     // ex.in.body contains XML document (actually contains reference to org.w3c.org.Document)
     postXML = { Exchange ex ->
+      
     } 
 
     validate = { Exchange ex ->
+      
     }
 
     // Route definition. Should consume from 'direct:publish' and provide some business logic
     publish = {
+      
     }
 
   }
